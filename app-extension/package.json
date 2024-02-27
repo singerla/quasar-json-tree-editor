@@ -1,6 +1,6 @@
 {
   "name": "quasar-app-extension-json-tree-editor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Visualize, edit and validate a json object as a tree view",
   "author": "singerla <tsinger@gmx.de>",
   "license": "MIT",
