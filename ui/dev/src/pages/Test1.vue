@@ -1,9 +1,27 @@
+<script setup >
+import { reactive } from "vue";
+
+const data = reactive([
+  {
+    value: "test 1",
+    children: [
+      {
+        value: "test2",
+        children: [
+          {
+            value: "test3",
+            component: 'textfield'
+          },
+        ],
+      },
+    ],
+  },
+]);
+</script>
+
 <template>
   <q-page padding>
-    
-    <QJsonTreeEditor />
-    
-    
+    <QJsonTreeEditor :data="data" />
   </q-page>
 </template>
 

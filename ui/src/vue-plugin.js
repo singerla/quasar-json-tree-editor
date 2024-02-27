@@ -1,16 +1,9 @@
-import Component from './components/Component'
+import Component from "./components/QJsonTreeEditor.vue";
 
+const version = __UI_VERSION__;
 
-const version = __UI_VERSION__
-
-function install (app) {
-  app.component(Component.name, Component)
-
+function install(app) {
+  app.component("QJsonTreeEditor", Component);
 }
 
-export {
-  version,
-  Component,
-
-  install
-}
+export { version, Component, install };
