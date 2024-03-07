@@ -1,131 +1,114 @@
 <script setup>
-import { toRefs, ref, watchEffect, toRef } from "vue";
-import draggable from "vuedraggable";
+import {ref, toRef, watch} from "vue";
+import QJsonTreeEditorField from "./QJsonTreeEditorField.vue";
 
 const props = defineProps({
   data: {
-    type: Object,
-    default: () => { },
+    default: () => null,
   },
-  label: {
+  schema: {
+    type: Object,
+    default: () => {},
+  },
+  // This is useful if no description was sent
+  propKey: {
     type: String,
-    required: true
+    default: () => "unknown",
   },
 });
 
-let internalData = toRef()
+const localSchema = toRef(props, "schema");
+const localData = toRef(props, "data");
 
-watchEffect(() => {
-  internalData = props.data
+const getPropertyKey = (index) =>
+  Object.keys(localSchema.value.properties)[index];
 
-  if (internalData?.newItemSettings) {
-    let newElement = internalData.newItemSettings
-    let flag = 1
+// Expanded by default for all nodes
+const expansionItemState = ref(true);
 
-    if (newElement.type === "array") {
-      internalData[newElement.value] = [{ type: "New", newElement: true }]
-    } else if (newElement.type === "object") {
-      internalData[newElement.value] = {
-        newItemSettings: {
-          value: "NewItem",
-          type: ""
-        }
-      }
-    } else if (newElement.type === "string") {
-      internalData[newElement.value] = ""
-    } else if (newElement.type === "number") {
-      internalData[newElement.value] = 0
-    } else {
-      flag = 0
-    }
-
-    if (flag) delete internalData.newItemSettings
-  }
-
-  for (let key in internalData) {
-    if (typeof internalData[key] === "object" && internalData[key].length > 0) {
-      for (let i = 0; i < internalData[key].length; i++) {
-        const element = internalData[key][i]
-
-        if (element?.newElement) {
-          if (element.type === "array") {
-            internalData[key][i] = [{ type: "New", newElement: true }]
-          } else if (element.type === "object") {
-            internalData[key][i] = {
-              newItemSettings: {
-                value: "NewItem",
-                type: ""
-              }
-            }
-          } else if (element.type === "string") {
-            internalData[key][i] = ""
-          } else if (element.type === "number") {
-            internalData[key][i] = 0
-          }
-        }
-      }
-    }
-  }
+// This emit is required to update a single property value
+const emits = defineEmits(['updated'])
+watch(localData, (localData) => {
+  emits('updated', localData)
 })
 
-const addChildAfter = (key, index) => {
-  internalData[key].splice(index + 1, 0, { type: "New", newElement: true });
-};
-
-const addChildBefore = (key, index) => {
-  internalData[key].splice(index, 0, { type: "New", newElement: true });
-};
-
-const deleteChild = (key, index) => {
-  internalData[key].splice(index, 1);
-};
-
+// To add an item, it's enough to push localData ref
 const addItem = () => {
-  internalData.newItemSettings = {
-    value: "NewItem",
-    type: ""
-  }
-}
-
-const deleteItem = (key) => {
-  delete internalData[key];
-}
+  localData.value.push("");
+};
 </script>
 
 <!-- QJsonTreeEditorNode.vue -->
 <template>
-  <q-expansion-item :label="props.label" style="border: 1px solid #CCC;">
-    <q-expansion-item-section>
-      <div class="q-pl-sm">
-        <q-item v-for="(value, key, index) in internalData" :key="index" style="border: 1px solid #CCC; margin: 5px;">
-          <q-item-section style="border: 1px dotted #CCC; padding: 10px;">
-            <q-input v-model="internalData[key]" :label="key" v-if="(typeof internalData[key] !== 'object')" />
-            <q-list class="q-pl-sm" v-if="typeof internalData[key] === 'object' && internalData[key]?.length > 0">
-              <q-item v-for="(item, index) in internalData[key]" :key="index">
-                <q-item-section>
-                  <QJsonTreeEditorNode :data="item" :label="key" v-if="(typeof item === 'object')" />
-                  <q-input v-model="internalData[key][index]" :label="typeof item" v-else />
-                </q-item-section>
-                <q-item-section side>
-                  <div style="{display: flex}">
-                    <q-btn label="|+" @click="addChildBefore(key, index)" color="positive" />
-                    <q-btn label="+|" @click="addChildAfter(key, index)" color="positive" />
-                    <q-btn label="-" @click="deleteChild(key, index)" color="negative" />
-                  </div>
-                </q-item-section>
-              </q-item>
-            </q-list>
-            <QJsonTreeEditorNode :data="value" :label="key" v-else-if="typeof internalData[key] === 'object'" />
-          </q-item-section>
+  <q-expansion-item
+      dense
+    style="border: 1px solid #ccc"
+    header-style="background-color: #ddd;"
+    v-model="expansionItemState"
+  >
+    <template v-slot:header>
+      <q-item class="q-pa-none full-width">
+        <q-item-section avatar>
+          <q-icon name="account_tree" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>
+            {{ localSchema.description || "Key: " + propKey }}
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+    </template>
+
+    <q-item v-if="!localSchema.properties">
+      <q-item-section>
+        <QJsonTreeEditorField
+          v-if="localSchema.type !== 'array'"
+          :data="localData"
+          @updated="(newValue) => emits('updated', newValue)"
+          :schema="localSchema"
+        />
+        <div v-else>
+          <QJsonTreeEditorField
+            v-for="(localDataField, localDataFieldKey) in localData"
+            :key="'field_' + localDataFieldKey"
+            :data="localDataField"
+            @updated="(newValue) => (localData[localDataFieldKey] = newValue)"
+            :schema="localSchema.items"
+          />
           <q-item-section side>
-            <div style="{display: flex}">
-              <q-btn label="+" @click="addItem" color="positive" />
-              <q-btn label="-" @click="deleteItem(key)" color="negative" />
-            </div>
+            <q-btn
+              icon="add"
+              @click="addItem"
+              size="sm"
+              color="primary"
+              class="q-mt-sm q-pa-sm"
+              rounded
+            />
           </q-item-section>
-        </q-item>
-      </div>
-    </q-expansion-item-section>
+        </div>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-chip :label="localSchema.type" />
+      </q-item-section>
+    </q-item>
+
+    <q-item class="q-pl-sm" v-else>
+      <q-item-section>
+        <!--        <draggable>-->
+        <div
+          v-for="(property, index) in Object.values(localSchema.properties)"
+          :key="'prop_' + index"
+        >
+          <QJsonTreeEditorNode
+            :schema="property"
+            :data="localData[getPropertyKey(index)]"
+            :propKey="getPropertyKey(index)"
+            @updated="(newValue) => localData[getPropertyKey(index)] = newValue"
+          />
+        </div>
+        <!--        </draggable>-->
+      </q-item-section>
+    </q-item>
   </q-expansion-item>
 </template>
 

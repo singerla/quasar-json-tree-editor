@@ -1,24 +1,37 @@
 <script setup>
 import QJsonTreeEditorNode from "./QJsonTreeEditorNode.vue";
-import { toRefs, ref, watchEffect, toRef } from "vue";
+import { toRef, watch, watchEffect } from "vue";
 
 const props = defineProps({
   data: {
-    type: Array,
+    type: Object,
     default: () => [],
+  },
+  schema: {
+    type: Object,
+    default: () => {},
   },
 });
 
-let internalData = toRef()
+const internalData = toRef(props, "data");
+const internalSchema = toRef(props, "schema");
 
-watchEffect(() => {
-  internalData = props.data
-})
-
+watch(
+  internalData,
+  () => {
+    console.log("updated data");
+    // validate and send to api
+  },
+  { deep: true }
+);
 </script>
 
 <template>
-  <QJsonTreeEditorNode v-for="(item, index) in internalData" :key="index" :data="item" label="root">
+  <QJsonTreeEditorNode
+    :schema="internalSchema"
+    :data="internalData"
+    propKey="root"
+  >
   </QJsonTreeEditorNode>
   <q-separator />
   <pre>{{ internalData }}</pre>
