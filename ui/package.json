@@ -56,5 +56,8 @@
     "last 4 ChromeAndroid versions",
     "last 4 FirefoxAndroid versions",
     "last 4 iOS versions"
-  ]
+  ],
+  "dependencies": {
+    "vuedraggable": "^2.24.3"
+  }
 }
