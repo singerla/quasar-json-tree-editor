@@ -1,6 +1,8 @@
 <script setup>
-import {ref, toRef, watch} from "vue";
-import QJsonTreeEditorField from "./QJsonTreeEditorField.vue";
+import { ref, toRef } from 'vue';
+import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
+import { vd } from './index';
+import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 
 const props = defineProps({
   data: {
@@ -13,35 +15,40 @@ const props = defineProps({
   // This is useful if no description was sent
   propKey: {
     type: String,
-    default: () => "unknown",
+    default: () => 'unknown',
   },
 });
 
-const localSchema = toRef(props, "schema");
-const localData = toRef(props, "data");
+const localSchema = toRef(props, 'schema');
+const localData = toRef(props, 'data');
 
+const expansionItemState = ref(true);
+const emits = defineEmits(['updated']);
+
+const addItem = () => {
+  localData.value.push('');
+};
 const getPropertyKey = (index) =>
   Object.keys(localSchema.value.properties)[index];
 
-// Expanded by default for all nodes
-const expansionItemState = ref(true);
-
-// This emit is required to update a single property value
-const emits = defineEmits(['updated'])
-watch(localData, (localData) => {
-  emits('updated', localData)
-})
-
-// To add an item, it's enough to push localData ref
-const addItem = () => {
-  localData.value.push("");
+const updateSingleField = (newValue) => {
+  vd('updateSingleField');
+  emits('updated', newValue);
+};
+const updateArrayField = (localDataFieldKey, newValue) => {
+  vd('updateArrayField');
+  localData.value[localDataFieldKey] = newValue;
+  emits('updated', localData);
+};
+const updatedObject = (index, newValue) => {
+  vd('updatedObject');
+  emits('updated', localData);
 };
 </script>
 
-<!-- QJsonTreeEditorNode.vue -->
 <template>
   <q-expansion-item
-      dense
+    dense
     style="border: 1px solid #ccc"
     header-style="background-color: #ddd;"
     v-model="expansionItemState"
@@ -53,7 +60,7 @@ const addItem = () => {
         </q-item-section>
         <q-item-section>
           <q-item-label>
-            {{ localSchema.description || "Key: " + propKey }}
+            {{ localSchema.description || 'Key: ' + propKey }}
           </q-item-label>
         </q-item-section>
       </q-item>
@@ -64,7 +71,7 @@ const addItem = () => {
         <QJsonTreeEditorField
           v-if="localSchema.type !== 'array'"
           :data="localData"
-          @updated="(newValue) => emits('updated', newValue)"
+          @updated="updateSingleField"
           :schema="localSchema"
         />
         <div v-else>
@@ -72,7 +79,7 @@ const addItem = () => {
             v-for="(localDataField, localDataFieldKey) in localData"
             :key="'field_' + localDataFieldKey"
             :data="localDataField"
-            @updated="(newValue) => (localData[localDataFieldKey] = newValue)"
+            @updated="(newVal) => updateArrayField(localDataFieldKey, newVal)"
             :schema="localSchema.items"
           />
           <q-item-section side>
@@ -95,21 +102,13 @@ const addItem = () => {
     <q-item class="q-pl-sm" v-else>
       <q-item-section>
         <!--        <draggable>-->
-        <div
-          v-for="(property, index) in Object.values(localSchema.properties)"
-          :key="'prop_' + index"
-        >
-          <QJsonTreeEditorNode
-            :schema="property"
-            :data="localData[getPropertyKey(index)]"
-            :propKey="getPropertyKey(index)"
-            @updated="(newValue) => localData[getPropertyKey(index)] = newValue"
-          />
-        </div>
+        <QJsonTreeEditorObject
+          :data="localData"
+          :schema="localSchema"
+          @updated="updatedObject"
+        />
         <!--        </draggable>-->
       </q-item-section>
     </q-item>
   </q-expansion-item>
 </template>
-
-<style scoped></style>

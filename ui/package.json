@@ -45,7 +45,11 @@
     "uglify-js": "^3.13.3",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0",
-    "zlib": "^1.0.5"
+    "zlib": "^1.0.5",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "prettier": "^2.5.1"
   },
   "browserslist": [
     "last 4 Chrome versions",

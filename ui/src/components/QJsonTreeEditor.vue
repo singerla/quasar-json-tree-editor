@@ -1,6 +1,6 @@
 <script setup>
-import QJsonTreeEditorNode from "./QJsonTreeEditorNode.vue";
-import { toRef, watch, watchEffect } from "vue";
+import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
+import { toRef } from 'vue';
 
 const props = defineProps({
   data: {
@@ -13,28 +13,32 @@ const props = defineProps({
   },
 });
 
-const internalData = toRef(props, "data");
-const internalSchema = toRef(props, "schema");
+const localData = toRef(props, 'data');
+const emits = defineEmits(['updated']);
 
-watch(
-  internalData,
-  () => {
-    console.log("updated data");
-    // validate and send to api
-  },
-  { deep: true }
-);
+const onUpdated = (newValue) => {
+  console.log('onUpdated@editor');
+  console.log(newValue);
+  emits('updated', newValue);
+};
 </script>
 
 <template>
-  <QJsonTreeEditorNode
-    :schema="internalSchema"
-    :data="internalData"
-    propKey="root"
-  >
-  </QJsonTreeEditorNode>
+  <div class="row">
+    <div class="col-grow">
+      <QJsonTreeEditorNode
+        :schema="schema"
+        :data="data"
+        @updated="onUpdated"
+        propKey="root"
+      >
+      </QJsonTreeEditorNode>
+    </div>
+    <div class="col-shrink">
+      <pre>{{ localData }}</pre>
+    </div>
+  </div>
   <q-separator />
-  <pre>{{ internalData }}</pre>
 </template>
 
 <style scoped></style>
