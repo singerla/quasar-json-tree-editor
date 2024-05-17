@@ -32,6 +32,18 @@ const localSchema = toRef(props, 'schema');
 
 const getPropertyKey = (index) =>
   Object.keys(localSchema.value.properties)[index];
+
+const addProp = (index, property) => {
+  if (property.type === 'object') {
+    localData.value[getPropertyKey(index)] = {};
+  } else if (property.type === 'array') {
+    localData.value[getPropertyKey(index)] = [];
+  } else if (property.type === 'integer') {
+    localData.value[getPropertyKey(index)] = 0;
+  } else {
+    localData.value[getPropertyKey(index)] = 'new';
+  }
+};
 </script>
 
 <template>
@@ -39,7 +51,14 @@ const getPropertyKey = (index) =>
     v-for="(property, index) in Object.values(localSchema.properties)"
     :key="'prop_' + index"
   >
+    <div v-if="!localData[getPropertyKey(index)]">
+      <q-btn
+        :label="'add a ' + getPropertyKey(index)"
+        @click="addProp(index, property)"
+      />
+    </div>
     <QJsonTreeEditorNode
+      v-else
       :schema="property"
       v-model="localData[getPropertyKey(index)]"
       :propKey="getPropertyKey(index)"

@@ -64,12 +64,12 @@ const jsonSchema = {
 };
 
 const data = reactive({
-  productId: 1,
+  // productId: 1,
   dimensions: {
     length: 7.0,
     nestedObject: {
       prop1: 'test',
-      prop2: [3, 4, 5],
+      // prop2: [3, 4, 5],
       objectsArray: [
         {
           key: 'Key 1',

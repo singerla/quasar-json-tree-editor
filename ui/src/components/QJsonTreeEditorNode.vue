@@ -49,7 +49,6 @@ const addItem = () => {
 };
 
 const updated = (data) => {
-  vd('updated node');
   data.path.push(props.propKey);
   emits('updated', data);
 };
@@ -76,19 +75,20 @@ const updated = (data) => {
           @updated="updated"
         />
         <div v-else>
-          <QJsonTreeEditorField
+          <div
             v-for="localDataFieldKey of Object.keys(localData)"
             :key="'field_' + localDataFieldKey"
-            :propKey="'field_' + localDataFieldKey"
-            v-model="localData[localDataFieldKey]"
-            :schema="localSchema.items"
-            @updated="updated"
-          />
+          >
+            <QJsonTreeEditorField
+              :propKey="'field_' + localDataFieldKey"
+              v-model="localData[localDataFieldKey]"
+              :schema="localSchema.items"
+              @updated="updated"
+              @drop="delete localData[localDataFieldKey]"
+            />
+          </div>
           <QJsonTreeButtonAdd @onAdd="addItem" />
         </div>
-      </q-item-section>
-      <q-item-section avatar>
-        <q-chip :label="localSchema.type" />
       </q-item-section>
     </q-item>
 
@@ -111,6 +111,7 @@ const updated = (data) => {
         :schema="localSchema"
         :propKey="propKey"
         @updated="updated"
+        @drop="localData = ''"
       />
     </q-item-section>
   </q-item>

@@ -17,7 +17,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['update:modelValue', 'updated']);
+const emits = defineEmits(['update:modelValue', 'updated', 'drop']);
 const localData = computed({
   get: () => props.modelValue,
   set: (value) => {
@@ -28,45 +28,56 @@ const localData = computed({
 
 const initUpdated = (newValue, oldValue) => {
   emits('updated', {
+    propKey: props.propKey,
     newValue,
     oldValue,
-    propKey: props.propKey,
     path: [],
   });
 };
 
-const pushUpdated = (data, key) => {
+const updated = (data) => {
   emits('updated', data);
+};
+
+const drop = () => {
+  emits('drop');
 };
 
 const localSchema = toRef(props, 'schema');
 </script>
 
 <template>
-  <q-input
-    :label="propKey"
-    v-model="localData"
-    v-if="localSchema.type === 'string'"
-  />
-  <q-input
-    :label="propKey"
-    v-model="localData"
-    v-if="localSchema.type === 'number'"
-    type="number"
-  />
-  <q-input
-    :label="propKey"
-    v-model="localData"
-    v-if="localSchema.type === 'integer'"
-    type="number"
-  />
-  <QJsonTreeEditorObject
-    :propKey="propKey"
-    v-if="localSchema.type === 'object'"
-    v-model="localData"
-    :schema="localSchema"
-    @updated="(data) => pushUpdated(data, propKey)"
-  />
+  <q-item>
+    <q-item-section>
+      <q-input
+        :label="propKey"
+        v-model="localData"
+        v-if="localSchema.type === 'string'"
+      />
+      <q-input
+        :label="propKey"
+        v-model="localData"
+        v-if="localSchema.type === 'number'"
+        type="number"
+      />
+      <q-input
+        :label="propKey"
+        v-model="localData"
+        v-if="localSchema.type === 'integer'"
+        type="number"
+      />
+      <QJsonTreeEditorObject
+        :propKey="propKey"
+        v-if="localSchema.type === 'object'"
+        v-model="localData"
+        :schema="localSchema"
+        @updated="updated"
+      />
+    </q-item-section>
+    <q-item-section side>
+      <q-btn rounded flat icon="delete" color="danger" @click="drop" />
+    </q-item-section>
+  </q-item>
 </template>
 
 <style scoped></style>

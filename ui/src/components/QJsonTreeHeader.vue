@@ -15,5 +15,8 @@ defineProps(['schema', 'propKey']);
         {{ 'Key: ' + propKey }}
       </q-item-label>
     </q-item-section>
+    <q-item-section side>
+      <q-chip :label="schema.type" color="grey-2" />
+    </q-item-section>
   </q-item>
 </template>
