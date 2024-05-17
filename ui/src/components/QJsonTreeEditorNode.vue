@@ -79,13 +79,14 @@ const updated = (data) => {
           <div
             v-for="localDataFieldKey of Object.keys(localData)"
             :key="'field_' + localDataFieldKey"
+            class="shadow-2 q-ma-sm"
           >
             <QJsonTreeEditorField
               :propKey="'field_' + localDataFieldKey"
               v-model="localData[localDataFieldKey]"
               :schema="localSchema.items"
               @updated="updated"
-              @drop="delete localData[localDataFieldKey]"
+              @drop="localData.splice(localDataFieldKey, 1)"
             />
           </div>
           <QJsonTreeButtonAdd @onAdd="addItem" />

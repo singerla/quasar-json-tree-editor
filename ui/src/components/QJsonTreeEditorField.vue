@@ -47,20 +47,23 @@ const localSchema = toRef(props, 'schema');
 </script>
 
 <template>
-  <q-item class="q-pa-none q-ma-none">
+  <q-item>
     <q-item-section>
       <q-input
+        dense
         :label="propKey"
         v-model="localData"
         v-if="localSchema.type === 'string'"
       />
       <q-input
+        dense
         :label="propKey"
         v-model="localData"
         v-if="localSchema.type === 'number'"
         type="number"
       />
       <q-input
+        dense
         :label="propKey"
         v-model="localData"
         v-if="localSchema.type === 'integer'"

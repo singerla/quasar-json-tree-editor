@@ -51,7 +51,7 @@ const addProp = (index, property) => {
     v-for="(property, index) in Object.values(localSchema.properties)"
     :key="'prop_' + index"
   >
-    <div v-if="localData[getPropertyKey(index)] === undefined">
+    <div v-if="!localData || localData[getPropertyKey(index)] === undefined">
       <q-btn
         class="q-pa-sm q-ma-sm"
         rounded
