@@ -51,9 +51,15 @@ const addProp = (index, property) => {
     v-for="(property, index) in Object.values(localSchema.properties)"
     :key="'prop_' + index"
   >
-    <div v-if="!localData[getPropertyKey(index)]">
+    <div v-if="localData[getPropertyKey(index)] === undefined">
       <q-btn
-        :label="'add a ' + getPropertyKey(index)"
+        class="q-pa-sm q-ma-sm"
+        rounded
+        color="secondary"
+        dense
+        no-caps
+        icon="add"
+        :label="getPropertyKey(index)"
         @click="addProp(index, property)"
       />
     </div>

@@ -58,6 +58,7 @@ const updated = (data) => {
   <q-expansion-item
     v-if="localSchema.type === 'array' || localSchema.type === 'object'"
     dense
+    class=""
     style="border: 1px solid #ccc"
     header-style="background-color: #ddd;"
     v-model="expansionItemState"
@@ -66,7 +67,7 @@ const updated = (data) => {
       <QJsonTreeHeader :schema="localSchema" :propKey="propKey" />
     </template>
 
-    <q-item v-if="!localSchema.properties">
+    <q-item v-if="!localSchema.properties" class="">
       <q-item-section>
         <QJsonTreeEditorField
           v-if="localSchema.type !== 'array'"
@@ -92,7 +93,7 @@ const updated = (data) => {
       </q-item-section>
     </q-item>
 
-    <q-item class="q-pl-sm" v-if="localSchema.properties">
+    <q-item class="q-pl-md" v-if="localSchema.properties">
       <q-item-section>
         <QJsonTreeEditorObject
           :schema="localSchema"
@@ -111,7 +112,7 @@ const updated = (data) => {
         :schema="localSchema"
         :propKey="propKey"
         @updated="updated"
-        @drop="localData = ''"
+        @drop="localData = undefined"
       />
     </q-item-section>
   </q-item>

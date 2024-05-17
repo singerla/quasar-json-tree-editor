@@ -47,7 +47,7 @@ const localSchema = toRef(props, 'schema');
 </script>
 
 <template>
-  <q-item>
+  <q-item class="q-pa-none q-ma-none">
     <q-item-section>
       <q-input
         :label="propKey"

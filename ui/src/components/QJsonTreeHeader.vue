@@ -12,11 +12,18 @@ defineProps(['schema', 'propKey']);
         {{ schema.description }}
       </q-item-label>
       <q-item-label caption>
-        {{ 'Key: ' + propKey }}
+        {{ propKey }}
       </q-item-label>
     </q-item-section>
     <q-item-section side>
       <q-chip :label="schema.type" color="grey-2" />
+    </q-item-section>
+    <q-item-section side>
+      <q-chip
+        v-if="schema.items?.type"
+        :label="'of ' + schema.items.type + 's'"
+        color="grey-6"
+      />
     </q-item-section>
   </q-item>
 </template>
