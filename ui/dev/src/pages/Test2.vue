@@ -1,27 +1,6 @@
 <script setup>
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { vd } from '../../../src/components';
-
-const data = reactive({
-  productId: 1,
-  dimensions: {
-    length: 7.0,
-    nestedObject: {
-      prop1: 'test',
-      prop2: [3, 4, 5],
-      objectsArray: [
-        {
-          key: 'Key 1',
-          value: 'Value 1',
-        },
-        {
-          key: 'Key 2',
-          value: 'Value 2',
-        },
-      ],
-    },
-  },
-});
 
 const jsonSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
@@ -76,14 +55,31 @@ const jsonSchema = {
   required: ['productId'],
 };
 
-const onUpdated = () => {
-  vd('was updated');
-};
+const data = reactive({
+  productId: 1,
+  dimensions: {
+    length: 7.0,
+    nestedObject: {
+      prop1: 'test',
+      prop2: [3, 4, 5],
+      objectsArray: [
+        {
+          key: 'Key 1',
+          value: 'Value 1',
+        },
+        {
+          key: 'Key 2',
+          value: 'Value 2',
+        },
+      ],
+    },
+  },
+});
 </script>
 
 <template>
   <q-page padding>
-    <QJsonTreeEditor :data="data" :schema="jsonSchema" @updated="onUpdated" />
+    <QJsonTreeEditor v-model="data" :schema="jsonSchema" />
   </q-page>
 </template>
 

@@ -1,38 +1,36 @@
 <script setup>
-import { ref, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { vd } from './index';
 import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
+import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
 
 const props = defineProps({
-  data: {
-    default: () => null,
-  },
+  modelValue: {},
   schema: {
     type: Object,
     default: () => {},
   },
-  // This is useful if no description was sent
   propKey: {
     type: String,
     default: () => 'unknown',
   },
 });
 
-const localSchema = toRef(props, 'schema');
-const localData = toRef(props, 'data');
+const emits = defineEmits(['update:modelValue']);
+const localData = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    // updateNode(index, value);
+    vd('update object');
 
-const emits = defineEmits(['updated']);
+    emits('update:modelValue', value);
+  },
+});
+
+const localSchema = toRef(props, 'schema');
+
 const getPropertyKey = (index) =>
   Object.keys(localSchema.value.properties)[index];
-
-const updateNode = (index, newValue) => {
-  vd('updateNode');
-  vd(newValue);
-  if (newValue) {
-  }
-  localData.value[getPropertyKey(index)] = newValue;
-  emits('updated', localData);
-};
 </script>
 
 <template>
@@ -42,9 +40,9 @@ const updateNode = (index, newValue) => {
   >
     <QJsonTreeEditorNode
       :schema="property"
-      :data="localData[getPropertyKey(index)]"
+      v-model="localData[getPropertyKey(index)]"
       :propKey="getPropertyKey(index)"
-      @updated="(newValue) => updateNode(index, newValue)"
     />
   </div>
+  <q-separator />
 </template>

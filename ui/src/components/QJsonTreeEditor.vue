@@ -1,9 +1,10 @@
 <script setup>
 import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
+import { vd } from './index';
 
 const props = defineProps({
-  data: {
+  modelValue: {
     type: Object,
     default: () => [],
   },
@@ -13,25 +14,21 @@ const props = defineProps({
   },
 });
 
-const localData = toRef(props, 'data');
-const emits = defineEmits(['updated']);
-
-const onUpdated = (newValue) => {
-  console.log('onUpdated@editor');
-  console.log(newValue);
-  emits('updated', newValue);
-};
+const emits = defineEmits(['update:modelValue']);
+const localData = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    vd('update editor');
+    vd(value);
+    emits('update:modelValue', value);
+  },
+});
 </script>
 
 <template>
   <div class="row">
     <div class="col-grow">
-      <QJsonTreeEditorNode
-        :schema="schema"
-        :data="data"
-        @updated="onUpdated"
-        propKey="root"
-      >
+      <QJsonTreeEditorNode :schema="schema" v-model="localData" propKey="root">
       </QJsonTreeEditorNode>
     </div>
     <div class="col-shrink">

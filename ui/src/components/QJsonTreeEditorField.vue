@@ -1,60 +1,58 @@
 <script setup>
-import { toRef } from 'vue';
-import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
+import { computed, toRef } from 'vue';
 import { vd } from './index';
 import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 
 const props = defineProps({
-  data: {
-    default: () => null,
+  modelValue: {
+    default: () => [],
   },
   schema: {
     type: Object,
     default: () => {},
   },
+  propKey: {
+    type: String,
+    default: () => 'unknown',
+  },
 });
 
-// props.data is not writeable, so we emit the new value on update
-const emits = defineEmits(['updated']);
+const emits = defineEmits(['update:modelValue']);
+const localData = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    vd('update field');
+    emits('update:modelValue', value);
+  },
+});
 
 const localSchema = toRef(props, 'schema');
-const localData = toRef(props, 'data');
-
-const update = (newValue) => {
-  emits('updated', newValue);
-};
-
-const updateObject = (newVal) => {
-  vd(newVal);
-  emits('updated');
-};
 </script>
 
 <template>
   <q-input
-    :modelValue="localData"
-    @update:modelValue="update"
+    :label="propKey"
+    v-model="localData"
     v-if="localSchema.type === 'string'"
   />
   <q-input
-    :modelValue="localData"
-    @update:modelValue="update"
+    :label="propKey"
+    v-model="localData"
     v-if="localSchema.type === 'number'"
     type="number"
   />
   <q-input
-    :modelValue="localData"
-    @update:modelValue="update"
+    :label="propKey"
+    v-model="localData"
     v-if="localSchema.type === 'integer'"
     type="number"
   />
-  <div v-if="localSchema.type === 'object'">
-    <QJsonTreeEditorObject
-      :data="localData"
-      :schema="localSchema"
-      @updated="updateObject"
-    />
-  </div>
+  <QJsonTreeEditorObject
+    :propKey="propKey"
+    v-if="localSchema.type === 'object'"
+    v-model="localData"
+    :schema="localSchema"
+  />
 </template>
 
 <style scoped></style>
