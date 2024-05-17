@@ -17,14 +17,27 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', 'updated']);
 const localData = computed({
   get: () => props.modelValue,
   set: (value) => {
-    vd('update field');
+    initUpdated(value, props.modelValue);
     emits('update:modelValue', value);
   },
 });
+
+const initUpdated = (newValue, oldValue) => {
+  emits('updated', {
+    newValue,
+    oldValue,
+    propKey: props.propKey,
+    path: [],
+  });
+};
+
+const pushUpdated = (data, key) => {
+  emits('updated', data);
+};
 
 const localSchema = toRef(props, 'schema');
 </script>
@@ -52,6 +65,7 @@ const localSchema = toRef(props, 'schema');
     v-if="localSchema.type === 'object'"
     v-model="localData"
     :schema="localSchema"
+    @updated="(data) => pushUpdated(data, propKey)"
   />
 </template>
 

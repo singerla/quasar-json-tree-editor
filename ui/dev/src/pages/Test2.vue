@@ -43,6 +43,14 @@ const jsonSchema = {
                   value: {
                     type: 'string',
                   },
+                  objValue: {
+                    type: 'object',
+                    properties: {
+                      nestedKey: {
+                        type: 'string',
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -75,11 +83,16 @@ const data = reactive({
     },
   },
 });
+
+const updated = (tmp) => {
+  vd('updated root');
+  vd(tmp);
+};
 </script>
 
 <template>
   <q-page padding>
-    <QJsonTreeEditor v-model="data" :schema="jsonSchema" />
+    <QJsonTreeEditor v-model="data" :schema="jsonSchema" @updated="updated" />
   </q-page>
 </template>
 

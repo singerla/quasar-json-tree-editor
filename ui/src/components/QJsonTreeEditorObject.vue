@@ -16,16 +16,17 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', 'updated']);
 const localData = computed({
   get: () => props.modelValue,
   set: (value) => {
-    // updateNode(index, value);
-    vd('update object');
-
     emits('update:modelValue', value);
   },
 });
+
+const updated = (data) => {
+  emits('updated', data);
+};
 
 const localSchema = toRef(props, 'schema');
 
@@ -42,6 +43,7 @@ const getPropertyKey = (index) =>
       :schema="property"
       v-model="localData[getPropertyKey(index)]"
       :propKey="getPropertyKey(index)"
+      @updated="updated"
     />
   </div>
   <q-separator />

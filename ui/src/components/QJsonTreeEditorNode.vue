@@ -3,6 +3,8 @@ import { computed, ref, toRef } from 'vue';
 import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
 import { vd } from './index';
 import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
+import QJsonTreeHeader from './QJsonTreeHeader.vue';
+import QJsonTreeButtonAdd from './QJsonTreeButtonAdd.vue';
 
 const props = defineProps({
   modelValue: {
@@ -18,12 +20,10 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue', 'updated']);
 const localData = computed({
   get: () => props.modelValue,
   set: (value) => {
-    vd('updated node');
-    vd(value);
     emits('update:modelValue', value);
   },
 });
@@ -47,6 +47,12 @@ const addItem = () => {
     localData.value.push('');
   }
 };
+
+const updated = (data) => {
+  vd('updated node');
+  data.path.push(props.propKey);
+  emits('updated', data);
+};
 </script>
 
 <template>
@@ -58,19 +64,7 @@ const addItem = () => {
     v-model="expansionItemState"
   >
     <template v-slot:header>
-      <q-item class="q-pa-none full-width">
-        <q-item-section avatar>
-          <q-icon name="account_tree" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>
-            {{ localSchema.description }}
-          </q-item-label>
-          <q-item-label caption>
-            {{ 'Key: ' + propKey }}
-          </q-item-label>
-        </q-item-section>
-      </q-item>
+      <QJsonTreeHeader :schema="localSchema" :propKey="propKey" />
     </template>
 
     <q-item v-if="!localSchema.properties">
@@ -79,24 +73,18 @@ const addItem = () => {
           v-if="localSchema.type !== 'array'"
           v-model="localData"
           :schema="localSchema"
+          @updated="updated"
         />
         <div v-else>
           <QJsonTreeEditorField
             v-for="localDataFieldKey of Object.keys(localData)"
             :key="'field_' + localDataFieldKey"
+            :propKey="'field_' + localDataFieldKey"
             v-model="localData[localDataFieldKey]"
             :schema="localSchema.items"
+            @updated="updated"
           />
-          <q-item-section side>
-            <q-btn
-              icon="add"
-              @click="addItem"
-              size="sm"
-              color="primary"
-              class="q-mt-sm q-pa-sm"
-              rounded
-            />
-          </q-item-section>
+          <QJsonTreeButtonAdd @onAdd="addItem" />
         </div>
       </q-item-section>
       <q-item-section avatar>
@@ -104,9 +92,14 @@ const addItem = () => {
       </q-item-section>
     </q-item>
 
-    <q-item class="q-pl-sm" v-else>
+    <q-item class="q-pl-sm" v-if="localSchema.properties">
       <q-item-section>
-        <QJsonTreeEditorObject :schema="localSchema" v-model="localData" />
+        <QJsonTreeEditorObject
+          :schema="localSchema"
+          :propKey="propKey"
+          v-model="localData"
+          @updated="updated"
+        />
       </q-item-section>
     </q-item>
   </q-expansion-item>
@@ -117,6 +110,7 @@ const addItem = () => {
         v-model="localData"
         :schema="localSchema"
         :propKey="propKey"
+        @updated="updated"
       />
     </q-item-section>
   </q-item>
