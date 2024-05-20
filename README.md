@@ -11,6 +11,10 @@ Compatible with Quasar UI v2 and Vue 3.
 
 - [/app-extension](app-extension) - Quasar app extension
 
+# Try it
+Clone repo, install dependencies, go to `/ui` directory and run `yarn dev`.
+Choose `Test1` or `Test2`.
+
 # How it will work
 Pass a JSON-Schema and a valid or empty object to the `<QJsonTreeEditor>` component. 
 
@@ -20,9 +24,9 @@ In case of `type: 'array'`, the parent node will show options to add/delete a ch
 
 According to child type, a quasar input component will be rendered.
 
-The JSON-schema can be extended with `isSortable: true`. This will wrap the children with a `vuedraggable` component.
+The JSON-schema can be extended with `isSortable: true`. This will wrap the children with a `vuedraggable` component (WIP).
 
-Whenever the data is edited or sorted, the `<QJsonTreeEditor>` validates and updates the data.
+Whenever the data is edited or sorted, the `<QJsonTreeEditor>` validates and updates the data (WIP).
 
 # JSON-Schema
 
@@ -99,7 +103,7 @@ const data = reactive({
 ```vue
   <QJsonTreeEditor
     :schema="jsonSchema"
-    :data="data"
+    :v-model="data"
     @updated="submitData"
   >
   </QJsonTreeEditor>

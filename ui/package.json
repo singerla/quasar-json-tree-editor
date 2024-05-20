@@ -1,8 +1,9 @@
 {
   "name": "quasar-ui-json-tree-editor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "singerla <tsinger@gmx.de>",
   "description": "Visualize, edit and validate a json object as a tree view based on quasar components",
+  "keywords": ["json", "json-schema", "tree", "vue", "quasar", "quasarframework", "quasar-plugin"],
   "license": "MIT",
   "module": "dist/index.esm.js",
   "main": "dist/index.common.js",
