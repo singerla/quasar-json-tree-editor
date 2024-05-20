@@ -1,16 +1,16 @@
-<script setup >
-import { reactive } from "vue";
+<script setup>
+import { reactive } from 'vue';
 
 const data = reactive({
   productId: 1,
-  productName: "An ice sculpture",
+  productName: 'An ice sculpture',
   price: 12.5,
-  tags: ["cold", "ice"],
+  tags: ['cold', 'ice'],
   dimensions: {
     length: 7.0,
     width: 12.0,
     height: 9.5,
-    tags: ["nested", "cold", "ice"],
+    tags: ['nested', 'cold', 'ice'],
   },
 });
 
@@ -74,7 +74,7 @@ const jsonSchema = {
 
 <template>
   <q-page padding>
-    <QJsonTreeEditor :data="data" :schema="jsonSchema"/>
+    <QJsonTreeEditor v-model="data" :schema="jsonSchema" />
   </q-page>
 </template>
 

@@ -1,7 +1,6 @@
 <script setup>
-import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
+import QJsonTreeEditorNode from './recursive/QJsonTreeEditorNode.vue';
 import { computed, toRef } from 'vue';
-import { vd } from './index';
 
 const props = defineProps({
   modelValue: {
@@ -28,21 +27,13 @@ const updated = (data) => {
 </script>
 
 <template>
-  <div class="row">
-    <div class="col-grow">
-      <QJsonTreeEditorNode
-        :schema="schema"
-        v-model="localData"
-        propKey="root"
-        @updated="updated"
-      >
-      </QJsonTreeEditorNode>
-    </div>
-    <div class="col-shrink">
-      <pre>{{ localData }}</pre>
-    </div>
-  </div>
-  <q-separator />
+  <QJsonTreeEditorNode
+    :schema="localSchema"
+    v-model="localData"
+    propKey="root"
+    @updated="updated"
+  >
+  </QJsonTreeEditorNode>
 </template>
 
 <style scoped></style>

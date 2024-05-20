@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { vd } from '../../../src/components';
 
 const jsonSchema = {
@@ -65,34 +65,48 @@ const jsonSchema = {
 
 const data = reactive({
   // productId: 1,
-  dimensions: {
-    length: 7.0,
-    nestedObject: {
-      prop1: 'test',
-      // prop2: [3, 4, 5],
-      objectsArray: [
-        {
-          key: 'Key 1',
-          value: 'Value 1',
-        },
-        {
-          key: 'Key 2',
-          value: 'Value 2',
-        },
-      ],
-    },
-  },
+  // dimensions: {
+  //   length: 7.0,
+  //   nestedObject: {
+  //     prop1: 'test',
+  //     // prop2: [3, 4, 5],
+  //     objectsArray: [
+  //       {
+  //         key: 'Key 1',
+  //         value: 'Value 1',
+  //       },
+  //       {
+  //         key: 'Key 2',
+  //         value: 'Value 2',
+  //       },
+  //     ],
+  //   },
+  // },
 });
 
 const updated = (tmp) => {
   vd('updated root');
   vd(tmp);
 };
+
+const sep1 = ref(70);
 </script>
 
 <template>
-  <q-page padding>
-    <QJsonTreeEditor v-model="data" :schema="jsonSchema" @updated="updated" />
+  <q-page padding class="">
+    <q-splitter class="" v-model="sep1" vertical>
+      <template v-slot:before>
+        <QJsonTreeEditor
+          v-model="data"
+          :schema="jsonSchema"
+          @updated="updated"
+        />
+        <q-separator></q-separator>
+      </template>
+      <template v-slot:after>
+        <pre>{{ data }}</pre>
+      </template>
+    </q-splitter>
   </q-page>
 </template>
 
