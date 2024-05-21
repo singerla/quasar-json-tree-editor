@@ -1,6 +1,6 @@
 <script setup>
 import { computed, toRef } from 'vue';
-import { isArray, isObject } from '../index';
+import { isArray, isNumeric, isObject } from '../index';
 
 const props = defineProps({
   modelValue: {},
@@ -38,6 +38,8 @@ const addItem = () => {
       }
     });
     localData.value.push(addData);
+  } else if (isNumeric(localSchema.value.items).value) {
+    localData.value.push(0);
   } else {
     localData.value.push('');
   }

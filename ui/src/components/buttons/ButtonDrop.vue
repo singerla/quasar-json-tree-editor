@@ -1,4 +1,5 @@
 <script setup>
+defineProps(['icon', 'color']);
 const emits = defineEmits(['drop']);
 </script>
 
@@ -10,8 +11,8 @@ const emits = defineEmits(['drop']);
     rounded
     dense
     no-caps
-    icon="delete"
-    color="primary"
+    :icon="icon"
+    :color="color"
     @click="emits('drop')"
   />
 </template>

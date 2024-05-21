@@ -4,8 +4,9 @@ import { hasChildren, isArray, isObject, isScalar } from '../index';
 import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
 import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 import QJsonTreeHeader from '../QJsonTreeHeader.vue';
-import ButtonAddToArray from '../buttons/ButtonAddToArray.vue';
 import ButtonDrop from '../buttons/ButtonDrop.vue';
+import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
+import QJsonTreeEditorArrayDraggable from './QJsonTreeEditorArrayDraggable.vue';
 
 const props = defineProps({
   modelValue: {
@@ -57,7 +58,12 @@ const updated = (data) => {
   >
     <template v-slot:header>
       <QJsonTreeHeader :schema="localSchema" :propKey="propKey" />
-      <ButtonDrop v-if="propKey !== 'root'" @drop="localData = undefined" />
+      <ButtonDrop
+        v-if="propKey !== 'root'"
+        @drop="localData = undefined"
+        icon="delete"
+        color="primary"
+      />
     </template>
 
     <QJsonTreeEditorField
@@ -76,27 +82,21 @@ const updated = (data) => {
       @updated="updated"
     />
 
-    <div v-else-if="isArray(localSchema).value">
-      <div
-        v-for="localDataFieldKey of Object.keys(localData)"
-        :key="'field_' + propKey + '_' + localDataFieldKey"
-        class="q-ma-sm"
-      >
-        <QJsonTreeEditorField
-          :propKey="'field_' + localDataFieldKey"
-          v-model="localData[localDataFieldKey]"
-          :schema="localSchema.items"
-          @updated="updated"
-          @drop="localData?.splice(localDataFieldKey, 1)"
-        />
-      </div>
-      <ButtonAddToArray
-        class="q-pl-md"
-        v-model="localData"
-        :schema="localSchema"
-        :propKey="propKey"
-      />
-    </div>
+    <QJsonTreeEditorArray
+      v-else-if="isArray(localSchema).value && !localSchema.sortable"
+      :schema="localSchema"
+      :propKey="propKey"
+      v-model="localData"
+      @updated="updated"
+    />
+
+    <QJsonTreeEditorArrayDraggable
+      v-else-if="isArray(localSchema).value && localSchema.sortable"
+      :schema="localSchema"
+      :propKey="propKey"
+      v-model="localData"
+      @updated="updated"
+    />
   </q-expansion-item>
 </template>
 

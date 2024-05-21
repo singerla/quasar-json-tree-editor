@@ -87,6 +87,7 @@ const data = reactive({
 const updated = (tmp) => {
   vd('updated root');
   vd(tmp);
+  vd(data);
 };
 
 const sep1 = ref(70);

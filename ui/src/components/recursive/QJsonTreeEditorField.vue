@@ -1,8 +1,10 @@
 <script setup>
 import { computed, toRef } from 'vue';
-import { isNumeric, isObject, valueBySchema } from '../index';
+import { isBoolean, isNumeric, isObject, valueBySchema } from '../index';
 import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 import ButtonDrop from '../buttons/ButtonDrop.vue';
+import FieldColorPicker from '../fields/FieldColorPicker.vue';
+import FieldSlider from '../fields/FieldSlider.vue';
 
 const props = defineProps(['modelValue', 'schema', 'propKey']);
 const emits = defineEmits(['update:modelValue', 'updated', 'drop']);
@@ -45,6 +47,27 @@ const drop = () => {
         :propKey="propKey"
         @updated="updated"
       />
+
+      <FieldColorPicker
+        v-else-if="localSchema.component === 'ColorPicker'"
+        v-model="localData"
+      >
+      </FieldColorPicker>
+
+      <FieldSlider
+        v-else-if="localSchema.component === 'Slider'"
+        :schema="localSchema"
+        :propKey="propKey"
+        v-model="localData"
+      >
+      </FieldSlider>
+
+      <q-checkbox
+        v-else-if="isBoolean(localSchema).value"
+        dense
+        :label="propKey"
+        v-model="localData"
+      />
       <q-input
         v-else-if="isNumeric(localSchema).value"
         dense
@@ -56,7 +79,7 @@ const drop = () => {
     </q-item-section>
 
     <q-item-section side>
-      <ButtonDrop @click="drop" />
+      <ButtonDrop @click="drop" color="grey-5" icon="cancel" />
     </q-item-section>
   </q-item>
 </template>

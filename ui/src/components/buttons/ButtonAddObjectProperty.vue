@@ -1,6 +1,6 @@
 <script setup>
 import { computed, toRef } from 'vue';
-import { isArray, isNumeric, isObject } from '../index';
+import { isArray, isNumeric, isObject, vd } from '../index';
 
 const props = defineProps({
   modelValue: { default: () => {} },

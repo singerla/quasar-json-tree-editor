@@ -14,7 +14,7 @@ export const valueBySchema = (value, localSchema) => {
   return value;
 };
 
-const scalarTypes = ['integer', 'number', 'string'];
+const scalarTypes = ['integer', 'number', 'string', 'boolean'];
 const numericTypes = ['integer', 'number'];
 const objectTypes = ['object', 'array'];
 
@@ -26,3 +26,4 @@ export const hasChildren = (schema) =>
   computed(() => objectTypes.includes(schema.type));
 export const isObject = (schema) => computed(() => schema.type === 'object');
 export const isArray = (schema) => computed(() => schema.type === 'array');
+export const isBoolean = (schema) => computed(() => schema.type === 'boolean');
