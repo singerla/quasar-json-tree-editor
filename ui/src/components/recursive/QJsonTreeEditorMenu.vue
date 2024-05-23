@@ -1,0 +1,61 @@
+<script setup>
+import { toRef } from 'vue';
+import {
+  computedLocalData,
+  isArray,
+  isBoolean,
+  isNumeric,
+  isObject,
+  valueBySchema,
+} from '../index';
+import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
+import ButtonDrop from '../buttons/ButtonDrop.vue';
+import FieldColorPicker from '../fields/FieldColorPicker.vue';
+import FieldSlider from '../fields/FieldSlider.vue';
+import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
+
+const props = defineProps(['schema', 'parentSchema', 'propKey']);
+const emits = defineEmits(['add', 'clear', 'drop']);
+const localSchema = toRef(props, 'schema');
+
+const drop = () => {
+  emits('drop');
+};
+const clear = () => {
+  emits('clear');
+};
+const add = () => {
+  emits('add');
+};
+</script>
+
+<template>
+  <q-btn flat dense icon="more_vert">
+    <q-menu>
+      <q-list dense style="min-width: 100px">
+        <q-item @click="drop" clickable v-close-popup>
+          <q-item-section avatar>
+            <ButtonDrop color="grey-5" icon="delete" />
+          </q-item-section>
+          <q-item-section> Drop </q-item-section>
+        </q-item>
+
+        <q-item @click="clear" clickable :disable="!parentSchema" v-close-popup>
+          <q-item-section avatar>
+            <ButtonDrop color="grey-5" icon="cancel" />
+          </q-item-section>
+          <q-item-section> Clear </q-item-section>
+        </q-item>
+
+        <q-item @click="add" clickable v-close-popup :disable="!parentSchema">
+          <q-item-section avatar>
+            <ButtonDrop color="grey-5" icon="format_list_bulleted_add" />
+          </q-item-section>
+          <q-item-section> Append </q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
+  </q-btn>
+</template>
+
+<style scoped></style>

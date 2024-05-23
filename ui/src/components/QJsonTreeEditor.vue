@@ -36,4 +36,8 @@ const updated = (data) => {
   </QJsonTreeEditorNode>
 </template>
 
-<style scoped></style>
+<style>
+.q-json-tree-list-item {
+  border-bottom: 1px solid #eeeeee;
+}
+</style>

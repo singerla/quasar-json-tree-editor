@@ -1,49 +1,12 @@
 <script setup>
-import { computed, toRef } from 'vue';
-import { isArray, isNumeric, isObject } from '../index';
+import { toRef } from 'vue';
+import { addItemToArray, computedLocalData } from '../index';
 
-const props = defineProps({
-  modelValue: {},
-  schema: {
-    type: Object,
-    default: () => {},
-  },
-  propKey: {
-    type: String,
-    default: () => 'unknown',
-  },
-});
-
+const props = defineProps(['modelValue', 'schema', 'propKey']);
 const emits = defineEmits(['update:modelValue', 'updated']);
-const localData = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emits('update:modelValue', value);
-  },
-});
+const localData = computedLocalData(props, emits);
 const localSchema = toRef(props, 'schema');
-
-const addItem = () => {
-  if (isObject(localSchema.value.items).value) {
-    const addData = {};
-    const addKeys = Object.keys(localSchema.value.items.properties);
-    addKeys.forEach((addKey) => {
-      const childSchema = localSchema.value.items.properties[addKey];
-      if (isObject(childSchema).value) {
-        addData[addKey] = {};
-      } else if (isArray(childSchema).value) {
-        addData[addKey] = [];
-      } else {
-        addData[addKey] = null;
-      }
-    });
-    localData.value.push(addData);
-  } else if (isNumeric(localSchema.value.items).value) {
-    localData.value.push(0);
-  } else {
-    localData.value.push('');
-  }
-};
+const addItem = addItemToArray(localData, localSchema);
 </script>
 
 <template>
@@ -54,7 +17,7 @@ const addItem = () => {
     dense
     no-caps
     icon="add"
-    :label="'#' + localData.length + ' to ' + propKey"
+    :label="'#' + (localData.length + 1) + ' to ' + propKey"
     @click="addItem"
   />
 </template>

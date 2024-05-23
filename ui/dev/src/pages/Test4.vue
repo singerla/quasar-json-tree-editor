@@ -8,81 +8,57 @@ const jsonSchema = {
   title: 'Product',
   description: "A product from Acme's catalog",
   type: 'object',
+  params: {
+    expansible: false,
+  },
   properties: {
+    prop1: {
+      type: 'array',
+      params: {
+        sortable: true,
+        showAddButton: true,
+        group: {
+          name: 'numbers',
+        },
+      },
+      items: {
+        type: 'number',
+      },
+    },
     prop2: {
       type: 'array',
       params: {
         sortable: true,
+        showAddButton: true,
+        group: {
+          name: 'numbers',
+        },
       },
       items: {
         type: 'number',
       },
     },
-    slider: {
-      type: 'array',
-      items: {
-        type: 'number',
-        component: 'Slider',
-        params: {
-          min: 0,
-          max: 100,
-        },
-      },
-    },
-    arrayOfArrays: {
-      type: 'array',
-      items: {
-        type: 'array',
-        items: {
-          type: 'string',
-        },
-      },
-    },
-    objectsArray: {
+    prop3: {
       type: 'array',
       params: {
         sortable: true,
+        expansible: false,
+        showAddButton: true,
+        group: {
+          name: 'numbers2',
+        },
       },
       items: {
-        type: 'object',
-        properties: {
-          key: {
-            type: 'string',
-          },
-          active: {
-            type: 'boolean',
-          },
-          background: {
-            type: 'object',
-            properties: {
-              color: {
-                type: 'string',
-                component: 'ColorPicker',
-              },
-            },
-          },
-        },
+        type: 'number',
       },
     },
   },
 };
 
 const data = reactive({
-  prop2: [3, 4, 5],
-  slider: [30],
-  objectsArray: [
-    {
-      key: 'Key 1',
-      active: false,
-    },
-    {
-      key: 'Key 2',
-      active: true,
-      background: {
-        color: '#cccccc',
-      },
-    },
-  ],
+  prop1: [1, 2, 3],
+  prop2: [4, 5, 6],
+  prop3: [7, 8],
 });
 
 const updated = (tmp) => {

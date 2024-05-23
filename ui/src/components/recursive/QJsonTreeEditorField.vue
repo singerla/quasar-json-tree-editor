@@ -1,22 +1,28 @@
 <script setup>
-import { computed, toRef } from 'vue';
-import { isBoolean, isNumeric, isObject, valueBySchema } from '../index';
+import { toRef } from 'vue';
+import {
+  computedLocalData,
+  isArray,
+  isBoolean,
+  isNumeric,
+  isObject,
+  valueBySchema,
+} from '../index';
 import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 import ButtonDrop from '../buttons/ButtonDrop.vue';
 import FieldColorPicker from '../fields/FieldColorPicker.vue';
 import FieldSlider from '../fields/FieldSlider.vue';
+import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
+import QJsonTreeEditorMenu from './QJsonTreeEditorMenu.vue';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated', 'drop']);
+const props = defineProps(['modelValue', 'schema', 'propKey', 'parentSchema']);
+const emits = defineEmits(['update:modelValue', 'updated', 'add', 'drop']);
 
 const localSchema = toRef(props, 'schema');
-const localData = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    value = valueBySchema(value, localSchema.value);
-    initUpdated(value, props.modelValue);
-    emits('update:modelValue', value);
-  },
+const localData = computedLocalData(props, emits, (value) => {
+  value = valueBySchema(value, localSchema.value);
+  initUpdated(value, props.modelValue);
+  return value;
 });
 
 const initUpdated = (newValue, oldValue) => {
@@ -31,9 +37,14 @@ const initUpdated = (newValue, oldValue) => {
 const updated = (data) => {
   emits('updated', data);
 };
-
+const add = () => {
+  emits('add');
+};
 const drop = () => {
   emits('drop');
+};
+const clear = () => {
+  // emits('clear');
 };
 </script>
 
@@ -42,6 +53,14 @@ const drop = () => {
     <q-item-section>
       <QJsonTreeEditorObject
         v-if="isObject(localSchema).value"
+        v-model="localData"
+        :schema="localSchema"
+        :propKey="propKey"
+        @updated="updated"
+      />
+
+      <QJsonTreeEditorArray
+        v-else-if="isArray(localSchema).value"
         v-model="localData"
         :schema="localSchema"
         :propKey="propKey"
@@ -79,7 +98,15 @@ const drop = () => {
     </q-item-section>
 
     <q-item-section side>
-      <ButtonDrop @click="drop" color="grey-5" icon="cancel" />
+      <QJsonTreeEditorMenu
+        v-model="localData"
+        :schema="localSchema"
+        :parentSchema="parentSchema"
+        :propKey="propKey"
+        @add="add"
+        @clear="clear"
+        @drop="drop"
+      ></QJsonTreeEditorMenu>
     </q-item-section>
   </q-item>
 </template>

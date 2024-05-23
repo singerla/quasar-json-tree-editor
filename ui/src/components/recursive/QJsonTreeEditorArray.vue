@@ -1,52 +1,39 @@
 <script setup>
 import { computed, toRef } from 'vue';
-import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
 import ButtonAddToArray from '../buttons/ButtonAddToArray.vue';
+import QJsonTreeEditorArrayDraggable from './QJsonTreeEditorArrayDraggable.vue';
+import QJsonTreeEditorArrayFixed from './QJsonTreeEditorArrayFixed.vue';
+import { addItemToArray, computedLocalData } from '../index';
 
-const props = defineProps({
-  modelValue: { default: () => {} },
-  schema: {
-    type: Object,
-    default: () => {},
-  },
-  propKey: {
-    type: String,
-    default: () => 'unknown',
-  },
-});
-
+const props = defineProps(['modelValue', 'schema', 'propKey']);
 const emits = defineEmits(['update:modelValue', 'updated']);
-const localData = computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emits('update:modelValue', value);
-  },
-});
-
+const localData = computedLocalData(props, emits);
 const localSchema = toRef(props, 'schema');
-
 const updated = (data) => {
   emits('updated', data);
 };
+const addItem = addItemToArray(localData, localSchema);
 </script>
 
 <template>
-  <div
-    v-for="localDataFieldKey of Object.keys(localData)"
-    :key="'field_' + propKey + '_' + localDataFieldKey"
-    class="q-ma-sm"
-  >
-    <QJsonTreeEditorField
-      :propKey="'field_' + localDataFieldKey"
-      v-model="localData[localDataFieldKey]"
-      :schema="localSchema.items"
-      @updated="updated"
-      @drop="localData?.splice(localDataFieldKey, 1)"
-    />
-    <q-separator />
-  </div>
+  <QJsonTreeEditorArrayDraggable
+    v-if="localSchema.params?.sortable"
+    v-model="localData"
+    :schema="localSchema"
+    :propKey="propKey"
+    @updated="updated"
+    @add="addItem"
+  />
+  <QJsonTreeEditorArrayFixed
+    v-else
+    v-model="localData"
+    :schema="localSchema"
+    :propKey="propKey"
+    @updated="updated"
+    @add="addItem"
+  />
   <ButtonAddToArray
-    class="q-pl-md"
+    v-if="localSchema.params?.showAddButton"
     v-model="localData"
     :schema="localSchema"
     :propKey="propKey"
