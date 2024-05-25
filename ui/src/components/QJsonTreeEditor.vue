@@ -1,5 +1,5 @@
 <script setup>
-import QJsonTreeEditorNode from './recursive/QJsonTreeEditorNode.vue';
+import QJsonTreeEditorNode from './containers/QJsonTreeNode.vue';
 import { computed, toRef } from 'vue';
 
 const props = defineProps({

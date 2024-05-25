@@ -7,7 +7,7 @@
 
 
 # Component QJsonTreeEditor
-> Short description of the component
+> Use [JSON schema](https://json-schema.org) to build and edit objects with nested Quasar components.
 
 
 

@@ -1,8 +1,8 @@
 <script setup>
 import { computed, toRef } from 'vue';
 import ButtonAddToArray from '../buttons/ButtonAddToArray.vue';
-import QJsonTreeEditorArrayDraggable from './QJsonTreeEditorArrayDraggable.vue';
-import QJsonTreeEditorArrayFixed from './QJsonTreeEditorArrayFixed.vue';
+import QJsonTreeEditorArrayDraggable from './QJsonTreeArrayDraggable.vue';
+import QJsonTreeEditorArrayFixed from './QJsonTreeArrayFixed.vue';
 import { addItemToArray, computedLocalData } from '../index';
 
 const props = defineProps(['modelValue', 'schema', 'propKey']);

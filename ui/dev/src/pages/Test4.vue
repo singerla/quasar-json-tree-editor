@@ -74,6 +74,7 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter class="" v-model="sep1" vertical>
       <template v-slot:before>
+        <h1>Sortable</h1>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"

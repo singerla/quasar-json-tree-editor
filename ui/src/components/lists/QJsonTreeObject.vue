@@ -1,7 +1,7 @@
 <script setup>
-import { computed, toRef } from 'vue';
-import QJsonTreeEditorNode from './QJsonTreeEditorNode.vue';
-import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
+import { toRef } from 'vue';
+import QJsonTreeNode from '../containers/QJsonTreeNode.vue';
+import QJsonTreeField from '../fields/QJsonTreeField.vue';
 import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty.vue';
 import { computedLocalData, getPropertyKey, hasChildren } from '../index';
 
@@ -31,7 +31,7 @@ const updated = (data) => {
         :propKey="getPropertyKey(index, localSchema)"
       />
 
-      <QJsonTreeEditorNode
+      <QJsonTreeNode
         v-else-if="hasChildren(localSchema).value"
         v-model="localData[getPropertyKey(index, localSchema)]"
         :schema="schema"
@@ -40,7 +40,7 @@ const updated = (data) => {
         @updated="updated"
       />
 
-      <QJsonTreeEditorField
+      <QJsonTreeField
         v-else
         v-model="localData[getPropertyKey(index, localSchema)]"
         :schema="schema"

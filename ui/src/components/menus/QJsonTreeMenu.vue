@@ -1,18 +1,6 @@
 <script setup>
 import { toRef } from 'vue';
-import {
-  computedLocalData,
-  isArray,
-  isBoolean,
-  isNumeric,
-  isObject,
-  valueBySchema,
-} from '../index';
-import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
 import ButtonDrop from '../buttons/ButtonDrop.vue';
-import FieldColorPicker from '../fields/FieldColorPicker.vue';
-import FieldSlider from '../fields/FieldSlider.vue';
-import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
 
 const props = defineProps(['schema', 'parentSchema', 'propKey']);
 const emits = defineEmits(['add', 'clear', 'drop']);

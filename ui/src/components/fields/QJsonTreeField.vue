@@ -8,12 +8,11 @@ import {
   isObject,
   valueBySchema,
 } from '../index';
-import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
-import ButtonDrop from '../buttons/ButtonDrop.vue';
-import FieldColorPicker from '../fields/FieldColorPicker.vue';
-import FieldSlider from '../fields/FieldSlider.vue';
-import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
-import QJsonTreeEditorMenu from './QJsonTreeEditorMenu.vue';
+import QJsonTreeEditorObject from '../lists/QJsonTreeObject.vue';
+import FieldColorPicker from './quasar/FieldColorPicker.vue';
+import FieldSlider from './quasar/FieldSlider.vue';
+import QJsonTreeArray from '../lists/QJsonTreeArray.vue';
+import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
 const props = defineProps(['modelValue', 'schema', 'propKey', 'parentSchema']);
 const emits = defineEmits(['update:modelValue', 'updated', 'add', 'drop']);
@@ -59,7 +58,7 @@ const clear = () => {
         @updated="updated"
       />
 
-      <QJsonTreeEditorArray
+      <QJsonTreeArray
         v-else-if="isArray(localSchema).value"
         v-model="localData"
         :schema="localSchema"
@@ -98,7 +97,7 @@ const clear = () => {
     </q-item-section>
 
     <q-item-section side>
-      <QJsonTreeEditorMenu
+      <QJsonTreeMenu
         v-model="localData"
         :schema="localSchema"
         :parentSchema="parentSchema"
@@ -106,7 +105,7 @@ const clear = () => {
         @add="add"
         @clear="clear"
         @drop="drop"
-      ></QJsonTreeEditorMenu>
+      ></QJsonTreeMenu>
     </q-item-section>
   </q-item>
 </template>

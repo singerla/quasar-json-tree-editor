@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRef } from 'vue';
 import { useDraggable } from 'vue-draggable-plus';
-import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
+import QJsonTreeField from '../fields/QJsonTreeField.vue';
 import { computedLocalData } from '../index';
 
 const props = defineProps(['modelValue', 'schema', 'propKey']);
@@ -39,7 +39,7 @@ const clear = () => (localData.value = []);
 </script>
 
 <template>
-  <div ref="el">
+  <q-list ref="el">
     <q-item
       dense
       v-for="localDataFieldKey of Object.keys(localData)"
@@ -50,7 +50,7 @@ const clear = () => (localData.value = []);
         <q-icon name="drag_indicator" />
       </q-item-section>
       <q-item-section>
-        <QJsonTreeEditorField
+        <QJsonTreeField
           :propKey="'field_' + propKey + '_' + localDataFieldKey"
           v-model="localData[localDataFieldKey]"
           :schema="localSchema.items"
@@ -62,5 +62,5 @@ const clear = () => (localData.value = []);
         />
       </q-item-section>
     </q-item>
-  </div>
+  </q-list>
 </template>

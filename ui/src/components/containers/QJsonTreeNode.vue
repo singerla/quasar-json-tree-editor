@@ -7,10 +7,10 @@ import {
   hasChildren,
   isScalar,
 } from '../index';
-import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
+import QJsonTreeField from '../fields/QJsonTreeField.vue';
 import QJsonTreeHeader from './QJsonTreeHeader.vue';
-import QJsonTreeEditorElement from './QJsonTreeEditorElement.vue';
-import QJsonTreeEditorMenu from './QJsonTreeEditorMenu.vue';
+import QJsonTreeElement from './QJsonTreeElement.vue';
+import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
 const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
 const emits = defineEmits(['update:modelValue', 'updated']);
@@ -28,7 +28,7 @@ const clearItem = clearItemByType(localData, localSchema);
 </script>
 
 <template>
-  <QJsonTreeEditorField
+  <QJsonTreeField
     v-if="isScalar(localSchema).value"
     v-model="localData"
     :schema="localSchema"
@@ -48,7 +48,7 @@ const clearItem = clearItemByType(localData, localSchema);
   >
     <template v-slot:header>
       <QJsonTreeHeader :schema="localSchema" :propKey="propKey" />
-      <QJsonTreeEditorMenu
+      <QJsonTreeMenu
         v-model="localData"
         :schema="localSchema"
         :parentSchema="parentSchema"
@@ -57,10 +57,10 @@ const clearItem = clearItemByType(localData, localSchema);
         @add="addItem"
         @clear="clearItem"
         @drop="localData = undefined"
-      ></QJsonTreeEditorMenu>
+      ></QJsonTreeMenu>
     </template>
 
-    <QJsonTreeEditorElement
+    <QJsonTreeElement
       v-model="localData"
       :propKey="propKey"
       :schema="localSchema"
@@ -75,7 +75,7 @@ const clearItem = clearItemByType(localData, localSchema);
     dense
   >
     <q-item-section>
-      <QJsonTreeEditorElement
+      <QJsonTreeElement
         v-model="localData"
         :propKey="propKey"
         :schema="localSchema"
@@ -83,7 +83,7 @@ const clearItem = clearItemByType(localData, localSchema);
       />
     </q-item-section>
     <q-item-section side class="absolute-top">
-      <QJsonTreeEditorMenu
+      <QJsonTreeMenu
         v-model="localData"
         :schema="localSchema"
         :parentSchema="parentSchema"
@@ -92,7 +92,7 @@ const clearItem = clearItemByType(localData, localSchema);
         @add="addItem"
         @clear="clearItem"
         @drop="localData = undefined"
-      ></QJsonTreeEditorMenu>
+      ></QJsonTreeMenu>
     </q-item-section>
   </q-item>
 </template>

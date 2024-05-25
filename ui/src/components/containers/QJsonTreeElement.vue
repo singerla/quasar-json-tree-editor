@@ -1,9 +1,9 @@
 <script setup>
 import { ref, toRef } from 'vue';
 import { computedLocalData, isArray, isObject, isScalar } from '../index';
-import QJsonTreeEditorField from './QJsonTreeEditorField.vue';
-import QJsonTreeEditorObject from './QJsonTreeEditorObject.vue';
-import QJsonTreeEditorArray from './QJsonTreeEditorArray.vue';
+import QJsonTreeEditorField from '../fields/QJsonTreeField.vue';
+import QJsonTreeEditorObject from '../lists/QJsonTreeObject.vue';
+import QJsonTreeEditorArray from '../lists/QJsonTreeArray.vue';
 
 const props = defineProps(['modelValue', 'schema', 'propKey']);
 const emits = defineEmits(['update:modelValue', 'updated']);
