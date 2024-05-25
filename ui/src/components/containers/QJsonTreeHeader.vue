@@ -3,9 +3,9 @@ defineProps(['schema', 'propKey']);
 </script>
 
 <template>
-  <q-item class="q-pa-none full-width">
-    <q-item-section avatar>
-      <q-icon name="account_tree" />
+  <q-item class="q-json-tree-header q-pa-none full-width">
+    <q-item-section v-if="$slots.icon" avatar>
+      <slot name="icon" />
     </q-item-section>
     <q-item-section>
       <q-item-label>
@@ -24,6 +24,9 @@ defineProps(['schema', 'propKey']);
         :label="'of ' + schema.items.type + 's'"
         color="grey-6"
       />
+    </q-item-section>
+    <q-item-section v-if="$slots.menu" avatar>
+      <slot name="menu" />
     </q-item-section>
   </q-item>
 </template>

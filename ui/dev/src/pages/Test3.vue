@@ -98,6 +98,7 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter class="" v-model="sep1" vertical>
       <template v-slot:before>
+        <h4>Quasar components Example</h4>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"

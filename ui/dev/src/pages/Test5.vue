@@ -8,11 +8,14 @@ const jsonSchema = {
   title: 'Product',
   description: "A product from Acme's catalog",
   type: 'object',
-  params: {},
+  params: {
+    container: 'Card',
+  },
   properties: {
     prop1: {
       type: 'array',
       params: {
+        container: 'Expansion',
         sortable: true,
         showAddButton: true,
         group: {
@@ -25,8 +28,10 @@ const jsonSchema = {
     },
     prop2: {
       type: 'array',
+      container: 'Division',
       params: {
         sortable: true,
+        showAddButton: true,
         group: {
           name: 'numbers',
         },
@@ -36,9 +41,12 @@ const jsonSchema = {
       },
     },
     prop3: {
+      description: 'A prop3 description',
       type: 'array',
       params: {
         sortable: true,
+        container: 'Card',
+        showAddButton: true,
         group: {
           name: 'numbers2',
         },
@@ -67,15 +75,15 @@ const sep1 = ref(70);
 
 <template>
   <q-page padding class="">
-    <q-splitter class="" v-model="sep1" vertical>
+    <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
-        <h4>Sortable Example</h4>
+        <h4>Container Types Example</h4>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"
           @updated="updated"
+          class="q-ma-sm"
         />
-        <q-separator></q-separator>
       </template>
       <template v-slot:after>
         <pre>{{ data }}</pre>
@@ -84,8 +92,20 @@ const sep1 = ref(70);
   </q-page>
 </template>
 
-<style lang="sass" scoped>
-.directive-target
-  width: 50px
-  height: 50px
+<style lang="sass">
+.q-json-tree-header
+  padding: 12px
+  border-bottom: 1px solid maroon
+
+.q-json-tree-node-card
+  margin-left: 6px
+
+.q-json-tree-node-expansion
+  padding: 0
+  margin: 0 0 0 6px
+  border: 1px dotted green
+
+.q-json-tree-node-division
+  margin-left: 6px
+  border: 1px dotted orange
 </style>
