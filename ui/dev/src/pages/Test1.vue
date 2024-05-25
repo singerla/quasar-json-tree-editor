@@ -1,5 +1,6 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
+import { vd } from '../../../src/components';
 
 const data = reactive({
   productId: 1,
@@ -70,16 +71,30 @@ const jsonSchema = {
   },
   required: ['productId', 'productName', 'price'],
 };
+const updated = (tmp) => {
+  vd('updated root');
+  vd(tmp);
+  vd(data);
+};
+const sep1 = ref(70);
 </script>
 
 <template>
-  <q-page padding>
-    <QJsonTreeEditor v-model="data" :schema="jsonSchema" />
+  <q-page padding class="">
+    <q-splitter v-model="sep1" vertical>
+      <template v-slot:before>
+        <h4>Container Types Example</h4>
+        <QJsonTreeEditor
+          v-model="data"
+          :schema="jsonSchema"
+          @updated="updated"
+          class="q-ma-sm"
+        />
+      </template>
+      <template v-slot:after>
+        <pre>{{ data }}</pre>
+      </template>
+    </q-splitter>
   </q-page>
 </template>
-
-<style lang="sass" scoped>
-.directive-target
-  width: 50px
-  height: 50px
-</style>
+<style lang="sass" scoped></style>

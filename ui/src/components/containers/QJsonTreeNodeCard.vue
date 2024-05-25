@@ -6,10 +6,15 @@ import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 import QJsonTreeHeader from './QJsonTreeHeader.vue';
 
 const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated', 'add', 'clear']);
+const emits = defineEmits([
+  'update:modelValue',
+  'updated',
+  'add',
+  'drop',
+  'clear',
+]);
 const localData = computedLocalData(props, emits);
 const localSchema = toRef(props, 'schema');
-
 const updated = (data) => {
   emits('updated', data);
 };
@@ -17,7 +22,7 @@ const updated = (data) => {
 
 <template>
   <q-card class="q-json-tree-node-card">
-    <q-card-section>
+    <q-card-section class="q-pa-none q-ma-none">
       <QJsonTreeHeader :schema="localSchema" :propKey="propKey">
         <template v-slot:menu>
           <QJsonTreeMenu
@@ -26,6 +31,7 @@ const updated = (data) => {
             :parentSchema="parentSchema"
             :propKey="propKey"
             @click.stop
+            @drop="emits('drop')"
             @add="emits('add')"
             @clear="emits('clear')"
           />
@@ -33,7 +39,7 @@ const updated = (data) => {
       </QJsonTreeHeader>
     </q-card-section>
 
-    <q-card-section>
+    <q-card-section class="q-pa-none q-ma-none">
       <QJsonTreeElement
         v-model="localData"
         :propKey="propKey"

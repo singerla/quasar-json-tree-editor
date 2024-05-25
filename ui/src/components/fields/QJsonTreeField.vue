@@ -1,12 +1,14 @@
 <script setup>
 import { toRef } from 'vue';
 import {
+  clearItemByType,
   computedLocalData,
   isArray,
   isBoolean,
   isNumeric,
   isObject,
   valueBySchema,
+  vd,
 } from '../index';
 import QJsonTreeEditorObject from '../lists/QJsonTreeObject.vue';
 import FieldColorPicker from './quasar/FieldColorPicker.vue';
@@ -40,11 +42,10 @@ const add = () => {
   emits('add');
 };
 const drop = () => {
+  vd('field emits drop');
   emits('drop');
 };
-const clear = () => {
-  // emits('clear');
-};
+const clear = clearItemByType(localData, localSchema);
 </script>
 
 <template>

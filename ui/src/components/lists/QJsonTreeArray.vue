@@ -13,6 +13,8 @@ const updated = (data) => {
   emits('updated', data);
 };
 const addItem = addItemToArray(localData, localSchema);
+const clear = () => (localData.value = []);
+const drop = (index) => localData.value.splice(index, 1);
 </script>
 
 <template>
@@ -23,6 +25,8 @@ const addItem = addItemToArray(localData, localSchema);
     :propKey="propKey"
     @updated="updated"
     @add="addItem"
+    @clear="clear"
+    @drop="drop"
   />
   <QJsonTreeEditorArrayFixed
     v-else
@@ -31,9 +35,11 @@ const addItem = addItemToArray(localData, localSchema);
     :propKey="propKey"
     @updated="updated"
     @add="addItem"
+    @clear="clear"
+    @drop="drop"
   />
   <ButtonAddToArray
-    v-if="localSchema.params?.showAddButton"
+    v-if="localSchema.params?.showAddButton || localData.length === 0"
     v-model="localData"
     :schema="localSchema"
     :propKey="propKey"

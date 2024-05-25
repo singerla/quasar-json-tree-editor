@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 
 export const vd = (val) => {
   console.log(val);
@@ -12,6 +12,31 @@ export const valueBySchema = (value, localSchema) => {
     value = Number(value);
   }
   return value;
+};
+
+export const setupDefaults = (defineProps, defineEmits) => {
+  const props = defineProps([
+    'modelValue',
+    'schema',
+    'parentSchema',
+    'propKey',
+  ]);
+  const emits = defineEmits([
+    'update:modelValue',
+    'updated',
+    'add',
+    'clear',
+    'drop',
+  ]);
+  const localData = computedLocalData(props, emits);
+  const localSchema = toRef(props, 'schema');
+
+  return {
+    props,
+    emits,
+    localData,
+    localSchema,
+  };
 };
 
 export const computedLocalData = (
@@ -59,8 +84,14 @@ export const addItemByType = (localData, localSchema) => {
 
 export const clearItemByType = (localData, localSchema) => {
   return () => {
-    if (localSchema.value.type === 'array') {
+    if (isObject(localSchema.value).value) {
+      localData.value = {};
+    } else if (isArray(localSchema.value).value) {
       localData.value = [];
+    } else if (isNumeric(localSchema.value).value) {
+      localData.value = 0;
+    } else {
+      localData.value = '';
     }
   };
 };

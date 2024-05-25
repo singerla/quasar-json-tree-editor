@@ -14,7 +14,7 @@ const createProperty = createObjectProperty(localData, localSchema, localKey);
 <template>
   <q-btn
     class="q-pa-sm q-ma-sm"
-    color="secondary"
+    color="primary"
     rounded
     dense
     no-caps

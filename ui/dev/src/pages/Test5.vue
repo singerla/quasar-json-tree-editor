@@ -28,8 +28,8 @@ const jsonSchema = {
     },
     prop2: {
       type: 'array',
-      container: 'Division',
       params: {
+        container: 'Division',
         sortable: true,
         showAddButton: true,
         group: {
@@ -44,11 +44,11 @@ const jsonSchema = {
       description: 'A prop3 description',
       type: 'array',
       params: {
-        sortable: true,
         container: 'Card',
+        sortable: true,
         showAddButton: true,
         group: {
-          name: 'numbers2',
+          name: 'numbers',
         },
       },
       items: {
@@ -97,8 +97,12 @@ const sep1 = ref(70);
   padding: 12px
   border-bottom: 1px solid maroon
 
+.q-json-tree-list
+  background-color: #eee
+
 .q-json-tree-node-card
   margin-left: 6px
+  padding: 0
 
 .q-json-tree-node-expansion
   padding: 0
@@ -107,5 +111,5 @@ const sep1 = ref(70);
 
 .q-json-tree-node-division
   margin-left: 6px
-  border: 1px dotted orange
+  border: 3px dotted orange
 </style>

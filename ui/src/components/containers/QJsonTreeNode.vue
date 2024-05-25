@@ -12,7 +12,7 @@ import QJsonTreeNodeCard from './QJsonTreeNodeCard.vue';
 import QJsonTreeNodeDivision from './QJsonTreeNodeDivision.vue';
 
 const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated']);
+const emits = defineEmits(['update:modelValue', 'updated', 'drop']);
 const localData = computedLocalData(props, emits);
 const localSchema = toRef(props, 'schema');
 
@@ -30,7 +30,9 @@ const clearItem = clearItemByType(localData, localSchema);
     v-if="isScalar(localSchema).value"
     v-model="localData"
     :schema="localSchema"
+    :parentSchema="parentSchema"
     :propKey="propKey"
+    @drop="localData = undefined"
     @updated="updated"
   />
 
@@ -42,6 +44,7 @@ const clearItem = clearItemByType(localData, localSchema);
     :parentSchema="parentSchema"
     @add="addItem"
     @clear="clearItem"
+    @drop="emits('drop')"
     @updated="updated"
   />
 
@@ -53,16 +56,19 @@ const clearItem = clearItemByType(localData, localSchema);
     :parentSchema="parentSchema"
     @add="addItem"
     @clear="clearItem"
+    @drop="emits('drop')"
     @updated="updated"
   />
+
   <QJsonTreeNodeDivision
-    v-else="localSchema.params?.container === 'Card'"
+    v-else
     v-model="localData"
     :propKey="propKey"
     :schema="localSchema"
     :parentSchema="parentSchema"
     @add="addItem"
     @clear="clearItem"
+    @drop="emits('drop')"
     @updated="updated"
   />
 </template>

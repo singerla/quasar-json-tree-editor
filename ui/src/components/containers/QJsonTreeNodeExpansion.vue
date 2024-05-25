@@ -6,9 +6,16 @@ import QJsonTreeElement from './QJsonTreeElement.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
 const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated', 'add', 'clear']);
+const emits = defineEmits([
+  'update:modelValue',
+  'updated',
+  'add',
+  'clear',
+  'drop',
+]);
 const localData = computedLocalData(props, emits);
 const localSchema = toRef(props, 'schema');
+
 const expansionItemState = ref(true);
 
 const updated = (data) => {
@@ -35,6 +42,7 @@ const updated = (data) => {
             :parentSchema="parentSchema"
             :propKey="propKey"
             @click.stop
+            @drop="emits('drop')"
             @add="emits('add')"
             @clear="emits('clear')"
           />

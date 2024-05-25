@@ -21,11 +21,11 @@ const add = () => {
   <q-btn flat dense icon="more_vert">
     <q-menu>
       <q-list dense style="min-width: 100px">
-        <q-item @click="drop" clickable v-close-popup>
+        <q-item @click="add" clickable v-close-popup :disable="!parentSchema">
           <q-item-section avatar>
-            <ButtonDrop icon="delete" />
+            <ButtonDrop icon="format_list_bulleted_add" />
           </q-item-section>
-          <q-item-section> Delete </q-item-section>
+          <q-item-section> Append </q-item-section>
         </q-item>
 
         <q-item @click="clear" clickable :disable="!parentSchema" v-close-popup>
@@ -35,11 +35,11 @@ const add = () => {
           <q-item-section> Clear </q-item-section>
         </q-item>
 
-        <q-item @click="add" clickable v-close-popup :disable="!parentSchema">
+        <q-item @click="drop" clickable v-close-popup>
           <q-item-section avatar>
-            <ButtonDrop icon="format_list_bulleted_add" />
+            <ButtonDrop icon="delete" />
           </q-item-section>
-          <q-item-section> Append </q-item-section>
+          <q-item-section> Drop </q-item-section>
         </q-item>
       </q-list>
     </q-menu>

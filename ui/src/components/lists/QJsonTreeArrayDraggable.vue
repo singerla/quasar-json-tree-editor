@@ -5,7 +5,13 @@ import QJsonTreeField from '../fields/QJsonTreeField.vue';
 import { computedLocalData } from '../index';
 
 const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated', 'add']);
+const emits = defineEmits([
+  'update:modelValue',
+  'updated',
+  'add',
+  'drop',
+  'clear',
+]);
 const localData = computedLocalData(props, emits, null, (value) => {
   updated({
     propKey: props.propKey,
@@ -34,12 +40,10 @@ const draggable = useDraggable(el, localData, {
   onUpdate() {},
   onEnd() {},
 });
-
-const clear = () => (localData.value = []);
 </script>
 
 <template>
-  <q-list ref="el">
+  <q-list ref="el" class="q-json-tree-list">
     <q-item
       dense
       v-for="localDataFieldKey of Object.keys(localData)"
@@ -56,9 +60,9 @@ const clear = () => (localData.value = []);
           :schema="localSchema.items"
           :parentSchema="localSchema"
           @updated="updated"
-          @drop="localData?.splice(localDataFieldKey, 1)"
+          @drop="emits('drop', localDataFieldKey)"
           @add="emits('add')"
-          @clear="clear"
+          @clear="emits('clear')"
         />
       </q-item-section>
     </q-item>
