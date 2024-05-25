@@ -43,6 +43,9 @@ const jsonSchema = {
       },
       minItems: 1,
       uniqueItems: true,
+      params: {
+        showAddButton: true,
+      },
     },
     dimensions: {
       type: 'object',
@@ -83,13 +86,14 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
-        <h4>Container Types Example</h4>
+        <h4>Basic Example</h4>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"
           @updated="updated"
           class="q-ma-sm"
-        />
+        >
+        </QJsonTreeEditor>
       </template>
       <template v-slot:after>
         <pre>{{ data }}</pre>
@@ -97,4 +101,20 @@ const sep1 = ref(70);
     </q-splitter>
   </q-page>
 </template>
-<style lang="sass" scoped></style>
+
+<style lang="sass">
+.q-json-tree-node
+  margin-left: 16px
+
+.q-json-tree-node-division
+  border: 0
+  margin-bottom: 6px
+  margin-left: 6px
+
+.q-json-tree-field
+  background-color: #eee
+  border: 0
+
+.q-json-tree-object
+  border: 0
+</style>

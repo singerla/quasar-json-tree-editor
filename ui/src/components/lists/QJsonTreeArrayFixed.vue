@@ -1,24 +1,20 @@
 <script setup>
-import { toRef } from 'vue';
 import QJsonTreeField from '../fields/QJsonTreeField.vue';
-import { computedLocalData } from '../index';
+import { setupDefaults } from '../index';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated', 'add', 'clear']);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
-const updated = (data) => {
-  emits('updated', data);
-};
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localData, localSchema, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
 </script>
 
 <template>
-  <q-list class="q-json-tree-list">
+  <q-list class="q-json-tree-list q-pa-none q-ma-none">
     <q-item
       dense
       v-for="localDataFieldKey of Object.keys(localData)"
       :key="'field_' + propKey + '_' + localDataFieldKey"
-      class="q-json-tree-list-item"
+      class="q-json-tree-list-item q-pa-none q-ma-none"
     >
       <q-item-section>
         <QJsonTreeField

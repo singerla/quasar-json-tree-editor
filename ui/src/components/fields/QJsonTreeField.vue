@@ -7,6 +7,7 @@ import {
   isBoolean,
   isNumeric,
   isObject,
+  setupDefaults,
   valueBySchema,
   vd,
 } from '../index';
@@ -16,10 +17,13 @@ import FieldSlider from './quasar/FieldSlider.vue';
 import QJsonTreeArray from '../lists/QJsonTreeArray.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
-const props = defineProps(['modelValue', 'schema', 'propKey', 'parentSchema']);
-const emits = defineEmits(['update:modelValue', 'updated', 'add', 'drop']);
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localSchema, parentSchema, propKey } = setupDefaults.local(
+  props,
+  emits
+);
 
-const localSchema = toRef(props, 'schema');
 const localData = computedLocalData(props, emits, (value) => {
   value = valueBySchema(value, localSchema.value);
   initUpdated(value, props.modelValue);
@@ -28,7 +32,7 @@ const localData = computedLocalData(props, emits, (value) => {
 
 const initUpdated = (newValue, oldValue) => {
   emits('updated', {
-    propKey: props.propKey,
+    propKey: propKey.value,
     newValue,
     oldValue,
     path: [],
@@ -42,14 +46,13 @@ const add = () => {
   emits('add');
 };
 const drop = () => {
-  vd('field emits drop');
   emits('drop');
 };
 const clear = clearItemByType(localData, localSchema);
 </script>
 
 <template>
-  <q-item>
+  <q-item dense class="q-json-tree-field q-pa-none q-ma-none">
     <q-item-section>
       <QJsonTreeEditorObject
         v-if="isObject(localSchema).value"
@@ -110,5 +113,3 @@ const clear = clearItemByType(localData, localSchema);
     </q-item-section>
   </q-item>
 </template>
-
-<style scoped></style>

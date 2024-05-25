@@ -14,29 +14,20 @@ export const valueBySchema = (value, localSchema) => {
   return value;
 };
 
-export const setupDefaults = (defineProps, defineEmits) => {
-  const props = defineProps([
-    'modelValue',
-    'schema',
-    'parentSchema',
-    'propKey',
-  ]);
-  const emits = defineEmits([
-    'update:modelValue',
-    'updated',
-    'add',
-    'clear',
-    'drop',
-  ]);
-  const localData = computedLocalData(props, emits);
-  const localSchema = toRef(props, 'schema');
-
-  return {
-    props,
-    emits,
-    localData,
-    localSchema,
-  };
+export const setupDefaults = {
+  props: ['modelValue', 'schema', 'parentSchema', 'propKey'],
+  emits: ['update:modelValue', 'updated', 'add', 'clear', 'drop'],
+  local: (props, emits) => {
+    return {
+      localData: computedLocalData(props, emits),
+      localSchema: toRef(props, 'schema'),
+      propKey: toRef(props, 'propKey'),
+      parentSchema: toRef(props, 'parentSchema'),
+      updated: (data) => {
+        emits('updated', data);
+      },
+    };
+  },
 };
 
 export const computedLocalData = (
@@ -84,6 +75,8 @@ export const addItemByType = (localData, localSchema) => {
 
 export const clearItemByType = (localData, localSchema) => {
   return () => {
+    vd(localData.value);
+    vd(localData.value);
     if (isObject(localSchema.value).value) {
       localData.value = {};
     } else if (isArray(localSchema.value).value) {

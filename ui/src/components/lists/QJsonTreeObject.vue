@@ -1,24 +1,20 @@
 <script setup>
-import { toRef } from 'vue';
 import QJsonTreeNode from '../containers/QJsonTreeNode.vue';
 import QJsonTreeField from '../fields/QJsonTreeField.vue';
 import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty.vue';
 import {
   clearItemByType,
-  computedLocalData,
   getPropertyKey,
   hasChildren,
+  setupDefaults,
   vd,
 } from '../index';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated']);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localData, localSchema, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
 
-const updated = (data) => {
-  emits('updated', data);
-};
 const clear = clearItemByType(localData, localSchema);
 const drop = () => {
   vd('drop ');
@@ -29,6 +25,7 @@ const drop = () => {
   <q-item
     v-for="(schema, index) in Object.values(localSchema.properties)"
     :key="'prop_' + index"
+    class="q-json-tree-object q-pa-none q-ma-none"
   >
     <div
       v-if="
@@ -53,7 +50,6 @@ const drop = () => {
         @updated="updated"
         @drop="localData[getPropertyKey(index, localSchema)] = undefined"
       />
-
       <QJsonTreeField
         v-else
         v-model="localData[getPropertyKey(index, localSchema)]"

@@ -1,17 +1,14 @@
 <script setup>
-import { computed, toRef } from 'vue';
 import ButtonAddToArray from '../buttons/ButtonAddToArray.vue';
 import QJsonTreeEditorArrayDraggable from './QJsonTreeArrayDraggable.vue';
 import QJsonTreeEditorArrayFixed from './QJsonTreeArrayFixed.vue';
-import { addItemToArray, computedLocalData } from '../index';
+import { addItemToArray, setupDefaults } from '../index';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated']);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
-const updated = (data) => {
-  emits('updated', data);
-};
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localData, localSchema, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
+
 const addItem = addItemToArray(localData, localSchema);
 const clear = () => (localData.value = []);
 const drop = (index) => localData.value.splice(index, 1);

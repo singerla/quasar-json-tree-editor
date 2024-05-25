@@ -28,14 +28,14 @@ const add = () => {
           <q-item-section> Append </q-item-section>
         </q-item>
 
-        <q-item @click="clear" clickable :disable="!parentSchema" v-close-popup>
+        <q-item @click="clear" clickable v-close-popup>
           <q-item-section avatar>
             <ButtonDrop icon="cancel" />
           </q-item-section>
           <q-item-section> Clear </q-item-section>
         </q-item>
 
-        <q-item @click="drop" clickable v-close-popup>
+        <q-item @click="drop" :disable="!parentSchema" clickable v-close-popup>
           <q-item-section avatar>
             <ButtonDrop icon="delete" />
           </q-item-section>

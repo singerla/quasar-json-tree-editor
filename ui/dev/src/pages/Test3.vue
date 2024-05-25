@@ -113,8 +113,4 @@ const sep1 = ref(70);
   </q-page>
 </template>
 
-<style lang="sass" scoped>
-.directive-target
-  width: 50px
-  height: 50px
-</style>
+<style lang="sass" scoped></style>

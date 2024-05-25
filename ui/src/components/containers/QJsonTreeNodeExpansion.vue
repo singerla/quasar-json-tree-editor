@@ -1,33 +1,23 @@
 <script setup>
-import { ref, toRef } from 'vue';
-import { computedLocalData } from '../index';
+import { ref } from 'vue';
+import { setupDefaults } from '../index';
 import QJsonTreeHeader from './QJsonTreeHeader.vue';
 import QJsonTreeElement from './QJsonTreeElement.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
-const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
-const emits = defineEmits([
-  'update:modelValue',
-  'updated',
-  'add',
-  'clear',
-  'drop',
-]);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localData, localSchema, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
 
 const expansionItemState = ref(true);
-
-const updated = (data) => {
-  emits('updated', data);
-};
 </script>
 
 <template>
   <q-expansion-item
     dense
-    class="q-json-tree-node-expansion"
-    header-style="background-color: #eee;"
+    class="q-json-tree-node-expansion q-pa-none q-ma-none"
+    header-style="background-color: #eee; margin: 0; padding: 0"
     v-model="expansionItemState"
   >
     <template v-slot:header>

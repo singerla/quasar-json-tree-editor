@@ -1,18 +1,20 @@
 <script setup>
 import { ref, toRef } from 'vue';
-import { computedLocalData, isArray, isObject, isScalar } from '../index';
+import {
+  computedLocalData,
+  isArray,
+  isObject,
+  isScalar,
+  setupDefaults,
+} from '../index';
 import QJsonTreeEditorField from '../fields/QJsonTreeField.vue';
 import QJsonTreeEditorObject from '../lists/QJsonTreeObject.vue';
 import QJsonTreeEditorArray from '../lists/QJsonTreeArray.vue';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits(['update:modelValue', 'updated']);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
-
-const updated = (data) => {
-  emits('updated', data);
-};
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localSchema, localData, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
 </script>
 
 <template>
@@ -23,7 +25,6 @@ const updated = (data) => {
     :schema="localSchema"
     @updated="updated"
   />
-
   <QJsonTreeEditorObject
     v-else-if="isObject(localSchema).value"
     :schema="localSchema"
@@ -31,7 +32,6 @@ const updated = (data) => {
     v-model="localData"
     @updated="updated"
   />
-
   <QJsonTreeEditorArray
     v-else-if="isArray(localSchema).value"
     :schema="localSchema"

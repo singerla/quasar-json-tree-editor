@@ -1,29 +1,22 @@
 <script setup>
-import { toRef } from 'vue';
-import { computedLocalData } from '../index';
+import { setupDefaults } from '../index';
 import QJsonTreeElement from './QJsonTreeElement.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 import QJsonTreeHeader from './QJsonTreeHeader.vue';
 
-const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);
-const emits = defineEmits([
-  'update:modelValue',
-  'updated',
-  'add',
-  'drop',
-  'clear',
-]);
-const localData = computedLocalData(props, emits);
-const localSchema = toRef(props, 'schema');
-const updated = (data) => {
-  emits('updated', data);
-};
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localData, localSchema, parentSchema, propKey, updated } =
+  setupDefaults.local(props, emits);
 </script>
 
 <template>
   <q-card class="q-json-tree-node-card">
     <q-card-section class="q-pa-none q-ma-none">
       <QJsonTreeHeader :schema="localSchema" :propKey="propKey">
+        <template v-slot:icon>
+          <q-icon name="data_object" />
+        </template>
         <template v-slot:menu>
           <QJsonTreeMenu
             v-model="localData"
@@ -49,5 +42,3 @@ const updated = (data) => {
     </q-card-section>
   </q-card>
 </template>
-
-<style scoped></style>

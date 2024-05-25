@@ -1,17 +1,15 @@
 <script setup>
-import { ref, toRef } from 'vue';
+import { ref } from 'vue';
 import { useDraggable } from 'vue-draggable-plus';
 import QJsonTreeField from '../fields/QJsonTreeField.vue';
-import { computedLocalData } from '../index';
+import { computedLocalData, setupDefaults } from '../index';
 
-const props = defineProps(['modelValue', 'schema', 'propKey']);
-const emits = defineEmits([
-  'update:modelValue',
-  'updated',
-  'add',
-  'drop',
-  'clear',
-]);
+const props = defineProps(setupDefaults.props);
+const emits = defineEmits(setupDefaults.emits);
+const { localSchema, parentSchema, propKey, updated } = setupDefaults.local(
+  props,
+  emits
+);
 const localData = computedLocalData(props, emits, null, (value) => {
   updated({
     propKey: props.propKey,
@@ -21,10 +19,6 @@ const localData = computedLocalData(props, emits, null, (value) => {
     path: [],
   });
 });
-const localSchema = toRef(props, 'schema');
-const updated = (data) => {
-  emits('updated', data);
-};
 
 const el = ref(null);
 const oldValue = ref(null);
