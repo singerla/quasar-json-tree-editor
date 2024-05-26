@@ -93,6 +93,9 @@ const sep1 = ref(70);
 </template>
 
 <style lang="sass">
+.q-json-tree-node
+  margin-left: 8px
+
 .q-json-tree-header
   padding: 12px
   border-bottom: 1px solid maroon
@@ -115,4 +118,10 @@ const sep1 = ref(70);
 .q-json-tree-node-division
   margin-left: 6px
   border: 3px dotted orange
+
+.q-json-tree-field
+  padding: 6px
+  margin: 6px
+  background-color: #eee
+  border: 0
 </style>
