@@ -18,12 +18,20 @@ const updated = (data) => {
 
 const addItem = addItemByType(localData, localSchema);
 const clearItem = clearItemByType(localData, localSchema);
+
+const components = {
+  Card: QJsonTreeNodeCard,
+  Expansion: QJsonTreeNodeExpansion,
+  Division: QJsonTreeNodeDivision,
+};
+const componentKey = localSchema.value.params?.container;
+const component = components[componentKey] || components.Division;
 </script>
 
 <template>
   <div class="q-json-tree-node">
-    <QJsonTreeNodeExpansion
-      v-if="localSchema.params?.container === 'Expansion'"
+    <component
+      :is="component"
       v-model="localData"
       :propKey="propKey"
       :schema="localSchema"
@@ -33,28 +41,5 @@ const clearItem = clearItemByType(localData, localSchema);
       @drop="emits('drop')"
       @updated="updated"
     />
-    <QJsonTreeNodeCard
-      v-else-if="localSchema.params?.container === 'Card'"
-      v-model="localData"
-      :propKey="propKey"
-      :schema="localSchema"
-      :parentSchema="parentSchema"
-      @add="addItem"
-      @clear="clearItem"
-      @drop="emits('drop')"
-      @updated="updated"
-    />
-    <QJsonTreeNodeDivision
-      v-else
-      v-model="localData"
-      :propKey="propKey"
-      :schema="localSchema"
-      :parentSchema="parentSchema"
-      @add="addItem"
-      @clear="clearItem"
-      @drop="emits('drop')"
-      @updated="updated"
-    >
-    </QJsonTreeNodeDivision>
   </div>
 </template>

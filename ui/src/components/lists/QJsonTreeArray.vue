@@ -12,11 +12,18 @@ const { localData, localSchema, parentSchema, propKey, updated } =
 const addItem = addItemToArray(localData, localSchema);
 const clear = () => (localData.value = []);
 const drop = (index) => localData.value.splice(index, 1);
+
+const components = {
+  Draggable: QJsonTreeEditorArrayDraggable,
+  Fixed: QJsonTreeEditorArrayFixed,
+};
+const componentKey = localSchema.value.params?.sortable ? 'Draggable' : 'Fixed';
+const component = components[componentKey] || components.Fixed;
 </script>
 
 <template>
-  <QJsonTreeEditorArrayDraggable
-    v-if="localSchema.params?.sortable"
+  <component
+    :is="component"
     v-model="localData"
     :schema="localSchema"
     :propKey="propKey"
@@ -25,16 +32,7 @@ const drop = (index) => localData.value.splice(index, 1);
     @clear="clear"
     @drop="drop"
   />
-  <QJsonTreeEditorArrayFixed
-    v-else
-    v-model="localData"
-    :schema="localSchema"
-    :propKey="propKey"
-    @updated="updated"
-    @add="addItem"
-    @clear="clear"
-    @drop="drop"
-  />
+
   <ButtonAddToArray
     v-if="localSchema.params?.showAddButton || localData.length === 0"
     v-model="localData"

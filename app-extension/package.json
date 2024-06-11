@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Visualize, edit and validate a json object as a tree view",
   "author": "singerla <tsinger@gmx.de>",
-  "license": "MIT",
   "type": "module",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/singerla/quasar-json-tree-editor"
@@ -12,7 +12,10 @@
   "bugs": "https://github.com/singerla/quasar-json-tree-editor/issues",
   "homepage": "https://github.com/singerla/quasar-json-tree-editor",
   "dependencies": {
-    "quasar-ui-json-tree-editor": "latest"
+    "quasar-ui-json-tree-editor": "^0.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "engines": {
     "node": ">= 8.9.0",

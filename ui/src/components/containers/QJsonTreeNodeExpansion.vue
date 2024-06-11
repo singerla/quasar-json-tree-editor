@@ -48,5 +48,3 @@ const expansionItemState = ref(true);
     />
   </q-expansion-item>
 </template>
-
-<style scoped></style>
