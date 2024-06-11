@@ -56,7 +56,6 @@ export default {
     }
 
     const targetComponent = mapComponents[mapType];
-    vd(hProps);
     return () => h(targetComponent, hProps);
   },
 };

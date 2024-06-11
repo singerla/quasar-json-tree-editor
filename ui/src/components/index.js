@@ -63,12 +63,22 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       const defaultEmit = (key) => {
         return hProps[key] ? hProps[key] : (data) => emit(key, data);
       };
-      const defaultUpdate = (value) => (localData.value = value);
+      const modelKey = hProps.modelKey;
+      const defaultUpdate = (value) => {
+        if (modelKey) {
+          localData.value[modelKey] = value;
+        } else {
+          localData.value = value;
+        }
+      };
 
       return {
-        modelValue: props.modelValue,
+        modelValue:
+          modelKey && localData.value
+            ? localData.value[modelKey]
+            : localData.value,
         'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-        propKey: propKey,
+        propKey: hProps.propKey ? hProps.propKey : propKey.value,
         schema: hProps.schema || localSchema.value,
         parentSchema: hProps.parentSchema || parentSchema.value,
         onUpdated: defaultEmit('updated'),

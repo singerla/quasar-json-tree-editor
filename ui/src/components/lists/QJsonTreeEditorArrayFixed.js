@@ -20,27 +20,24 @@ export default {
     const parent = setupComponent(props, emit);
     const children = [];
 
-    const { localData, localSchema, parentSchema, propKey, updated } =
-      setupDefaults.local(props, emit);
-
-    if (!localData.value) {
+    if (!parent.localData.value) {
       return () => [];
     }
 
-    for (const localDataFieldKey in Object.keys(localData.value)) {
-      const hProps = setupComponent(props, emit).hProps({
-        localData: localData.value[localDataFieldKey],
-        propKey: 'field_' + localDataFieldKey,
-        schema: localSchema.value.items,
-        parentSchema: localSchema.value,
-        drop: () => localData.value.splice(localDataFieldKey, 1),
+    for (const index in parent.localData.value) {
+      const hProps = parent.hProps({
+        modelKey: index,
+        propKey: 'field_' + index,
+        schema: parent.localSchema.value.items,
+        parentSchema: parent.localSchema.value,
+        drop: () => parent.localData.value.splice(index, 1),
       });
 
       children.push(
         h(
           QItem,
           {
-            key: 'field_' + propKey.value + '_' + localDataFieldKey,
+            key: 'field_' + parent.propKey.value + '_' + index,
             class: 'q-json-tree-list-item q-pa-none q-ma-none',
           },
           () => h(QItemSection, {}, () => h(QJsonTreeEditorField, hProps))

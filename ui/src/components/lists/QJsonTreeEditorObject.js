@@ -1,4 +1,10 @@
-import { clearItemByType, hasChildren, setupDefaults, vd } from '../index';
+import {
+  clearItemByType,
+  hasChildren,
+  setupComponent,
+  setupDefaults,
+  vd,
+} from '../index';
 import { h } from 'vue';
 import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
 import { QItem, QItemSection } from 'quasar';
@@ -9,39 +15,29 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const { localData, localSchema, parentSchema, propKey, updated } =
-      setupDefaults.local(props, emit);
-
-    const clear = clearItemByType(localData, localSchema);
     const drop = () => {
       vd('drop ');
     };
 
+    const parent = setupComponent(props, emit);
+
     const getType = (propKey, schema) => {
-      return hasChildren(localSchema.value).value
-        ? h(QJsonTreeNode, {
-            modelValue: localData.value[propKey],
-            'onUpdate:modelValue': (value) =>
-              (localData.value[propKey] = value),
-            propKey: propKey,
-            schema: schema,
-            parentSchema: localSchema,
-            onUpdated: updated,
-          })
-        : h(QJsonTreeEditorField, {
-            modelValue: localData.value[propKey],
-            'onUpdate:modelValue': (value) =>
-              (localData.value[propKey] = value),
-            propKey: propKey,
-            schema: schema,
-            parentSchema: localSchema,
-            onUpdated: updated,
-            onDrop: drop,
-          });
+      const hProps = parent.hProps({
+        modelKey: propKey,
+        propKey,
+        schema: schema,
+        parentSchema: parent.localSchema.value,
+        clear: clearItemByType,
+        drop,
+      });
+
+      return hasChildren(parent.localSchema.value).value
+        ? h(QJsonTreeNode, hProps)
+        : h(QJsonTreeEditorField, hProps);
     };
 
     const children = [];
-    for (const propKey in localSchema.value.properties) {
+    for (const propKey in parent.localSchema.value.properties) {
       children.push(
         h(
           QItem,
@@ -49,7 +45,7 @@ export default {
             key: 'prop_' + propKey,
             class: 'q-json-tree-object q-pa-none q-ma-none',
           },
-          () => getType(propKey, localSchema.value.properties[propKey])
+          () => getType(propKey, parent.localSchema.value.properties[propKey])
         )
       );
     }
