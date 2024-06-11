@@ -1,11 +1,11 @@
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 
 export const vd = (val) => {
   console.log(val);
 };
 
 export const getPropertyKey = (index, localSchema) =>
-  Object.keys(localSchema?.properties || {})[index];
+  Object.keys(localSchema.properties || {})[index];
 
 export const valueBySchema = (value, localSchema) => {
   if (isNumeric(localSchema).value) {
@@ -30,21 +30,73 @@ export const setupDefaults = {
   },
 };
 
+export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
+  let localData = computedLocalData(props, emit, onBeforeUpdate, onAfterUpdate);
+  const localSchema = toRef(props, 'schema');
+  const propKey = toRef(props, 'propKey');
+  const parentSchema = toRef(props, 'parentSchema');
+
+  return {
+    props: setupDefaults.props,
+    emits: setupDefaults.emits,
+    propKey,
+    localSchema,
+    parentSchema,
+    localData,
+    is: (key) => {
+      if (isScalar(localSchema.value).value && key === 'scalar') return true;
+      if (isObject(localSchema.value).value && key === 'object') return true;
+      if (isArray(localSchema.value).value && key === 'array') return true;
+      if (isNumeric(localSchema.value).value && key === 'numeric') return true;
+      if (isBoolean(localSchema.value).value && key === 'boolean') return true;
+    },
+    mapType: () => {
+      if (isObject(localSchema.value).value) return 'object';
+      if (isArray(localSchema.value).value) return 'array';
+      if (isBoolean(localSchema.value).value) return 'boolean';
+      if (isNumeric(localSchema.value).value) return 'numeric';
+      if (isScalar(localSchema.value).value) return 'scalar';
+      return 'default';
+    },
+    hProps: (hProps) => {
+      localData = hProps.localData ? hProps.localData : localData;
+      const defaultEmit = (key) => {
+        return hProps[key] ? hProps[key] : (data) => emit(key, data);
+      };
+      const defaultUpdate = (value) => (localData.value = value);
+
+      return {
+        modelValue: props.modelValue,
+        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
+        propKey: propKey,
+        schema: hProps.schema || localSchema.value,
+        parentSchema: hProps.parentSchema || parentSchema.value,
+        onUpdated: defaultEmit('updated'),
+        onAdd: defaultEmit('add'),
+        onClear: defaultEmit('clear'),
+        onDrop: defaultEmit('drop'),
+      };
+    },
+  };
+};
+
 export const computedLocalData = (
   props,
-  emits,
+  emit,
   onBeforeSetCallback,
   onAfterSetCallback
 ) => {
+  const localSchema = toRef(props, 'schema');
+  const propKey = toRef(props, 'propKey');
   return computed({
     get: () => props.modelValue,
     set: (value) => {
       if (onBeforeSetCallback) {
-        value = onBeforeSetCallback(value);
+        value = onBeforeSetCallback(value, localSchema, propKey);
       }
-      emits('update:modelValue', value);
+      emit('update:modelValue', value);
       if (onAfterSetCallback) {
-        onAfterSetCallback(value);
+        onAfterSetCallback(value, localSchema, propKey);
       }
     },
   });
@@ -75,8 +127,6 @@ export const addItemByType = (localData, localSchema) => {
 
 export const clearItemByType = (localData, localSchema) => {
   return () => {
-    vd(localData.value);
-    vd(localData.value);
     if (isObject(localSchema.value).value) {
       localData.value = {};
     } else if (isArray(localSchema.value).value) {

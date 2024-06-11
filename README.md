@@ -1,4 +1,5 @@
-## This is an already usable work in progress.
+## This is a work in progress.
+### Please come back later!
 
 <img src="https://img.shields.io/npm/v/quasar-ui-json-tree-editor.svg?label=quasar-ui-json-tree-editor">
 <img src="https://img.shields.io/npm/v/quasar-app-extension-json-tree-editor.svg?label=quasar-app-extension-json-tree-editor">

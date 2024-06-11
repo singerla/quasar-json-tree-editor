@@ -9,26 +9,26 @@ const jsonSchema = {
   description: "A product from Acme's catalog",
   type: 'object',
   properties: {
-    prop2: {
-      type: 'array',
-      params: {
-        sortable: true,
-      },
-      items: {
-        type: 'number',
-      },
-    },
-    slider: {
-      type: 'array',
-      items: {
-        type: 'number',
-        component: 'Slider',
-        params: {
-          min: 0,
-          max: 100,
-        },
-      },
-    },
+    // prop2: {
+    //   type: 'array',
+    //   params: {
+    //     sortable: true,
+    //   },
+    //   items: {
+    //     type: 'number',
+    //   },
+    // },
+    // slider: {
+    //   type: 'array',
+    //   items: {
+    //     type: 'number',
+    //     component: 'Slider',
+    //     params: {
+    //       min: 0,
+    //       max: 100,
+    //     },
+    //   },
+    // },
     arrayOfArrays: {
       type: 'array',
       items: {
@@ -38,51 +38,52 @@ const jsonSchema = {
         },
       },
     },
-    objectsArray: {
-      type: 'array',
-      params: {
-        sortable: true,
-      },
-      items: {
-        type: 'object',
-        properties: {
-          key: {
-            type: 'string',
-          },
-          active: {
-            type: 'boolean',
-          },
-          background: {
-            type: 'object',
-            properties: {
-              color: {
-                type: 'string',
-                component: 'ColorPicker',
-              },
-            },
-          },
-        },
-      },
-    },
+    // objectsArray: {
+    //   type: 'array',
+    //   params: {
+    //     sortable: true,
+    //   },
+    //   items: {
+    //     type: 'object',
+    //     properties: {
+    //       key: {
+    //         type: 'string',
+    //       },
+    //       active: {
+    //         type: 'boolean',
+    //       },
+    //       background: {
+    //         type: 'object',
+    //         properties: {
+    //           color: {
+    //             type: 'string',
+    //             component: 'ColorPicker',
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
   },
 };
 
 const data = reactive({
-  prop2: [3, 4, 5],
-  slider: [30],
-  objectsArray: [
-    {
-      key: 'Key 1',
-      active: false,
-    },
-    {
-      key: 'Key 2',
-      active: true,
-      background: {
-        color: '#cccccc',
-      },
-    },
-  ],
+  arrayOfArrays: [['123'], ['abv', 'sdfdf']],
+  // prop2: [3, 4, 5],
+  // slider: [30],
+  // objectsArray: [
+  //   {
+  //     key: 'Key 1',
+  //     active: false,
+  //   },
+  //   {
+  //     key: 'Key 2',
+  //     active: true,
+  //     background: {
+  //       color: '#cccccc',
+  //     },
+  //   },
+  // ],
 });
 
 const updated = (tmp) => {

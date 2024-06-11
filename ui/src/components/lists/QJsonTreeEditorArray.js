@@ -1,9 +1,9 @@
-import { addItemToArray, setupDefaults } from "./index";
-import { h } from "vue";
-import QJsonTreeEditorArrayFixed from "./QJsonTreeEditorArrayFixed";
+import { addItemToArray, setupDefaults } from '../index';
+import { h } from 'vue';
+import QJsonTreeEditorArrayFixed from './QJsonTreeEditorArrayFixed';
 
 export default {
-  name: "QJsonTreeEditorArray",
+  name: 'QJsonTreeEditorArray',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -17,7 +17,7 @@ export default {
     return () =>
       h(QJsonTreeEditorArrayFixed, {
         modelValue: localData.value,
-        'onUpdate:modelValue': (value) => localData.value = value,
+        'onUpdate:modelValue': (value) => (localData.value = value),
         schema: localSchema.value,
         propKey: propKey.value,
         onUpdated: updated,
