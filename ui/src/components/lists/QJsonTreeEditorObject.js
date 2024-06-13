@@ -21,7 +21,7 @@ export default {
 
     const parent = setupComponent(props, emit);
 
-    const getType = (propKey, schema) => {
+    const getChildComponent = (propKey, schema) => {
       const hProps = parent.hProps({
         modelKey: propKey,
         propKey,
@@ -45,7 +45,11 @@ export default {
             key: 'prop_' + propKey,
             class: 'q-json-tree-object q-pa-none q-ma-none',
           },
-          () => getType(propKey, parent.localSchema.value.properties[propKey])
+          () =>
+            getChildComponent(
+              propKey,
+              parent.localSchema.value.properties[propKey]
+            )
         )
       );
     }

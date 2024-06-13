@@ -45,7 +45,7 @@ const jsonSchema = {
       type: 'array',
       params: {
         container: 'Card',
-        sortable: true,
+        sortable: false,
         showAddButton: true,
         group: {
           name: 'numbers',

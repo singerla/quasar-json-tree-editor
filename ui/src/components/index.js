@@ -42,7 +42,8 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     propKey,
     localSchema,
     parentSchema,
-    localData,
+    getLocalData: () => localData.value,
+    setLocalData: (newValue) => (localData.value = newValue),
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
       if (isObject(localSchema.value).value && key === 'object') return true;
@@ -64,8 +65,13 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
         return hProps[key] ? hProps[key] : (data) => emit(key, data);
       };
       const modelKey = hProps.modelKey;
+      const defaultValue =
+        modelKey !== undefined && localData.value
+          ? localData.value[modelKey]
+          : localData.value;
+
       const defaultUpdate = (value) => {
-        if (modelKey) {
+        if (modelKey !== undefined) {
           localData.value[modelKey] = value;
         } else {
           localData.value = value;
@@ -73,10 +79,7 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       };
 
       return {
-        modelValue:
-          modelKey && localData.value
-            ? localData.value[modelKey]
-            : localData.value,
+        modelValue: defaultValue,
         'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
         propKey: hProps.propKey ? hProps.propKey : propKey.value,
         schema: hProps.schema || localSchema.value,
@@ -149,12 +152,12 @@ export const clearItemByType = (localData, localSchema) => {
   };
 };
 
-export const addItemToArray = (localData, localSchema) => () => {
-  if (isObject(localSchema.value.items).value) {
+export const addItemToArray = (localData, localSchema) => (val) => {
+  if (isObject(localSchema.items).value) {
     const addData = {};
-    const addKeys = Object.keys(localSchema.value.items.properties);
+    const addKeys = Object.keys(localSchema.items.properties);
     addKeys.forEach((addKey) => {
-      const childSchema = localSchema.value.items.properties[addKey];
+      const childSchema = localSchema.items.properties[addKey];
       if (isObject(childSchema).value) {
         addData[addKey] = {};
       } else if (isArray(childSchema).value) {
@@ -167,15 +170,15 @@ export const addItemToArray = (localData, localSchema) => () => {
         addData[addKey] = null;
       }
     });
-    localData.value.push(addData);
-  } else if (isArray(localSchema.value.items).value) {
-    localData.value.push([]);
-  } else if (isNumeric(localSchema.value.items).value) {
-    localData.value.push(0);
-  } else if (isBoolean(localSchema.value.items).value) {
-    localData.value.push(false);
+    localData.push(addData);
+  } else if (isArray(localSchema.items).value) {
+    localData.push([]);
+  } else if (isNumeric(localSchema.items).value) {
+    localData.push(0);
+  } else if (isBoolean(localSchema.items).value) {
+    localData.push(false);
   } else {
-    localData.value.push('');
+    localData.push('');
   }
 };
 

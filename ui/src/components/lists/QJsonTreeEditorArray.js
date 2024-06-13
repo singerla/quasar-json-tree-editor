@@ -1,26 +1,36 @@
-import { addItemToArray, setupDefaults } from '../index';
+import { addItemToArray, setupComponent, setupDefaults, vd } from '../index';
 import { h } from 'vue';
 import QJsonTreeEditorArrayFixed from './QJsonTreeEditorArrayFixed';
+import QJsonTreeEditorArrayDraggable from './QJsonTreeEditorArrayDraggable';
 
 export default {
   name: 'QJsonTreeEditorArray',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const { localData, localSchema, parentSchema, propKey, updated } =
-      setupDefaults.local(props, emit);
+    const parent = setupComponent(props, emit);
+    const hProps = parent.hProps({
+      clear: () => {
+        vd('clear');
+        parent.setLocalData([]);
+      },
+      drop: (index) => {
+        vd('drop');
+        // parent.getLocalData().splice(index, 1);
+      },
+      add: (val) =>
+        addItemToArray(parent.getLocalData(), parent.localSchema.value)(val),
+    });
 
-    const addItem = addItemToArray(localData, localSchema);
-    const clear = () => (localData.value = []);
-    const drop = (index) => localData.value.splice(index, 1);
+    const components = {
+      Draggable: QJsonTreeEditorArrayDraggable,
+      Fixed: QJsonTreeEditorArrayFixed,
+    };
+    const componentKey = parent.localSchema.value.params?.sortable
+      ? 'Draggable'
+      : 'Fixed';
+    const component = components[componentKey] || components.Fixed;
 
-    return () =>
-      h(QJsonTreeEditorArrayFixed, {
-        modelValue: localData.value,
-        'onUpdate:modelValue': (value) => (localData.value = value),
-        schema: localSchema.value,
-        propKey: propKey.value,
-        onUpdated: updated,
-      });
+    return () => h(component, hProps);
   },
 };

@@ -1,17 +1,15 @@
 import {
   clearItemByType,
-  computedLocalData,
-  isArray,
-  isObject,
-  setupDefaults,
   setupComponent,
+  setupDefaults,
   valueBySchema,
   vd,
 } from '../index';
 import { h } from 'vue';
-import { QCheckbox, QInput } from 'quasar';
+import { QCheckbox, QInput, QItem, QItemSection } from 'quasar';
 import QJsonTreeEditorObject from '../lists/QJsonTreeEditorObject';
 import QJsonTreeEditorArray from '../lists/QJsonTreeEditorArray';
+import QJsonTreeMenu from '../menus/QJsonTreeMenu';
 
 export default {
   name: 'QJsonTreeEditorField',
@@ -55,7 +53,20 @@ export default {
       hProps.label = component.propKey.value;
     }
 
-    const targetComponent = mapComponents[mapType];
-    return () => h(targetComponent, hProps);
+    const targetComponent = mapComponents[mapType] || mapComponents.default;
+    return () =>
+      h(QItem, () => [
+        h(QItemSection, () => h(targetComponent, hProps)),
+        h(QItemSection, { side: true }, () =>
+          h(QJsonTreeMenu, {
+            onAdd: () => {
+              emit('add', {
+                data: component.getLocalData(),
+                schema: component.localSchema.value,
+              });
+            },
+          })
+        ),
+      ]);
   },
 };
