@@ -22,9 +22,11 @@ export default {
       });
     });
 
-    const group = component.localSchema.value.params?.group
-      ? component.localSchema.value.params.group
-      : {};
+    const group =
+      component.localSchema.value.params &&
+      component.localSchema.value.params.group
+        ? component.localSchema.value.params.group
+        : {};
 
     const getListItem = (index) => {
       const hProps = component.hProps({

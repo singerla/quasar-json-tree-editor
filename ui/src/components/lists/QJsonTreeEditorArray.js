@@ -26,9 +26,11 @@ export default {
       Draggable: QJsonTreeEditorArrayDraggable,
       Fixed: QJsonTreeEditorArrayFixed,
     };
-    const componentKey = parent.localSchema.value.params?.sortable
-      ? 'Draggable'
-      : 'Fixed';
+    const componentKey =
+      parent.localSchema.value.params &&
+      parent.localSchema.value.params.sortable
+        ? 'Draggable'
+        : 'Fixed';
     const component = components[componentKey] || components.Fixed;
 
     return () => h(component, hProps);
