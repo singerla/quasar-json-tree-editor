@@ -2,7 +2,7 @@
 import { setupDefaults } from '../index';
 import QJsonTreeElement from './QJsonTreeElement.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
-import QJsonTreeHeader from './QJsonTreeHeader.vue';
+import QJsonTreeHeader from './headers/QJsonTreeHeader.vue';
 
 const props = defineProps(setupDefaults.props);
 const emits = defineEmits(setupDefaults.emits);

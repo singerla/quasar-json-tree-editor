@@ -2,7 +2,7 @@
 import { toRef } from 'vue';
 import { computedLocalData } from '../index';
 import QJsonTreeElement from './QJsonTreeElement.vue';
-import QJsonTreeHeader from './QJsonTreeHeader.vue';
+import QJsonTreeHeader from './headers/QJsonTreeHeader.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 
 const props = defineProps(['modelValue', 'schema', 'parentSchema', 'propKey']);

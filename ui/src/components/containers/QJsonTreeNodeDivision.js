@@ -1,4 +1,4 @@
-import { setupDefaults, setupComponent } from '../index';
+import { setupDefaults, setupComponent, vd } from '../index';
 import { h } from 'vue';
 import QJsonTreeElement from './QJsonTreeElement';
 

@@ -42,8 +42,14 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     propKey,
     localSchema,
     parentSchema,
-    getLocalData: () => localData.value,
+    getLocalData: (defaultValue) => localData.value || defaultValue,
     setLocalData: (newValue) => (localData.value = newValue),
+    getSchemaParam: (key, defaultValue) => {
+      if (localSchema.value.params && localSchema.value.params[key]) {
+        return localSchema.value.params[key];
+      }
+      return defaultValue;
+    },
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
       if (isObject(localSchema.value).value && key === 'object') return true;
@@ -72,11 +78,14 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
 
       const defaultUpdate = (value) => {
         if (modelKey !== undefined) {
+          localData.value = localData.value || {};
           localData.value[modelKey] = value;
         } else {
           localData.value = value;
         }
       };
+
+      const addProps = hProps.addProps !== undefined ? hProps.addProps : {};
 
       return {
         modelValue: defaultValue,
@@ -88,6 +97,7 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
         onAdd: defaultEmit('add'),
         onClear: defaultEmit('clear'),
         onDrop: defaultEmit('drop'),
+        ...addProps,
       };
     },
   };

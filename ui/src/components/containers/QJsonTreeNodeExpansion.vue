@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { setupDefaults } from '../index';
-import QJsonTreeHeader from './QJsonTreeHeader.vue';
+import QJsonTreeHeader from './headers/QJsonTreeHeader.vue';
 import QJsonTreeElement from './QJsonTreeElement.vue';
 import QJsonTreeMenu from '../menus/QJsonTreeMenu.vue';
 

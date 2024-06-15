@@ -11,7 +11,7 @@ export default {
     const parent = setupComponent(props, emit);
 
     return () =>
-      parent.getLocalData().map((child, index) => {
+      parent.getLocalData([]).map((child, index) => {
         const hProps = parent.hProps({
           modelKey: index,
           propKey: 'field_' + index,
