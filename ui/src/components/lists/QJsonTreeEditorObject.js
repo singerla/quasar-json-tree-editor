@@ -1,5 +1,6 @@
 import {
   clearItemByType,
+  getPropertyKey,
   hasChildren,
   setupComponent,
   setupDefaults,
@@ -9,6 +10,7 @@ import { h } from 'vue';
 import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
 import { QItem, QItemSection } from 'quasar';
 import QJsonTreeNode from '../containers/QJsonTreeNode';
+import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty';
 
 export default {
   name: 'QJsonTreeEditorObject',
@@ -22,7 +24,7 @@ export default {
     const parent = setupComponent(props, emit);
 
     const getChildComponent = (propKey, schema) => {
-      const hProps = parent.hProps({
+      return parent.hProps({
         modelKey: propKey,
         propKey,
         schema: schema,
@@ -30,30 +32,34 @@ export default {
         clear: clearItemByType,
         drop,
       });
-
-      return hasChildren(parent.localSchema.value).value
-        ? h(QJsonTreeNode, hProps)
-        : h(QJsonTreeEditorField, hProps);
     };
 
-    const children = [];
-    for (const propKey in parent.localSchema.value.properties) {
-      children.push(
-        h(
+    const localData = parent.getLocalData({});
+    const isUndefined = (propKey) =>
+      !localData || localData[propKey] === undefined;
+
+    return () =>
+      parent.getProperties().map((propKey) => {
+        const childHProps = getChildComponent(
+          propKey,
+          parent.localSchema.value.properties[propKey]
+        );
+
+        if (isUndefined(propKey)) {
+          return h(ButtonAddObjectProperty, childHProps);
+        }
+
+        return h(
           QItem,
           {
             key: 'prop_' + propKey,
             class: 'q-json-tree-object q-pa-none q-ma-none',
           },
           () =>
-            getChildComponent(
-              propKey,
-              parent.localSchema.value.properties[propKey]
-            )
-        )
-      );
-    }
-
-    return () => children;
+            hasChildren(parent.localSchema.value).value
+              ? h(QJsonTreeNode, childHProps)
+              : h(QJsonTreeEditorField, childHProps)
+        );
+      });
   },
 };

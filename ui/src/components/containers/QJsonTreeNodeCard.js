@@ -1,9 +1,7 @@
-import { setupComponent, setupDefaults, vd } from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { h } from 'vue';
 import QJsonTreeElement from './QJsonTreeElement';
-import { QCard, QCardSection, QIcon } from 'quasar';
-import QJsonTreeMenu from '../menus/QJsonTreeMenu';
-import QJsonTreeHeader from './headers/QJsonTreeHeader.vue';
+import { QCard, QCardSection } from 'quasar';
 import QJsonTreeNodeHeader from './headers/QJsonTreeNodeHeader';
 
 export default {

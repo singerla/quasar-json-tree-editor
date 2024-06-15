@@ -50,6 +50,10 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       }
       return defaultValue;
     },
+    getProperties: () => {
+      return Object.keys(localSchema.value.properties) || [];
+    },
+    createProperty: createObjectProperty(localData, localSchema),
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
       if (isObject(localSchema.value).value && key === 'object') return true;
@@ -192,17 +196,16 @@ export const addItemToArray = (localData, localSchema) => (val) => {
   }
 };
 
-export const createObjectProperty =
-  (localData, localSchema, localKey) => () => {
-    if (isBoolean(localSchema.value).value) {
-      localData.value[localKey.value] = false;
-    } else if (isNumeric(localSchema.value).value) {
-      localData.value[localKey.value] = 0;
-    } else if (isObject(localSchema.value).value) {
-      localData.value[localKey.value] = {};
-    } else if (isArray(localSchema.value).value) {
-      localData.value[localKey.value] = [];
-    } else {
-      localData.value[localKey.value] = '';
-    }
-  };
+export const createObjectProperty = (localData, localSchema) => () => {
+  if (isBoolean(localSchema.value).value) {
+    localData.value = false;
+  } else if (isNumeric(localSchema.value).value) {
+    localData.value = 0;
+  } else if (isObject(localSchema.value).value) {
+    localData.value = {};
+  } else if (isArray(localSchema.value).value) {
+    localData.value = [];
+  } else {
+    localData.value = '';
+  }
+};
