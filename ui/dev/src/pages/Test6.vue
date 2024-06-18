@@ -19,7 +19,7 @@ const jsonSchema = {
         sortable: true,
         showAddButton: true,
         group: {
-          name: 'numbers',
+          name: 'idxNumbers',
         },
       },
       items: {
@@ -37,7 +37,7 @@ const jsonSchema = {
         },
       },
       items: {
-        type: 'number',
+        type: 'string',
       },
     },
     prop3: {
@@ -67,7 +67,7 @@ const data = reactive({
 const updated = (tmp) => {
   vd('updated root');
   vd(tmp);
-  vd(data);
+  // vd(data);
 };
 
 const sep1 = ref(70);

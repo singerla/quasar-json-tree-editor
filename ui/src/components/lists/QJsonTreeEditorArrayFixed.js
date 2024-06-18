@@ -12,13 +12,14 @@ export default {
 
     return () =>
       parent.getLocalData([]).map((child, index) => {
-        const hProps = parent.hProps({
-          modelKey: index,
-          propKey: 'field_' + index,
-          schema: parent.localSchema.value.items,
-          parentSchema: parent.localSchema.value,
-          drop: () => parent.getLocalData().splice(index, 1),
-        });
+        const hProps = parent.hPropsIndexed(
+          {
+            propKey: 'field_' + index,
+            schema: parent.localSchema.value.items,
+            parentSchema: parent.localSchema.value,
+          },
+          index
+        );
 
         return h(
           QItem,

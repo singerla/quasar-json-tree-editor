@@ -9,18 +9,7 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const parent = setupComponent(props, emit);
-    const hProps = parent.hProps({
-      clear: () => {
-        vd('clear');
-        parent.setLocalData([]);
-      },
-      drop: (index) => {
-        vd('drop');
-        // parent.getLocalData().splice(index, 1);
-      },
-      add: (val) =>
-        addItemToArray(parent.getLocalData(), parent.localSchema.value)(val),
-    });
+    const hProps = parent.hProps({});
 
     const components = {
       Draggable: QJsonTreeEditorArrayDraggable,

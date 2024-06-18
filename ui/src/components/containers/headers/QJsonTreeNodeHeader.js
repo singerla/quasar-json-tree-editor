@@ -9,13 +9,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const hProps = setupComponent(props, emit).hProps({
-      addProps: {
-        onClick: (e) => {
-          e.stopPropagation();
-        },
-      },
-    });
+    const hProps = setupComponent(props, emit).hProps({});
     return () =>
       h(QJsonTreeHeader, hProps, {
         icon: () => h(QIcon, { name: 'data_object' }),

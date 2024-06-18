@@ -17,33 +17,22 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const drop = () => {
-      vd('drop ');
-    };
-
     const parent = setupComponent(props, emit);
-
-    const getChildComponent = (propKey, schema) => {
-      return parent.hProps({
-        modelKey: propKey,
-        propKey,
-        schema: schema,
-        parentSchema: parent.localSchema.value,
-        clear: clearItemByType,
-        drop,
-      });
-    };
-
     const localData = parent.getLocalData({});
+    const schema = parent.getLocalSchema()
     const isUndefined = (propKey) =>
       !localData || localData[propKey] === undefined;
 
     return () =>
       parent.getProperties().map((propKey) => {
-        const childHProps = getChildComponent(
-          propKey,
-          parent.localSchema.value.properties[propKey]
-        );
+        const childHProps = parent.hPropsIndexed(
+            {
+              propKey,
+              schema: schema.properties[propKey],
+              parentSchema: schema,
+            },
+            propKey
+          );
 
         if (isUndefined(propKey)) {
           return h(ButtonAddObjectProperty, childHProps);

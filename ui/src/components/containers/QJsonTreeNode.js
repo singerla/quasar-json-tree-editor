@@ -18,14 +18,11 @@ export default {
     const component = setupComponent(props, emit);
     const hProps = component.hProps({
       updated: (data) => {
-        vd('updated QJsonTreeNode');
         if (data.path) {
           data.path.push(props.propKey);
         }
         emit('updated', data);
-      },
-      add: addItemByType,
-      clear: clearItemByType,
+      }
     });
 
     const components = {

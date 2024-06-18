@@ -4,8 +4,8 @@ import { QBtn, QItem, QItemSection, QList, QMenu } from 'quasar';
 
 export default {
   name: 'QJsonTreeMenuItem',
-  props: [...setupDefaults.props, 'label'],
-  emits: setupDefaults.emits,
+  props: ['label'],
+  emits: ['click'],
   setup(props, { emit }) {
     return () =>
       h(
@@ -13,8 +13,9 @@ export default {
         {
           clickable: true,
           disable: false,
-          onClick: () => {
-            emit('add');
+          onClick: (e) => {
+            e.stopPropagation();
+            emit('click');
           },
         },
         () =>

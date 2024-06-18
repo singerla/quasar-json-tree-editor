@@ -21,13 +21,10 @@ export default {
 
     let componentIs;
     if (component.is('scalar')) {
-      vd('Element is scalar');
       componentIs = QJsonTreeEditorField;
     } else if (component.is('object')) {
-      vd('Element is isObject');
       componentIs = QJsonTreeEditorObject;
     } else if (component.is('array')) {
-      vd('Element is isArray');
       componentIs = QJsonTreeEditorArray;
     }
 

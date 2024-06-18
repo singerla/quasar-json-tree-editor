@@ -15,19 +15,8 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'schema', 'parentSchema', 'propKey'],
-  emits: ['update:modelValue', 'updated', 'add', 'clear', 'drop'],
-  local: (props, emits) => {
-    return {
-      localData: computedLocalData(props, emits),
-      localSchema: toRef(props, 'schema'),
-      propKey: toRef(props, 'propKey'),
-      parentSchema: toRef(props, 'parentSchema'),
-      updated: (data) => {
-        emits('updated', data);
-      },
-    };
-  },
+  props: ['modelValue', 'schema', 'parentSchema', 'propKey', 'parentData'],
+  emits: ['update:modelValue', 'updated'],
 };
 
 export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
@@ -35,6 +24,23 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
   const localSchema = toRef(props, 'schema');
   const propKey = toRef(props, 'propKey');
   const parentSchema = toRef(props, 'parentSchema');
+  const parentData = toRef(props, 'parentData');
+
+  const defaultEmit = (key, hProps) => {
+    return hProps[key] ? hProps[key] : (data) => emit(key, data);
+  };
+
+  const defaultHProps = (hProps, defaultData, defaultUpdate) => {
+    return {
+      modelValue: defaultData,
+      'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
+      propKey: hProps.propKey ? hProps.propKey : propKey.value,
+      schema: hProps.schema || localSchema.value,
+      parentSchema: hProps.parentSchema || parentSchema.value,
+      parentData: hProps.parentData || parentData,
+      onUpdated: defaultEmit('updated', hProps),
+    };
+  };
 
   return {
     props: setupDefaults.props,
@@ -44,6 +50,9 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     parentSchema,
     getLocalData: (defaultValue) => localData.value || defaultValue,
     setLocalData: (newValue) => (localData.value = newValue),
+    getLocalSchema: () => localSchema.value,
+    getParentSchema: () => parentSchema.value,
+    getParentData: () => parentData.value,
     getSchemaParam: (key, defaultValue) => {
       if (localSchema.value.params && localSchema.value.params[key]) {
         return localSchema.value.params[key];
@@ -54,6 +63,22 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       return Object.keys(localSchema.value.properties) || [];
     },
     createProperty: createObjectProperty(localData, localSchema),
+    hPropsIndexed: (hProps, modelKey) => {
+      const defaultValue = localData.value[modelKey];
+      const defaultUpdate = (value) => {
+        localData.value = localData.value || {};
+        localData.value[modelKey] = value;
+      };
+
+      return defaultHProps(hProps, defaultValue, defaultUpdate);
+    },
+    hProps: (hProps) => {
+      const defaultValue = localData.value;
+      const defaultUpdate = (value) => {
+        localData.value = value;
+      };
+      return defaultHProps(hProps, defaultValue, defaultUpdate);
+    },
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
       if (isObject(localSchema.value).value && key === 'object') return true;
@@ -68,41 +93,6 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       if (isNumeric(localSchema.value).value) return 'numeric';
       if (isScalar(localSchema.value).value) return 'scalar';
       return 'default';
-    },
-    hProps: (hProps) => {
-      localData = hProps.localData ? hProps.localData : localData;
-      const defaultEmit = (key) => {
-        return hProps[key] ? hProps[key] : (data) => emit(key, data);
-      };
-      const modelKey = hProps.modelKey;
-      const defaultValue =
-        modelKey !== undefined && localData.value
-          ? localData.value[modelKey]
-          : localData.value;
-
-      const defaultUpdate = (value) => {
-        if (modelKey !== undefined) {
-          localData.value = localData.value || {};
-          localData.value[modelKey] = value;
-        } else {
-          localData.value = value;
-        }
-      };
-
-      const addProps = hProps.addProps !== undefined ? hProps.addProps : {};
-
-      return {
-        modelValue: defaultValue,
-        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-        propKey: hProps.propKey ? hProps.propKey : propKey.value,
-        schema: hProps.schema || localSchema.value,
-        parentSchema: hProps.parentSchema || parentSchema.value,
-        onUpdated: defaultEmit('updated'),
-        onAdd: defaultEmit('add'),
-        onClear: defaultEmit('clear'),
-        onDrop: defaultEmit('drop'),
-        ...addProps,
-      };
     },
   };
 };
@@ -167,6 +157,7 @@ export const clearItemByType = (localData, localSchema) => {
 };
 
 export const addItemToArray = (localData, localSchema) => (val) => {
+  vd(isNumeric(localSchema.items))
   if (isObject(localSchema.items).value) {
     const addData = {};
     const addKeys = Object.keys(localSchema.items.properties);

@@ -28,13 +28,11 @@ export default {
           oldValue,
           path: [],
         });
-        return value;
+        return newValue;
       }
     );
 
-    const hProps = component.hProps({
-      clear: clearItemByType,
-    });
+    const hProps = component.hProps({});
 
     const mapComponents = {
       object: QJsonTreeEditorObject,
@@ -50,23 +48,14 @@ export default {
       hProps.type = 'number';
     }
     if (component.is('scalar')) {
-      hProps.label = component.propKey.value;
+      // hProps.label = component.propKey.value;
     }
 
     const targetComponent = mapComponents[mapType] || mapComponents.default;
     return () =>
       h(QItem, () => [
         h(QItemSection, () => h(targetComponent, hProps)),
-        h(QItemSection, { side: true }, () =>
-          h(QJsonTreeMenu, {
-            onAdd: () => {
-              emit('add', {
-                data: component.getLocalData(),
-                schema: component.localSchema.value,
-              });
-            },
-          })
-        ),
+        h(QItemSection, { side: true }, () => h(QJsonTreeMenu, hProps)),
       ]);
   },
 };

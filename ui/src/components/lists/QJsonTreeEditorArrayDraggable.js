@@ -1,5 +1,5 @@
-import { setupComponent, setupDefaults, vd } from '../index';
-import { computed, h, ref } from 'vue';
+import { setupComponent, setupDefaults } from '../index';
+import { computed, h, ref, watch } from 'vue';
 import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
 import { QIcon, QItem, QItemSection, QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
@@ -11,48 +11,73 @@ export default {
   setup(props, { emit }) {
     const el = ref(null);
     const oldValue = ref(null);
+    const wasSorted = ref(false);
 
     const component = setupComponent(props, emit, null, (value) => {
       emit('updated', {
         propKey: props.propKey,
-        wasSorted: true,
+        wasSorted: wasSorted.value,
         newValue: value,
         oldValue: oldValue.value,
         path: [],
       });
     });
 
-    const group =
-      component.localSchema.value.params &&
-      component.localSchema.value.params.group
-        ? component.localSchema.value.params.group
-        : {};
+    const group = component.getSchemaParam('group', {});
 
-    const getListItem = (index) => {
-      const hProps = component.hProps({
-        modelKey: index,
-        propKey: 'field_' + index,
-        schema: component.localSchema.value.items,
-        parentSchema: component.localSchema.value,
-        add: (value) => {
-          vd(value);
-          emit('add', value);
+    const draggableData = ref([]);
+    watch(
+      component.getLocalData(),
+      (data) => {
+        data.forEach((item, index) => {
+          if (!draggableData.value.find((ex) => ex.id === index)) {
+            draggableData.value.push({
+              value: item,
+              id: index,
+            });
+          }
+        });
+      },
+      { immediate: true }
+    );
+
+    const updateLocalData = () => {
+      component.setLocalData(draggableData.value.map((item) => item.value));
+    };
+
+    useDraggable(el, draggableData, {
+      animation: 150,
+      group,
+      onStart() {
+        oldValue.value = component.getLocalData();
+      },
+      onEnd() {
+        wasSorted.value = true;
+        updateLocalData();
+        wasSorted.value = false;
+      },
+    });
+
+    const getListItem = (item) => {
+      const hProps = component.hPropsIndexed(
+        {
+          propKey: 'field_' + item.id,
+          schema: component.localSchema.value.items,
+          parentSchema: component.localSchema.value,
+          parentData: component.getLocalData(),
         },
-        drop: (i) => {
-          vd('drop ' + i);
-          // emit('drop', index);
-        },
-      });
+        item.id
+      );
+
+      hProps.modelValue = computed(() => item.value);
+      hProps['onUpdate:modelValue'] = (fieldVal) => {
+        item.value = fieldVal;
+        updateLocalData();
+      };
 
       return {
         props: {
-          key:
-            'field_' +
-            component.propKey.value +
-            '_' +
-            index +
-            '_' +
-            Math.random(),
+          key: 'field_' + component.propKey.value + '_' + item.id,
           class: 'q-json-tree-list-item',
         },
         children: [
@@ -68,21 +93,10 @@ export default {
               }),
             ]
           ),
-          h(QItemSection, {}, () => h(QJsonTreeEditorField, hProps)),
+          h(QItemSection, () => h(QJsonTreeEditorField, hProps)),
         ],
       };
     };
-
-    useDraggable(el, component.getLocalData(), {
-      animation: 150,
-      group,
-      onStart() {
-        oldValue.value = component.getLocalData();
-        console.log('start');
-      },
-      onUpdate() {},
-      onEnd() {},
-    });
 
     return () =>
       h(
@@ -93,8 +107,8 @@ export default {
           class: 'q-json-tree-list',
         },
         () =>
-          component.getLocalData().map((child, index) => {
-            const item = getListItem(index);
+          draggableData.value.map((value, index) => {
+            const item = getListItem(value, index);
             return h(QItem, item.props, () => item.children);
           })
       );

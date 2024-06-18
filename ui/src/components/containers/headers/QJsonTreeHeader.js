@@ -1,10 +1,11 @@
 import { h } from 'vue';
 import { QChip, QItem, QItemLabel, QItemSection } from 'quasar';
+import {setupDefaults} from "../../index";
 
 export default {
   name: 'QJsonTreeHeader',
-  props: ['schema', 'propKey', 'showType', 'showKey'],
-  emits: [],
+  props: [...setupDefaults.props, 'showType', 'showKey'],
+  emits: setupDefaults.emits,
   setup(props, { slots }) {
     return () =>
       h(
@@ -19,13 +20,13 @@ export default {
           ]),
           h(QItemSection, { side: true }, () =>
             h(QChip, {
-              label: props.schema.type,
-              color: 'grey-2',
+              label: props.schema?.type,
+              color: 'grey-6',
             })
           ),
           h(QItemSection, { side: true }, () =>
             h(QChip, {
-              label: 'of ' + props.schema.items.type + 's',
+              label: 'of ' + props.schema?.items?.type + 's',
               color: 'grey-6',
             })
           ),
