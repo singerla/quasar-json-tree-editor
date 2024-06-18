@@ -15,7 +15,7 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'schema', 'parentSchema', 'propKey', 'parentData'],
+  props: ['modelValue', 'schema', 'parentSchema', 'propKey', 'parentData', 'index'],
   emits: ['update:modelValue', 'updated'],
 };
 
@@ -69,8 +69,7 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
         localData.value = localData.value || {};
         localData.value[modelKey] = value;
       };
-
-      return defaultHProps(hProps, defaultValue, defaultUpdate);
+      return { ...defaultHProps(hProps, defaultValue, defaultUpdate), index: modelKey };
     },
     hProps: (hProps) => {
       const defaultValue = localData.value;
@@ -156,8 +155,7 @@ export const clearItemByType = (localData, localSchema) => {
   };
 };
 
-export const addItemToArray = (localData, localSchema) => (val) => {
-  vd(isNumeric(localSchema.items))
+export const addItemToArray = (localData, localSchema) => {
   if (isObject(localSchema.items).value) {
     const addData = {};
     const addKeys = Object.keys(localSchema.items.properties);

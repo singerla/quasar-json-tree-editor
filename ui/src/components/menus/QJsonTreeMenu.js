@@ -11,24 +11,14 @@ export default {
     const component = setupComponent(props, emit);
 
     const doAdd = () => {
-      // vd(component.getParentSchema());
       const localSchema = component.getLocalSchema();
       const parentSchema = component.getParentSchema();
 
       if(component.is('scalar')) {
-        vd('is scalar')
         addItemToArray(component.getParentData(), parentSchema)
-        // component.getParentData().push('')
+      } else if(localSchema.type === 'array') {
+        addItemToArray(component.getLocalData(), localSchema)
       }
-      //
-      // vd(localSchema.type);
-      // vd(parentSchema);
-      //
-      // if(localSchema.type === 'array') {
-      //   component.getLocalData().push('')
-      // } else {
-      //   component.getParentData().push('')
-      // }
     };
 
     return () =>

@@ -1,4 +1,4 @@
-import { addItemToArray, setupComponent, setupDefaults, vd } from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { h } from 'vue';
 import QJsonTreeEditorArrayFixed from './QJsonTreeEditorArrayFixed';
 import QJsonTreeEditorArrayDraggable from './QJsonTreeEditorArrayDraggable';
