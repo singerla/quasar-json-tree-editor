@@ -1,11 +1,8 @@
-import { computed, toRef, watch } from 'vue';
+import { computed, toRef } from 'vue';
 
 export const vd = (val) => {
   console.log(val);
 };
-
-export const getPropertyKey = (index, localSchema) =>
-  Object.keys(localSchema.properties || {})[index];
 
 export const valueBySchema = (value, localSchema) => {
   if (isNumeric(localSchema).value) {
@@ -15,140 +12,80 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: [
-    'modelValue',
-    'schema',
-    'parentSchema',
-    'propKey',
-    'parentData',
-    'index',
-    'type',
-  ],
+  props: ['modelValue', 'propKey', 'schema', 'index', 'type'],
   emits: ['update:modelValue', 'updated'],
 };
 
-export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
-  let localData = computedLocalData(props, emit, onBeforeUpdate, onAfterUpdate);
-
-  const localSchema = toRef(props, 'schema');
-  const propKey = toRef(props, 'propKey');
-  const parentSchema = toRef(props, 'parentSchema');
-  const parentData = toRef(props, 'parentData');
-
-  const defaultEmit = (key, hProps) => {
-    return hProps[key] ? hProps[key] : (data) => emit(key, data);
-  };
-
-  const defaultHProps = (hProps, defaultUpdate) => {
-    return {
-      'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-      propKey: hProps.propKey ? hProps.propKey : propKey.value,
-      schema: hProps.schema || localSchema.value,
-      parentSchema: hProps.parentSchema || parentSchema.value,
-      parentData: hProps.parentData || parentData,
-      onUpdated: defaultEmit('updated', hProps),
-    };
-  };
-
+export const hScalarParams = (props, emit, type) => {
   return {
-    props: setupDefaults.props,
-    emits: setupDefaults.emits,
-    propKey,
-    localSchema,
-    parentSchema,
-    getLocalData: (defaultValue) => localData.value || defaultValue,
-    setLocalData: (newValue) => (localData.value = newValue),
-    getLocalSchema: () => localSchema.value,
-    getParentSchema: () => parentSchema.value,
-    getParentData: () => parentData.value,
-    getSchemaParam: (key, defaultValue) => {
-      if (localSchema.value.params && localSchema.value.params[key]) {
-        return localSchema.value.params[key];
-      }
-      return defaultValue;
+    modelValue: props.modelValue,
+    'onUpdate:modelValue': (val) => {
+      emit('update:modelValue', val);
     },
-    getProperties: () => {
-      return Object.keys(localSchema.value.properties) || [];
+    onUpdated: (val) => {
+      val.path.push({
+        key: props.propKey,
+        type: type,
+        index: props.index,
+      });
+      emit('updated', val);
     },
-    createProperty: createObjectProperty(localData, localSchema),
-
-    hPropsIndexed: (hProps, modelKey) => {
-      const defaultUpdate = (value) => {
-        localData.value[modelKey] = value;
-      };
-
-      return {
-        modelValue: localData.value[modelKey],
-        modelValue2: computed(() => props.modelValue[modelKey]),
-        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-        propKey: hProps.propKey ? hProps.propKey : propKey.value,
-        schema: hProps.schema || localSchema.value,
-        parentSchema: hProps.parentSchema || parentSchema.value,
-        onUpdated: defaultEmit('updated', hProps),
-      };
-    },
-    hProps: (hProps) => {
-      const defaultUpdate = (value) => {
-        // vd('defaultUpdate');
-        // vd(parentData);
-        localData.value = value;
-        // emit('update:modelValue', value);
-      };
-
-      return {
-        modelValue: props.modelValue,
-        modelValue2: computed(() => props.modelValue),
-        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-        propKey: hProps.propKey ? hProps.propKey : propKey.value,
-        schema: hProps.schema || localSchema.value,
-        parentSchema: hProps.parentSchema || parentSchema.value,
-        onUpdated: defaultEmit('updated', hProps),
-      };
-    },
-    is: (key) => {
-      if (isScalar(localSchema.value).value && key === 'scalar') return true;
-      if (isObject(localSchema.value).value && key === 'object') return true;
-      if (isArray(localSchema.value).value && key === 'array') return true;
-      if (isNumeric(localSchema.value).value && key === 'numeric') return true;
-      if (isBoolean(localSchema.value).value && key === 'boolean') return true;
-    },
-    mapType: () => {
-      if (isObject(localSchema.value).value) return 'object';
-      if (isArray(localSchema.value).value) return 'array';
-      if (isBoolean(localSchema.value).value) return 'boolean';
-      if (isNumeric(localSchema.value).value) return 'numeric';
-      if (isScalar(localSchema.value).value) return 'scalar';
-      return 'default';
-    },
+    schema: props.schema,
+    propKey: props.propKey,
+    type: type,
   };
 };
 
-export const computedLocalData = (
-  props,
-  emit,
-  onBeforeSetCallback,
-  onAfterSetCallback
-) => {
-  const localSchema = toRef(props, 'schema');
-  const propKey = toRef(props, 'propKey');
-  const modelValue = toRef(props, 'modelValue');
-  //
-  // watch(modelValue, () => {
-  //   vd('watch model value');
-  // });
-
-  return computed({
-    get: () => modelValue.value,
-    set: (value) => {
-      if (onBeforeSetCallback) {
-        value = onBeforeSetCallback(value, localSchema, propKey);
-      }
-      emit('update:modelValue', value);
-      if (onAfterSetCallback) {
-        onAfterSetCallback(value, localSchema, propKey);
-      }
+export const hDefParams = (props, emit, type) => {
+  return {
+    modelValue: props.modelValue,
+    onUpdated: (val) => {
+      val.path.push({
+        key: props.propKey,
+        type: type,
+      });
+      emit('updated', val);
     },
-  });
+    schema: props.schema,
+    propKey: props.propKey,
+    type: type,
+  };
+};
+
+export const hParams = (props, emit, index, type, add) => {
+  const params = {
+    key: index,
+    modelValue: props.modelValue[index],
+    onUpdated: (val) => {
+      if (!add || add.onUpdatedPush !== false) {
+        val.path.push({
+          key: props.propKey,
+          type: type,
+          index: index,
+        });
+      }
+
+      emit('updated', val);
+    },
+    schema: props.schema.items,
+    propKey: props.propKey + '_' + index,
+    index: index,
+    type: type,
+  };
+
+  if (add) {
+    if (add.updateModelValue) {
+      params['onUpdate:modelValue'] = (val) => {
+        props.modelValue[index] = val;
+      };
+    }
+
+    if (add.schemaFromProperties) {
+      params.schema = props.schema.properties[index];
+    }
+  }
+
+  return params;
 };
 
 const scalarTypes = ['integer', 'number', 'string', 'boolean'];

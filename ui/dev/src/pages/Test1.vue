@@ -76,7 +76,7 @@ const jsonSchema = {
 };
 const updated = (tmp) => {
   vd('updated root');
-  // vd(tmp);
+  vd(tmp);
   // vd(data);
 };
 const sep1 = ref(70);
