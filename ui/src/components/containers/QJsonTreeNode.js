@@ -1,11 +1,5 @@
-import { h } from 'vue';
-import {
-  addItemByType,
-  clearItemByType,
-  setupComponent,
-  setupDefaults,
-  vd,
-} from '../index';
+import { h, toRef, watch } from 'vue';
+import { setupComponent, setupDefaults, vd } from '../index';
 import QJsonTreeNodeDivision from './QJsonTreeNodeDivision';
 import QJsonTreeNodeCard from './QJsonTreeNodeCard';
 import QJsonTreeNodeExpansion from './QJsonTreeNodeExpansion';
@@ -16,13 +10,14 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const component = setupComponent(props, emit);
+
     const hProps = component.hProps({
       updated: (data) => {
         if (data.path) {
           data.path.push(props.propKey);
         }
         emit('updated', data);
-      }
+      },
     });
 
     const components = {
@@ -40,7 +35,7 @@ export default {
         {
           class: 'q-json-tree-node',
         },
-        h(targetComponent, hProps)
+        [h(targetComponent, hProps)]
       ),
     ];
   },

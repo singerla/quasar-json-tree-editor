@@ -1,11 +1,5 @@
-import {
-  clearItemByType,
-  setupComponent,
-  setupDefaults,
-  valueBySchema,
-  vd,
-} from '../index';
-import { h } from 'vue';
+import { setupComponent, setupDefaults, valueBySchema, vd } from '../index';
+import { computed, h, toRef, watch } from 'vue';
 import { QCheckbox, QInput, QItem, QItemSection } from 'quasar';
 import QJsonTreeEditorObject from '../lists/QJsonTreeEditorObject';
 import QJsonTreeEditorArray from '../lists/QJsonTreeEditorArray';
@@ -33,6 +27,27 @@ export default {
     );
 
     const hProps = component.hProps({});
+
+    hProps.modelValue = computed(() => props.modelValue);
+
+    // hProps['onUpdate:modelValue'] = (val) => {
+    //   vd(props.propKey);
+    //   vd(val);
+    //   // emit('update:modelValue', val);
+    //   // component.setLocalData(val);
+    // };
+
+    // watch(hProps.modelValue, (newVal) => {
+    //   vd('updated field ');
+    //   vd(newVal);
+    //   // vd(hProps.modelValue);
+    //   // vd(hProps.modelValue2);
+    // });
+
+    // watch(hProps.modelValue, (newVal) => {
+    //   vd('updated field ');
+    //   vd(newVal);
+    // });
 
     const mapComponents = {
       object: QJsonTreeEditorObject,

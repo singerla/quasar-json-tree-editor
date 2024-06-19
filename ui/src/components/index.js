@@ -1,4 +1,4 @@
-import { computed, toRef } from 'vue';
+import { computed, toRef, watch } from 'vue';
 
 export const vd = (val) => {
   console.log(val);
@@ -15,12 +15,21 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'schema', 'parentSchema', 'propKey', 'parentData', 'index'],
+  props: [
+    'modelValue',
+    'schema',
+    'parentSchema',
+    'propKey',
+    'parentData',
+    'index',
+    'type',
+  ],
   emits: ['update:modelValue', 'updated'],
 };
 
 export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
   let localData = computedLocalData(props, emit, onBeforeUpdate, onAfterUpdate);
+
   const localSchema = toRef(props, 'schema');
   const propKey = toRef(props, 'propKey');
   const parentSchema = toRef(props, 'parentSchema');
@@ -30,9 +39,8 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     return hProps[key] ? hProps[key] : (data) => emit(key, data);
   };
 
-  const defaultHProps = (hProps, defaultData, defaultUpdate) => {
+  const defaultHProps = (hProps, defaultUpdate) => {
     return {
-      modelValue: defaultData,
       'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
       propKey: hProps.propKey ? hProps.propKey : propKey.value,
       schema: hProps.schema || localSchema.value,
@@ -63,20 +71,39 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       return Object.keys(localSchema.value.properties) || [];
     },
     createProperty: createObjectProperty(localData, localSchema),
+
     hPropsIndexed: (hProps, modelKey) => {
-      const defaultValue = localData.value[modelKey];
       const defaultUpdate = (value) => {
-        localData.value = localData.value || {};
         localData.value[modelKey] = value;
       };
-      return { ...defaultHProps(hProps, defaultValue, defaultUpdate), index: modelKey };
+
+      return {
+        modelValue: localData.value[modelKey],
+        modelValue2: computed(() => props.modelValue[modelKey]),
+        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
+        propKey: hProps.propKey ? hProps.propKey : propKey.value,
+        schema: hProps.schema || localSchema.value,
+        parentSchema: hProps.parentSchema || parentSchema.value,
+        onUpdated: defaultEmit('updated', hProps),
+      };
     },
     hProps: (hProps) => {
-      const defaultValue = localData.value;
       const defaultUpdate = (value) => {
+        // vd('defaultUpdate');
+        // vd(parentData);
         localData.value = value;
+        // emit('update:modelValue', value);
       };
-      return defaultHProps(hProps, defaultValue, defaultUpdate);
+
+      return {
+        modelValue: props.modelValue,
+        modelValue2: computed(() => props.modelValue),
+        'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
+        propKey: hProps.propKey ? hProps.propKey : propKey.value,
+        schema: hProps.schema || localSchema.value,
+        parentSchema: hProps.parentSchema || parentSchema.value,
+        onUpdated: defaultEmit('updated', hProps),
+      };
     },
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
@@ -104,8 +131,14 @@ export const computedLocalData = (
 ) => {
   const localSchema = toRef(props, 'schema');
   const propKey = toRef(props, 'propKey');
+  const modelValue = toRef(props, 'modelValue');
+  //
+  // watch(modelValue, () => {
+  //   vd('watch model value');
+  // });
+
   return computed({
-    get: () => props.modelValue,
+    get: () => modelValue.value,
     set: (value) => {
       if (onBeforeSetCallback) {
         value = onBeforeSetCallback(value, localSchema, propKey);
@@ -131,29 +164,6 @@ export const hasChildren = (schema) =>
 export const isObject = (schema) => computed(() => schema.type === 'object');
 export const isArray = (schema) => computed(() => schema.type === 'array');
 export const isBoolean = (schema) => computed(() => schema.type === 'boolean');
-
-export const addItemByType = (localData, localSchema) => {
-  const addToArray = addItemToArray(localData, localSchema);
-  return () => {
-    if (localSchema.value.type === 'array') {
-      addToArray();
-    }
-  };
-};
-
-export const clearItemByType = (localData, localSchema) => {
-  return () => {
-    if (isObject(localSchema.value).value) {
-      localData.value = {};
-    } else if (isArray(localSchema.value).value) {
-      localData.value = [];
-    } else if (isNumeric(localSchema.value).value) {
-      localData.value = 0;
-    } else {
-      localData.value = '';
-    }
-  };
-};
 
 export const addItemToArray = (localData, localSchema) => {
   if (isObject(localSchema.items).value) {
@@ -197,4 +207,18 @@ export const createObjectProperty = (localData, localSchema) => () => {
   } else {
     localData.value = '';
   }
+};
+
+export const clearItemByType = (localData, localSchema) => {
+  return () => {
+    if (isObject(localSchema.value).value) {
+      localData.value = {};
+    } else if (isArray(localSchema.value).value) {
+      localData.value = [];
+    } else if (isNumeric(localSchema.value).value) {
+      localData.value = 0;
+    } else {
+      localData.value = '';
+    }
+  };
 };

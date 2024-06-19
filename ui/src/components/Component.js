@@ -1,6 +1,7 @@
-import { computed, h } from 'vue';
+import { computed, h, toRef } from 'vue';
 import QJsonTreeNode from './containers/QJsonTreeNode';
 import { vd } from './index';
+import QJsonTreeNodePre from './containers/QJsonTreeNodePre';
 
 export default {
   name: 'QJsonTreeEditor',
@@ -9,7 +10,7 @@ export default {
 
   setup(props, { emit }) {
     return () => [
-      h(QJsonTreeNode, {
+      h(QJsonTreeNodePre, {
         schema: props.schema,
         modelValue: props.modelValue,
         'onUpdate:modelValue': (value) => {

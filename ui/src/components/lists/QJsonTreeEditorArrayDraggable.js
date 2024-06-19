@@ -1,7 +1,6 @@
 import { setupComponent, setupDefaults, vd } from '../index';
-import { computed, h, ref, watchEffect } from 'vue';
-import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
-import { QIcon, QItemSection, QList } from 'quasar';
+import { computed, h, ref } from 'vue';
+import { QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
 import QJsonTreeEditorArrayDraggableItem from './QJsonTreeEditorArrayDraggableItem';
 
@@ -26,28 +25,17 @@ export default {
 
     const group = component.getSchemaParam('group', {});
 
-    const draggableData = computed({
-      get: () => {
-        if(!component.getLocalData()?.map) {
-          return []
-        }
+    const draggableData = computed(() => {
+      if (!component.getLocalData()?.map) {
+        return [];
+      }
 
-        return component.getLocalData().map((item, index) => {
-          return {
-            value: item,
-            id: index,
-          };
-        });
-      },
-      set: (newList) => {
-        // const updateData = newList.map((item) => item.value);
-        // component.setLocalData(updateData);
-        //
-        // vd('post set');
-        // vd(updateData);
-        // vd(component.getLocalData());
-        // el.value.$forceUpdate();
-      },
+      return component.getLocalData().map((item, index) => {
+        return {
+          value: item,
+          id: index,
+        };
+      });
     });
 
     useDraggable(el, draggableData, {
@@ -65,6 +53,7 @@ export default {
         // updateLocalData();
       },
       onEnd() {
+        // vd(draggableData.value);
         // wasSorted.value = true;
         // updateLocalData();
         // wasSorted.value = false;
@@ -81,15 +70,15 @@ export default {
         },
         () =>
           draggableData.value.map((value, index) => {
-            return h(
-              QJsonTreeEditorArrayDraggableItem,
-              component.hPropsIndexed({
+            return h(QJsonTreeEditorArrayDraggableItem, {
+              ...component.hProps({
                 propKey: 'field_' + index,
                 schema: component.localSchema.value.items,
                 parentSchema: component.localSchema.value,
                 parentData: component.getLocalData(),
-              }, index)
-            );
+              }),
+              index: index,
+            });
           })
       );
   },
