@@ -8,7 +8,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(props, emit);
+    const component = setupComponent(props, emit, 'QJsonTreeMenu');
 
     const doAdd = () => {
       const localSchema = component.getLocalSchema();

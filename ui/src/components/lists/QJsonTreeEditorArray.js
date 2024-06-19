@@ -8,7 +8,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const parent = setupComponent(props, emit);
+    const parent = setupComponent(props, emit, 'QJsonTreeEditorArray');
     const hProps = parent.hProps({});
 
     const components = {

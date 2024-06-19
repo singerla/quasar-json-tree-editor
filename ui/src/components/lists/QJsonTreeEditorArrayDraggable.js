@@ -1,7 +1,6 @@
 import { setupComponent, setupDefaults, vd } from '../index';
-import { computed, h, ref, watchEffect } from 'vue';
-import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
-import { QIcon, QItemSection, QList } from 'quasar';
+import { computed, h, ref } from 'vue';
+import { QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
 import QJsonTreeEditorArrayDraggableItem from './QJsonTreeEditorArrayDraggableItem';
 
@@ -14,39 +13,41 @@ export default {
     const oldValue = ref(null);
     const wasSorted = ref(false);
 
-    const component = setupComponent(props, emit, null, (value) => {
-      emit('updated', {
-        propKey: props.propKey,
-        wasSorted: wasSorted.value,
-        newValue: value,
-        oldValue: oldValue.value,
-        path: [],
-      });
-    });
+    const component = setupComponent(
+      props,
+      emit,
+      'QJsonTreeEditorArrayDraggable',
+      null,
+      (value) => {
+        emit('updated', {
+          propKey: props.propKey,
+          wasSorted: wasSorted.value,
+          newValue: value,
+          oldValue: oldValue.value,
+          path: [],
+        });
+      }
+    );
 
     const group = component.getSchemaParam('group', {});
 
+    const indexed = (list) =>
+      list.map((item, index) => {
+        return { value: item, id: props.propKey + '_' + index };
+      });
+    const deIndexed = (list) => list.map((item) => item.value);
+    const update = (newList) => {
+      component.updateLocalData(deIndexed(newList));
+    };
+
     const draggableData = computed({
       get: () => {
-        if(!component.getLocalData()?.map) {
-          return []
-        }
-
-        return component.getLocalData().map((item, index) => {
-          return {
-            value: item,
-            id: index,
-          };
-        });
+        const index = indexed(component.getLocalData().value)
+        vd(index)
+        return index;
       },
       set: (newList) => {
-        // const updateData = newList.map((item) => item.value);
-        // component.setLocalData(updateData);
-        //
-        // vd('post set');
-        // vd(updateData);
-        // vd(component.getLocalData());
-        // el.value.$forceUpdate();
+        update(newList);
       },
     });
 
@@ -54,19 +55,22 @@ export default {
       animation: 150,
       group,
       onStart() {
-        oldValue.value = component.getLocalData();
+        oldValue.value = props.modelValue.value;
       },
       onAdd() {
+        update(draggableData.value);
         // rebuildIndex();
         // updateLocalData();
       },
       onRemove() {
+        update(draggableData.value);
         // rebuildIndex();
         // updateLocalData();
       },
       onEnd() {
+        update(draggableData.value);
         // wasSorted.value = true;
-        // updateLocalData();
+        // update();
         // wasSorted.value = false;
       },
     });
@@ -80,17 +84,9 @@ export default {
           class: 'q-json-tree-list',
         },
         () =>
-          draggableData.value.map((value, index) => {
-            return h(
-              QJsonTreeEditorArrayDraggableItem,
-              component.hPropsIndexed({
-                propKey: 'field_' + index,
-                schema: component.localSchema.value.items,
-                parentSchema: component.localSchema.value,
-                parentData: component.getLocalData(),
-              }, index)
-            );
-          })
+          draggableData.value.map((value, index) =>
+            h(QJsonTreeEditorArrayDraggableItem, component.itemHProps(index))
+          )
       );
   },
 };

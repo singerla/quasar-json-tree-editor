@@ -1,10 +1,4 @@
-import {
-  clearItemByType,
-  setupComponent,
-  setupDefaults,
-  valueBySchema,
-  vd,
-} from '../index';
+import { setupComponent, setupDefaults, valueBySchema } from '../index';
 import { h } from 'vue';
 import { QCheckbox, QInput, QItem, QItemSection } from 'quasar';
 import QJsonTreeEditorObject from '../lists/QJsonTreeEditorObject';
@@ -19,6 +13,7 @@ export default {
     const component = setupComponent(
       props,
       emit,
+      'QJsonTreeEditorField',
       (value, localSchema, propKey) => {
         const newValue = valueBySchema(value, localSchema.value);
         const oldValue = props.modelValue;
@@ -50,6 +45,8 @@ export default {
     if (component.is('scalar')) {
       // hProps.label = component.propKey.value;
     }
+
+    // vd(hProps.modelValue)
 
     const targetComponent = mapComponents[mapType] || mapComponents.default;
     return () =>

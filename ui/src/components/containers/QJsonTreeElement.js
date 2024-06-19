@@ -16,7 +16,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(props, emit);
+    const component = setupComponent(props, emit, 'QJsonTreeElement');
     const hProps = component.hProps({});
 
     let componentIs;

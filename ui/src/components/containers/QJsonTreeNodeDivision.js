@@ -7,8 +7,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const hProps = setupComponent(props, emit).hProps({});
-
+    const hProps = setupComponent(props, emit, 'QJsonTreeNodeDivision').hProps({});
     return () => [
       h(
         'div',

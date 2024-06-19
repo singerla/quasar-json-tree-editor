@@ -1,4 +1,4 @@
-import { h } from 'vue';
+import {computed, h, watch} from 'vue';
 import {
   addItemByType,
   clearItemByType,
@@ -15,7 +15,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(props, emit);
+    const component = setupComponent(props, emit, 'QJsonTreeNode');
     const hProps = component.hProps({
       updated: (data) => {
         if (data.path) {
@@ -24,6 +24,14 @@ export default {
         emit('updated', data);
       }
     });
+
+    // const modelValue = computed(() => props.modelValue)
+    // watch(modelValue, () => {
+    //   vd('watch')
+    //   vd(modelValue.value)
+    //   vd(hProps.modelValue)
+    //   // hProps.modelValue = modelValue.value
+    // })
 
     const components = {
       Card: QJsonTreeNodeCard,

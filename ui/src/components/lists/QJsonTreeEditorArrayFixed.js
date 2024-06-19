@@ -11,19 +11,12 @@ export default {
     const parent = setupComponent(props, emit);
 
     return () =>
-      parent.getLocalData([]).map((child, index) => {
-        const hProps = parent.hPropsIndexed(
-          {
-            propKey: 'field_' + index,
-            schema: parent.localSchema.value.items,
-            parentSchema: parent.localSchema.value,
-          },
-          index
-        );
-
+      parent.getLocalData().value.map((child, index) => {
+        const hProps = parent.itemHProps(index);
         return h(
           QItem,
           {
+            dense: true,
             key: 'field_' + parent.propKey.value + '_' + index,
             class: 'q-json-tree-list-item q-pa-none q-ma-none',
           },

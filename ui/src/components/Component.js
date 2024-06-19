@@ -1,4 +1,4 @@
-import { computed, h } from 'vue';
+import {computed, h, toRef, watch} from 'vue';
 import QJsonTreeNode from './containers/QJsonTreeNode';
 import { vd } from './index';
 
@@ -13,6 +13,8 @@ export default {
         schema: props.schema,
         modelValue: props.modelValue,
         'onUpdate:modelValue': (value) => {
+          // vd('emit root')
+          // vd(value)
           emit('update:modelValue', value);
         },
         propKey: 'root',

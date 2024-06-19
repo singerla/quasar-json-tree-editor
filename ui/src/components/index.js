@@ -15,32 +15,23 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'schema', 'parentSchema', 'propKey', 'parentData', 'index'],
+  props: [
+    'modelValue',
+    'schema',
+    'parentSchema',
+    'propKey',
+    'parentData',
+  ],
   emits: ['update:modelValue', 'updated'],
 };
 
-export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
-  let localData = computedLocalData(props, emit, onBeforeUpdate, onAfterUpdate);
+export const setupComponent = (props, emit, type, onBeforeUpdate, onAfterUpdate) => {
+  // vd('setupComponent: ' + type)
+
   const localSchema = toRef(props, 'schema');
   const propKey = toRef(props, 'propKey');
   const parentSchema = toRef(props, 'parentSchema');
   const parentData = toRef(props, 'parentData');
-
-  const defaultEmit = (key, hProps) => {
-    return hProps[key] ? hProps[key] : (data) => emit(key, data);
-  };
-
-  const defaultHProps = (hProps, defaultData, defaultUpdate) => {
-    return {
-      modelValue: defaultData,
-      'onUpdate:modelValue': hProps.update ? hProps.update : defaultUpdate,
-      propKey: hProps.propKey ? hProps.propKey : propKey.value,
-      schema: hProps.schema || localSchema.value,
-      parentSchema: hProps.parentSchema || parentSchema.value,
-      parentData: hProps.parentData || parentData,
-      onUpdated: defaultEmit('updated', hProps),
-    };
-  };
 
   return {
     props: setupDefaults.props,
@@ -48,8 +39,12 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     propKey,
     localSchema,
     parentSchema,
-    getLocalData: (defaultValue) => localData.value || defaultValue,
-    setLocalData: (newValue) => (localData.value = newValue),
+    getLocalData: (defaultValue) => {
+      return props.modelValue || defaultValue;
+    },
+    updateLocalData: (newData) => {
+      emit('update:modelValue', newData);
+    },
     getLocalSchema: () => localSchema.value,
     getParentSchema: () => parentSchema.value,
     getParentData: () => parentData.value,
@@ -62,21 +57,50 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
     getProperties: () => {
       return Object.keys(localSchema.value.properties) || [];
     },
-    createProperty: createObjectProperty(localData, localSchema),
-    hPropsIndexed: (hProps, modelKey) => {
-      const defaultValue = localData.value[modelKey];
-      const defaultUpdate = (value) => {
-        localData.value = localData.value || {};
-        localData.value[modelKey] = value;
+    hProps: () => {
+      return {
+        modelValue: props.modelValue,
+        'onUpdate:modelValue': (value) => {
+          emit('update:modelValue', value);
+        },
+        propKey: propKey.value,
+        schema: localSchema.value,
+        parentSchema: parentSchema.value,
+        parentData: parentData,
+        onUpdated: (data) => emit('updated', data),
       };
-      return { ...defaultHProps(hProps, defaultValue, defaultUpdate), index: modelKey };
     },
-    hProps: (hProps) => {
-      const defaultValue = localData.value;
-      const defaultUpdate = (value) => {
-        localData.value = value;
+    childHProps: (propKey) => {
+      return {
+        modelValue: computed(() => props.modelValue[propKey]),
+        'onUpdate:modelValue': (val) => {
+          const data = props.modelValue;
+          data[propKey] = val;
+          emit('update:modelValue', data);
+        },
+        propKey: propKey,
+        schema: localSchema.value.properties[propKey],
+        parentSchema: localSchema,
+        parentData: parentData,
+        onUpdated: (data) => emit('updated', data),
       };
-      return defaultHProps(hProps, defaultValue, defaultUpdate);
+    },
+    itemHProps: (index) => {
+      return {
+        modelValue: computed(() => {
+          return props.modelValue.value[index]
+        }),
+        'onUpdate:modelValue': (val) => {
+          const data = props.modelValue.value;
+          data[index] = val;
+          emit('update:modelValue', data);
+        },
+        propKey: 'field_' + index,
+        schema: localSchema.value.items,
+        parentSchema: localSchema,
+        parentData: parentData,
+        onUpdated: (data) => emit('updated', data),
+      };
     },
     is: (key) => {
       if (isScalar(localSchema.value).value && key === 'scalar') return true;
@@ -94,28 +118,6 @@ export const setupComponent = (props, emit, onBeforeUpdate, onAfterUpdate) => {
       return 'default';
     },
   };
-};
-
-export const computedLocalData = (
-  props,
-  emit,
-  onBeforeSetCallback,
-  onAfterSetCallback
-) => {
-  const localSchema = toRef(props, 'schema');
-  const propKey = toRef(props, 'propKey');
-  return computed({
-    get: () => props.modelValue,
-    set: (value) => {
-      if (onBeforeSetCallback) {
-        value = onBeforeSetCallback(value, localSchema, propKey);
-      }
-      emit('update:modelValue', value);
-      if (onAfterSetCallback) {
-        onAfterSetCallback(value, localSchema, propKey);
-      }
-    },
-  });
 };
 
 const scalarTypes = ['integer', 'number', 'string', 'boolean'];

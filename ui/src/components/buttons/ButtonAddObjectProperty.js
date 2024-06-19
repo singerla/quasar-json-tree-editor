@@ -13,7 +13,7 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(props, emit);
+    // const component = setupComponent(props, emit);
     return () => [
       h(QBtn, {
         class: 'q-pa-sm q-ma-sm',
@@ -23,7 +23,7 @@ export default {
         noCaps: true,
         icon: 'add',
         label: props.propKey,
-        onClick: () => component.createProperty(),
+        // onClick: () => component.createProperty(),
       }),
     ];
   },

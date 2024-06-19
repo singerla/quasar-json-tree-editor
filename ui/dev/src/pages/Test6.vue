@@ -19,7 +19,7 @@ const jsonSchema = {
         sortable: true,
         showAddButton: true,
         group: {
-          name: 'idxNumbers',
+          name: 'numbers',
         },
       },
       items: {
