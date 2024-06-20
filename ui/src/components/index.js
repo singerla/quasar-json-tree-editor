@@ -1,14 +1,5 @@
-import { computed, toRef } from 'vue';
-
 export const vd = (val) => {
   console.log(val);
-};
-
-export const valueBySchema = (value, localSchema) => {
-  if (isNumeric(localSchema).value) {
-    value = Number(value);
-  }
-  return value;
 };
 
 export const setupDefaults = {
@@ -17,7 +8,7 @@ export const setupDefaults = {
 };
 
 export const setupComponent = (props, emit) => {
-  return {
+  const component = {
     getData: () => {
       return props.modelValue;
     },
@@ -45,7 +36,10 @@ export const setupComponent = (props, emit) => {
       return props.class + ' ' + addClass;
     },
     getLabel: () => {
-      return props.label || (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey);
+      return String(
+        props.label ||
+        (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey)
+      );
     },
     isObject: () => {
       return props.schema.type === 'object';
@@ -64,6 +58,30 @@ export const setupComponent = (props, emit) => {
     },
     getProperties: () => {
       return Object.keys(props.schema.properties);
+    },
+    initPath: () => {
+      return { key: component.getKey(), type: component.getType() };
+    },
+    addItem: () => {
+      const addData = getInitialValue(props.modelValue, props.schema);
+      props.modelValue.push(addData);
+      emit('updated', {
+        path: [component.initPath()],
+        added: true,
+        newValue: addData,
+      });
+    },
+    createProperty: () => {
+      const addData = getInitialValue(props.modelValue, {
+        items: props.schema
+      });
+      const key = component.getKey()
+      props.modelValue[key] = addData[key]
+      emit('updated', {
+        path: [component.initPath()],
+        added: true,
+        newValue: addData,
+      });
     },
     hDefaultParams: (addClass) => {
       return {
@@ -160,76 +178,54 @@ export const setupComponent = (props, emit) => {
       };
     },
   };
+  return component;
 };
 
 const scalarTypes = ['integer', 'number', 'string', 'boolean'];
+const stringTypes = ['string'];
 const numericTypes = ['integer', 'number'];
-const objectTypes = ['object', 'array'];
 
-export const isScalar = (schema) =>
-  computed(() => scalarTypes.includes(schema.type));
-export const isNumeric = (schema) =>
-  computed(() => numericTypes.includes(schema.type));
-export const hasChildren = (schema) =>
-  computed(() => objectTypes.includes(schema.type));
-export const isObject = (schema) => computed(() => schema.type === 'object');
-export const isArray = (schema) => computed(() => schema.type === 'array');
-export const isBoolean = (schema) => computed(() => schema.type === 'boolean');
+export const isScalar = (schema) => scalarTypes.includes(schema.type);
+export const isNumeric = (schema) => numericTypes.includes(schema.type);
+export const isString = (schema) => stringTypes.includes(schema.type);
+export const isObject = (schema) => schema.type === 'object';
+export const isArray = (schema) => schema.type === 'array';
+export const isBoolean = (schema) => schema.type === 'boolean';
 
-export const addItemToArray = (localData, localSchema) => {
-  if (isObject(localSchema.items).value) {
+export const getInitialValue = (modelValue, schema) => {
+  if (isObject(schema.items)) {
     const addData = {};
-    const addKeys = Object.keys(localSchema.items.properties);
+    const addKeys = Object.keys(schema.items.properties);
     addKeys.forEach((addKey) => {
-      const childSchema = localSchema.items.properties[addKey];
-      if (isObject(childSchema).value) {
-        addData[addKey] = {};
-      } else if (isArray(childSchema).value) {
-        addData[addKey] = [];
-      } else if (isBoolean(childSchema).value) {
-        addData[addKey] = false;
-      } else if (isNumeric(childSchema).value) {
-        addData[addKey] = 0;
-      } else {
-        addData[addKey] = null;
-      }
+      const childSchema = schema.items.properties[addKey];
+      addData[addKey] = getInitialValueByType(childSchema);
     });
-    localData.push(addData);
-  } else if (isArray(localSchema.items).value) {
-    localData.push([]);
-  } else if (isNumeric(localSchema.items).value) {
-    localData.push(0);
-  } else if (isBoolean(localSchema.items).value) {
-    localData.push(false);
+    return addData;
   } else {
-    localData.push('');
+    const iniValue = getInitialValueByType(schema.items);
+    return iniValue;
   }
 };
 
-export const createObjectProperty = (localData, localSchema) => () => {
-  if (isBoolean(localSchema.value).value) {
-    localData.value = false;
-  } else if (isNumeric(localSchema.value).value) {
-    localData.value = 0;
-  } else if (isObject(localSchema.value).value) {
-    localData.value = {};
-  } else if (isArray(localSchema.value).value) {
-    localData.value = [];
+const getInitialValueByType = (schema) => {
+  if (isObject(schema)) {
+    return {};
+  } else if (isArray(schema)) {
+    return [];
+  } else if (isBoolean(schema)) {
+    return false;
+  } else if (isNumeric(schema)) {
+    return 0;
+  } else if (isString(schema)) {
+    return '';
   } else {
-    localData.value = '';
+    return null;
   }
 };
 
-export const clearItemByType = (localData, localSchema) => {
-  return () => {
-    if (isObject(localSchema.value).value) {
-      localData.value = {};
-    } else if (isArray(localSchema.value).value) {
-      localData.value = [];
-    } else if (isNumeric(localSchema.value).value) {
-      localData.value = 0;
-    } else {
-      localData.value = '';
-    }
-  };
+export const valueBySchema = (value, localSchema) => {
+  if (isNumeric(localSchema).value) {
+    value = Number(value);
+  }
+  return value;
 };

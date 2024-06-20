@@ -54,6 +54,7 @@ const jsonSchema = {
       minItems: 1,
       uniqueItems: true,
       params: {
+        container: 'Card',
         showAddButton: true,
       },
     },

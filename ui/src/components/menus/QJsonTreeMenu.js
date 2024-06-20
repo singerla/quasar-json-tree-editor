@@ -1,4 +1,4 @@
-import {addItemToArray, setupComponent, setupDefaults, vd} from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { h } from 'vue';
 import { QBtn, QList, QMenu } from 'quasar';
 import QJsonTreeMenuItem from './QJsonTreeMenuItem';
@@ -11,15 +11,7 @@ export default {
     const c = setupComponent(props, emit);
 
     const doAdd = () => {
-      vd('doAdd')
-      // const localSchema = component.getLocalSchema();
-      // const parentSchema = component.getParentSchema();
-      //
-      // if(component.is('scalar')) {
-      //   addItemToArray(component.getParentData(), parentSchema)
-      // } else if(localSchema.type === 'array') {
-      //   addItemToArray(component.getLocalData(), localSchema)
-      // }
+      c.addItem();
     };
 
     return () =>

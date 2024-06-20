@@ -1,6 +1,7 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
 import QJsonTreeElementPre from './QJsonTreeElementPre';
+import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty';
 
 export default {
   name: 'QJsonTreeNodeObjectPre',
@@ -11,7 +12,7 @@ export default {
     return () =>
       c.getProperties().map((propKey) => {
         if (!c.dataHasProperty(propKey)) {
-          return h('div', 'add button ' + propKey);
+          return h(ButtonAddObjectProperty, { ...c.hDefaultParams(), propKey });
         }
 
         return h(

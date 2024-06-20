@@ -1,7 +1,7 @@
-import {setupComponent, setupDefaults} from '../index';
-import {computed, h, ref} from 'vue';
-import {QList} from 'quasar';
-import {useDraggable} from 'vue-draggable-plus';
+import { setupComponent, setupDefaults } from '../index';
+import { computed, h, ref } from 'vue';
+import { QList } from 'quasar';
+import { useDraggable } from 'vue-draggable-plus';
 
 export default {
   name: 'QJsonTreeEditorArraySortablePre',
@@ -17,7 +17,7 @@ export default {
       const flattened = newList.map((item) => item.value);
       emit('update:modelValue', flattened);
       emit('updated', {
-        path: [{ key: c.getKey(), type: c.getType() }],
+        path: [c.initPath()],
         wasSorted: true,
         oldValue: oldValue.value,
         newValue: flattened,

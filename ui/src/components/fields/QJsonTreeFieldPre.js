@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import {setupComponent, setupDefaults} from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { QInput } from 'quasar';
 
 export default {
@@ -8,11 +8,11 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
-    return () =>
+    return () => [
       h(QInput, {
-        modelValue: c.getData(),
         label: c.getLabel(),
         class: 'q-json-tree-field',
+        modelValue: c.getData(),
         'onUpdate:modelValue': (val) => {
           emit('updated', {
             path: [],
@@ -21,6 +21,7 @@ export default {
           });
           emit('update:modelValue', val);
         },
-      });
+      }),
+    ];
   },
 };

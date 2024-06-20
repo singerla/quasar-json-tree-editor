@@ -11,9 +11,9 @@ export default {
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
     return () =>
-      h(QJsonTreeHeader, c.hDefaultParams(), {
+      h(QJsonTreeHeader, c.hDefaultParams('q-json-tree-node-header'), {
         icon: () => h(QIcon, { name: 'data_object' }),
-        menu: () => h(QJsonTreeMenu, () => c.hDefaultParams()),
+        menu: () => h(QJsonTreeMenu, c.hDefaultParams(), () => c.hDefaultParams()),
       });
   },
 };
