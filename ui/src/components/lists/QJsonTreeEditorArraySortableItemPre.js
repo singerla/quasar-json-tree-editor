@@ -1,8 +1,6 @@
-import { setupComponent, setupDefaults, vd } from '../index';
-import { computed, h, ref, watch, watchEffect } from 'vue';
-import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
-import { QIcon, QItem, QItemSection, QList } from 'quasar';
-import { useDraggable } from 'vue-draggable-plus';
+import {setupComponent, setupDefaults} from '../index';
+import {h} from 'vue';
+import {QIcon, QItem, QItemSection} from 'quasar';
 
 export default {
   name: 'QJsonTreeEditorArraySortableItemPre',

@@ -1,10 +1,7 @@
-import { setupComponent, setupDefaults, vd } from '../index';
-import { computed, h, ref } from 'vue';
-import { QList } from 'quasar';
-import { useDraggable } from 'vue-draggable-plus';
-import QJsonTreeEditorArrayDraggableItem from './QJsonTreeEditorArrayDraggableItem';
-import QJsonTreeEditorArrayDraggableItemPre from './QJsonTreeEditorArraySortableItemPre';
-import QJsonTreeEditorArraySortableItemPre from './QJsonTreeEditorArraySortableItemPre';
+import {setupComponent, setupDefaults} from '../index';
+import {computed, h, ref} from 'vue';
+import {QList} from 'quasar';
+import {useDraggable} from 'vue-draggable-plus';
 
 export default {
   name: 'QJsonTreeEditorArraySortablePre',
