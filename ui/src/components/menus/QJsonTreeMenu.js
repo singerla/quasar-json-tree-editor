@@ -8,17 +8,18 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(props, emit, 'QJsonTreeMenu');
+    const c = setupComponent(props, emit);
 
     const doAdd = () => {
-      const localSchema = component.getLocalSchema();
-      const parentSchema = component.getParentSchema();
-
-      if(component.is('scalar')) {
-        addItemToArray(component.getParentData(), parentSchema)
-      } else if(localSchema.type === 'array') {
-        addItemToArray(component.getLocalData(), localSchema)
-      }
+      vd('doAdd')
+      // const localSchema = component.getLocalSchema();
+      // const parentSchema = component.getParentSchema();
+      //
+      // if(component.is('scalar')) {
+      //   addItemToArray(component.getParentData(), parentSchema)
+      // } else if(localSchema.type === 'array') {
+      //   addItemToArray(component.getLocalData(), localSchema)
+      // }
     };
 
     return () =>

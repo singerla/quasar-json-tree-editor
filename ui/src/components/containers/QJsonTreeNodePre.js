@@ -20,7 +20,7 @@ export default {
     }
 
     return () =>
-      h(QJsonTreeContainerPre, c.hDefaultParams('q-ml-md'), () =>
+      h(QJsonTreeContainerPre, c.hDefaultParams(), () =>
         h(component, c.hDefaultParams())
       );
   },

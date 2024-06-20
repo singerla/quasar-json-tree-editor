@@ -1,6 +1,5 @@
-import { setupDefaults, setupComponent, vd } from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { h, ref } from 'vue';
-import QJsonTreeElement from './QJsonTreeElement';
 import QJsonTreeNodeHeader from './headers/QJsonTreeNodeHeader';
 import { QExpansionItem } from 'quasar';
 
@@ -8,8 +7,8 @@ export default {
   name: 'QJsonTreeNodeExpansion',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
-  setup(props, { emit }) {
-    const hProps = setupComponent(props, emit).hProps({});
+  setup(props, { emit, slots }) {
+    const c = setupComponent(props, emit);
     const state = ref(true);
 
     return () => [
@@ -23,8 +22,8 @@ export default {
           headerStyle: 'background-color: #eee; margin: 0; padding: 0',
         },
         {
-          header: () => h(QJsonTreeNodeHeader, hProps),
-          default: () => h(QJsonTreeElement, hProps),
+          header: () => h(QJsonTreeNodeHeader, c.hDefaultParams()),
+          default: () => slots.default(),
         }
       ),
     ];

@@ -112,12 +112,13 @@ const sep1 = ref(70);
 
 .q-json-tree-node-expansion
   padding: 0
-  margin: 0 0 0 6px
-  border: 1px dotted green
+  margin: 0 6px 6px 6px
+  border: 0px dotted green
 
 .q-json-tree-node-division
-  margin-left: 6px
-  border: 3px dotted orange
+  padding: 0
+  margin: 0 6px 6px 6px
+  border: 0px dotted orange
 
 .q-json-tree-field
   padding: 6px

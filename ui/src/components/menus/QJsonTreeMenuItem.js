@@ -1,6 +1,5 @@
-import { setupDefaults, vd } from '../index';
-import { h, resolveDirective } from 'vue';
-import { QBtn, QItem, QItemSection, QList, QMenu } from 'quasar';
+import { h } from 'vue';
+import { QItem, QItemSection } from 'quasar';
 
 export default {
   name: 'QJsonTreeMenuItem',

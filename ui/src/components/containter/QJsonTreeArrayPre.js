@@ -30,26 +30,33 @@ export default {
       };
     }
 
+    const arrayComponents = {
+      getDefault: () =>
+        c.getData().map((item, index) => {
+          return h(component, c.hParams(index, type, add));
+        }),
+      getSortable: () =>
+        h(QJsonTreeEditorArraySortablePre, c.hSortableParams(), () =>
+          c.getData().map((item, index) => {
+            return h(
+              QJsonTreeEditorArraySortableItemPre,
+              c.hDefaultParams(),
+              () => h(component, c.hParams(index, type, add))
+            );
+          })
+        ),
+    };
+
+    let arrayComponent;
     if (c.getSchemaParam('sortable')) {
-      return () =>
-        h(QJsonTreeContainerPre, c.hDefaultParams('q-ml-md'), () =>
-          h(QJsonTreeEditorArraySortablePre, c.hSortableParams('q-ml-md'), () =>
-            c.getData().map((item, index) => {
-              return h(
-                QJsonTreeEditorArraySortableItemPre,
-                c.hDefaultParams(),
-                () => h(component, c.hParams(index, type, add))
-              );
-            })
-          )
-        );
+      arrayComponent = arrayComponents.getSortable;
+    } else {
+      arrayComponent = arrayComponents.getDefault;
     }
 
     return () =>
       h(QJsonTreeContainerPre, c.hDefaultParams('q-ml-md'), () =>
-        c.getData().map((item, index) => {
-          return h(component, c.hParams(index, type, add));
-        })
+        arrayComponent()
       );
   },
 };

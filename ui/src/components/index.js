@@ -41,8 +41,11 @@ export const setupComponent = (props, emit) => {
         return props.schema.params[key];
       }
     },
-    getClass: () => {
-      return props.class;
+    getClass: (addClass) => {
+      return props.class + ' ' + addClass;
+    },
+    getLabel: () => {
+      return props.label || (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey);
     },
     isObject: () => {
       return props.schema.type === 'object';

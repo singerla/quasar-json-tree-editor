@@ -1,21 +1,19 @@
-import { setupDefaults, setupComponent, vd } from '../index';
+import { setupComponent, setupDefaults } from '../index';
 import { h } from 'vue';
-import QJsonTreeElement from './QJsonTreeElement';
 
 export default {
   name: 'QJsonTreeNodeDivision',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
-  setup(props, { emit }) {
-    const hProps = setupComponent(props, emit, 'QJsonTreeNodeDivision').hProps({});
-    return () => [
+  setup(props, { emit, slots }) {
+    const c = setupComponent(props, emit);
+    return () =>
       h(
         'div',
         {
-          class: 'q-json-tree-node-division',
+          class: c.getClass('q-json-tree-node-division'),
         },
-        h(QJsonTreeElement, hProps)
-      ),
-    ];
+        slots.default()
+      );
   },
 };

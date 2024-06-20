@@ -9,11 +9,11 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const hProps = setupComponent(props, emit).hProps({});
+    const c = setupComponent(props, emit);
     return () =>
-      h(QJsonTreeHeader, hProps, {
+      h(QJsonTreeHeader, c.hDefaultParams(), {
         icon: () => h(QIcon, { name: 'data_object' }),
-        menu: () => h(QJsonTreeMenu, hProps),
+        menu: () => h(QJsonTreeMenu, () => c.hDefaultParams()),
       });
   },
 };

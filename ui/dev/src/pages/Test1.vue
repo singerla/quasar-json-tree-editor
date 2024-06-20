@@ -44,6 +44,7 @@ const jsonSchema = {
       minItems: 1,
       uniqueItems: true,
       params: {
+        container: 'Card',
         showAddButton: true,
       },
     },
@@ -104,16 +105,20 @@ const sep1 = ref(70);
 
 <style lang="sass">
 .q-json-tree-node
-  margin-left: 16px
+  margin-left: 20px
 
 .q-json-tree-node-division
   border: 0
   margin-bottom: 6px
   margin-left: 6px
 
+.q-json-tree-node-card
+  padding: 12px
+  margin: 6px
+
 .q-json-tree-field
   background-color: #eee
-  border: 0
+  margin: 6px
 
 .q-json-tree-object
   border: 0
