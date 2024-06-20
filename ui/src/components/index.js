@@ -12,80 +12,151 @@ export const valueBySchema = (value, localSchema) => {
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'propKey', 'schema', 'index', 'type'],
+  props: ['modelValue', 'propKey', 'schema', 'index', 'type', 'class'],
   emits: ['update:modelValue', 'updated'],
 };
 
-export const hScalarParams = (props, emit, type) => {
+export const setupComponent = (props, emit) => {
   return {
-    modelValue: props.modelValue,
-    'onUpdate:modelValue': (val) => {
-      emit('update:modelValue', val);
+    getData: () => {
+      return props.modelValue;
     },
-    onUpdated: (val) => {
-      val.path.push({
-        key: props.propKey,
-        type: type,
-        index: props.index,
-      });
-      emit('updated', val);
+    getKey: () => {
+      return props.propKey;
     },
-    schema: props.schema,
-    propKey: props.propKey,
-    type: type,
-  };
-};
-
-export const hDefParams = (props, emit, type) => {
-  return {
-    modelValue: props.modelValue,
-    onUpdated: (val) => {
-      val.path.push({
-        key: props.propKey,
-        type: type,
-      });
-      emit('updated', val);
+    getType: () => {
+      return props.type;
     },
-    schema: props.schema,
-    propKey: props.propKey,
-    type: type,
-  };
-};
-
-export const hParams = (props, emit, index, type, add) => {
-  const params = {
-    key: index,
-    modelValue: props.modelValue[index],
-    onUpdated: (val) => {
-      if (!add || add.onUpdatedPush !== false) {
-        val.path.push({
-          key: props.propKey,
-          type: type,
-          index: index,
-        });
+    getIndex: () => {
+      return props.index || 0;
+    },
+    dataHasProperty: (propKey) => {
+      return (
+        props.modelValue !== undefined &&
+        props.modelValue[propKey] !== undefined
+      );
+    },
+    getSchemaParam: (key) => {
+      if (props.schema.params && props.schema.params[key]) {
+        return props.schema.params[key];
       }
-
-      emit('updated', val);
     },
-    schema: props.schema.items,
-    propKey: props.propKey + '_' + index,
-    index: index,
-    type: type,
-  };
-
-  if (add) {
-    if (add.updateModelValue) {
-      params['onUpdate:modelValue'] = (val) => {
-        props.modelValue[index] = val;
+    getClass: () => {
+      return props.class;
+    },
+    isObject: () => {
+      return props.schema.type === 'object';
+    },
+    isArray: () => {
+      return props.schema.type === 'array';
+    },
+    childIsArray: () => {
+      return props.schema.items.type === 'array';
+    },
+    childIsObject: () => {
+      return props.schema.items.type === 'object';
+    },
+    hasProperties: () => {
+      return props.schema.properties !== undefined;
+    },
+    getProperties: () => {
+      return Object.keys(props.schema.properties);
+    },
+    hDefaultParams: (addClass) => {
+      return {
+        modelValue: props.modelValue,
+        onUpdated: (val) => {
+          emit('updated', val);
+        },
+        schema: props.schema,
+        propKey: props.propKey,
+        type: props.type,
+        class: addClass,
       };
-    }
+    },
+    hSortableParams: (addClass) => {
+      return {
+        modelValue: props.modelValue,
+        'onUpdate:modelValue': (val) => {
+          emit('update:modelValue', val);
+        },
+        onUpdated: (val) => {
+          emit('updated', val);
+        },
+        schema: props.schema,
+        propKey: props.propKey,
+        type: props.type,
+        class: addClass,
+      };
+    },
+    hPropParams: (type) => {
+      return {
+        modelValue: props.modelValue,
+        onUpdated: (val) => {
+          val.path.push({
+            key: props.propKey,
+            type: type,
+          });
+          emit('updated', val);
+        },
+        schema: props.schema,
+        propKey: props.propKey,
+        type: type,
+      };
+    },
+    hParams: (index, type, add) => {
+      const params = {
+        key: index,
+        modelValue: props.modelValue[index],
+        onUpdated: (val) => {
+          if (!add || add.onUpdatedPush !== false) {
+            val.path.push({
+              key: props.propKey,
+              type: type,
+              index: index,
+            });
+          }
+          emit('updated', val);
+        },
+        schema: props.schema.items,
+        propKey: index,
+        index: index,
+        type: type,
+      };
 
-    if (add.schemaFromProperties) {
-      params.schema = props.schema.properties[index];
-    }
-  }
+      if (add) {
+        if (add.updateModelValue) {
+          params['onUpdate:modelValue'] = (val) => {
+            props.modelValue[index] = val;
+          };
+        }
 
-  return params;
+        if (add.schemaFromProperties) {
+          params.schema = props.schema.properties[index];
+        }
+      }
+      return params;
+    },
+    hScalarParams: (type) => {
+      return {
+        modelValue: props.modelValue,
+        'onUpdate:modelValue': (val) => {
+          emit('update:modelValue', val);
+        },
+        onUpdated: (val) => {
+          val.path.push({
+            key: props.propKey,
+            type: type,
+            index: props.index,
+          });
+          emit('updated', val);
+        },
+        schema: props.schema,
+        propKey: props.propKey,
+        type: type,
+      };
+    },
+  };
 };
 
 const scalarTypes = ['integer', 'number', 'string', 'boolean'];

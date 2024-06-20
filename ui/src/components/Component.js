@@ -1,6 +1,4 @@
-import { computed, h, toRef } from 'vue';
-import QJsonTreeNode from './containers/QJsonTreeNode';
-import { vd } from './index';
+import {h} from 'vue';
 import QJsonTreeNodePre from './containers/QJsonTreeNodePre';
 
 export default {
