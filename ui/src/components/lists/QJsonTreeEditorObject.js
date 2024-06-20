@@ -1,5 +1,5 @@
-import { hasChildren, setupComponent, setupDefaults } from '../index';
-import { h } from 'vue';
+import { hasChildren, setupComponent, setupDefaults, vd } from '../index';
+import { computed, h } from 'vue';
 import QJsonTreeEditorField from '../fields/QJsonTreeEditorField';
 import { QItem } from 'quasar';
 import QJsonTreeNode from '../containers/QJsonTreeNode';
@@ -10,23 +10,30 @@ export default {
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const parent = setupComponent(props, emit, 'QJsonTreeEditorObject');
+    const parent = setupComponent(props, emit);
     const localData = parent.getLocalData({});
+    const schema = parent.getLocalSchema();
+
     const isUndefined = (propKey) =>
       !localData || localData[propKey] === undefined;
 
-    // const modelValue = computed(() => {
-    //   vd('computed root')
-    //   return props.modelValue
-    // })
-    // watch(modelValue, (val) => {
-    //   vd('updated QJsonTreeEditorObject modelValue')
-    //   vd(val)
-    // }, {deep: true})
-
     return () =>
       parent.getProperties().map((propKey) => {
-        const childHProps = parent.childHProps(propKey);
+        const childHProps = parent.hPropsIndexed(
+          {
+            propKey,
+            schema: schema.properties[propKey],
+            parentSchema: schema,
+            update: (val) => {
+              vd(hasChildren(parent.localSchema.value).value);
+              const tmpData = { ...localData };
+              tmpData[propKey] = val;
+              vd(tmpData);
+              parent.setLocalData(tmpData);
+            },
+          },
+          propKey
+        );
 
         if (isUndefined(propKey)) {
           return h(ButtonAddObjectProperty, childHProps);

@@ -5,22 +5,26 @@ import { QIcon, QItem, QItemSection, QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
 
 export default {
-  name: 'QJsonTreeEditorArrayDraggableItem',
+  name: 'QJsonTreeEditorArrayDraggable',
   props: [...setupDefaults.props, 'index'],
   emits: setupDefaults.emits,
   setup(props, { emit }) {
-    const component = setupComponent(
-      props,
-      emit,
-      'QJsonTreeEditorArrayDraggableItem'
-    );
-    const hProps = component.hProps({});
+    const component = setupComponent(props, emit);
+    const hProps = component.hPropsIndexed({}, props.index);
+
+    // const tmpData = computed(() => {
+    //   vd('has changed');
+    //   // return component.getLocalData();
+    // });
+    // hProps['onUpdate:modelValue'] = (newVal) => {
+    //   vd(newVal);
+    //   // vd(component.getParentData());
+    // };
 
     return () =>
       h(
         QItem,
         {
-          dense: true,
           key: 'field_' + component.propKey.value + '_' + props.index,
           class: 'q-json-tree-list-item',
         },
@@ -38,6 +42,7 @@ export default {
             ]
           ),
           h(QItemSection, () => h(QJsonTreeEditorField, hProps)),
+          // h(QItemSection, () => h('pre', tmpData.value)),
         ]
       );
   },

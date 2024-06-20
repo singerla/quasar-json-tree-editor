@@ -13,64 +13,49 @@ export default {
     const oldValue = ref(null);
     const wasSorted = ref(false);
 
-    const component = setupComponent(
-      props,
-      emit,
-      'QJsonTreeEditorArrayDraggable',
-      null,
-      (value) => {
-        emit('updated', {
-          propKey: props.propKey,
-          wasSorted: wasSorted.value,
-          newValue: value,
-          oldValue: oldValue.value,
-          path: [],
-        });
-      }
-    );
+    const component = setupComponent(props, emit, null, (value) => {
+      emit('updated', {
+        propKey: props.propKey,
+        wasSorted: wasSorted.value,
+        newValue: value,
+        oldValue: oldValue.value,
+        path: [],
+      });
+    });
 
     const group = component.getSchemaParam('group', {});
 
-    const indexed = (list) =>
-      list.map((item, index) => {
-        return { value: item, id: props.propKey + '_' + index };
-      });
-    const deIndexed = (list) => list.map((item) => item.value);
-    const update = (newList) => {
-      component.updateLocalData(deIndexed(newList));
-    };
+    const draggableData = computed(() => {
+      if (!component.getLocalData()?.map) {
+        return [];
+      }
 
-    const draggableData = computed({
-      get: () => {
-        const index = indexed(component.getLocalData().value)
-        vd(index)
-        return index;
-      },
-      set: (newList) => {
-        update(newList);
-      },
+      return component.getLocalData().map((item, index) => {
+        return {
+          value: item,
+          id: index,
+        };
+      });
     });
 
     useDraggable(el, draggableData, {
       animation: 150,
       group,
       onStart() {
-        oldValue.value = props.modelValue.value;
+        oldValue.value = component.getLocalData();
       },
       onAdd() {
-        update(draggableData.value);
         // rebuildIndex();
         // updateLocalData();
       },
       onRemove() {
-        update(draggableData.value);
         // rebuildIndex();
         // updateLocalData();
       },
       onEnd() {
-        update(draggableData.value);
+        // vd(draggableData.value);
         // wasSorted.value = true;
-        // update();
+        // updateLocalData();
         // wasSorted.value = false;
       },
     });
@@ -84,9 +69,17 @@ export default {
           class: 'q-json-tree-list',
         },
         () =>
-          draggableData.value.map((value, index) =>
-            h(QJsonTreeEditorArrayDraggableItem, component.itemHProps(index))
-          )
+          draggableData.value.map((value, index) => {
+            return h(QJsonTreeEditorArrayDraggableItem, {
+              ...component.hProps({
+                propKey: 'field_' + index,
+                schema: component.localSchema.value.items,
+                parentSchema: component.localSchema.value,
+                parentData: component.getLocalData(),
+              }),
+              index: index,
+            });
+          })
       );
   },
 };

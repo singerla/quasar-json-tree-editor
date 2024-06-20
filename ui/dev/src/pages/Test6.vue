@@ -66,7 +66,7 @@ const data = reactive({
 
 const updated = (tmp) => {
   vd('updated root');
-  vd(tmp);
+  // vd(tmp);
   // vd(data);
 };
 

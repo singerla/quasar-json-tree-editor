@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import { vd } from '../../../src/components';
 
-const data = reactive({
+const data = ref({
   productId: 1,
   productName: 'An ice sculpture',
   price: 12.5,
@@ -77,7 +77,7 @@ const jsonSchema = {
 const updated = (tmp) => {
   vd('updated root');
   vd(tmp);
-  vd(data);
+  // vd(data);
 };
 const sep1 = ref(70);
 </script>

@@ -64,24 +64,24 @@ const jsonSchema = {
 };
 
 const data = reactive({
-  // productId: 1,
-  // dimensions: {
-  //   length: 7.0,
-  //   nestedObject: {
-  //     prop1: 'test',
-  //     // prop2: [3, 4, 5],
-  //     objectsArray: [
-  //       {
-  //         key: 'Key 1',
-  //         value: 'Value 1',
-  //       },
-  //       {
-  //         key: 'Key 2',
-  //         value: 'Value 2',
-  //       },
-  //     ],
-  //   },
-  // },
+  productId: 1,
+  dimensions: {
+    length: 7.0,
+    nestedObject: {
+      prop1: 'test',
+      // prop2: [3, 4, 5],
+      objectsArray: [
+        {
+          key: 'Key 1',
+          value: 'Value 1',
+        },
+        {
+          key: 'Key 2',
+          value: 'Value 2',
+        },
+      ],
+    },
+  },
 });
 
 const updated = (tmp) => {
