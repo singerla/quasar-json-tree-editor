@@ -12,7 +12,7 @@ export default {
     return () =>
       c.getProperties().map((propKey) => {
         if (!c.dataHasProperty(propKey)) {
-          return h(ButtonAddObjectProperty, { ...c.hDefaultParams(), propKey });
+          return h(ButtonAddObjectProperty, { ...c.hSortableParams(), propKey });
         }
 
         return h(

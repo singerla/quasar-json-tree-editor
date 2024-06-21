@@ -1,8 +1,8 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults, vd } from '../index';
-import QJsonTreeFieldPre from '../fields/QJsonTreeFieldPre';
-import QJsonTreeNodePre from './QJsonTreeNodePre';
-import QJsonTreeArrayPre from '../containter/QJsonTreeArrayPre';
+import { setupComponent, setupDefaults } from '../index';
+import QJsonTreeField from '../fields/QJsonTreeField';
+import QJsonTreeNode from './QJsonTreeNodePre';
+import QJsonTreeArray from '../containter/QJsonTreeArrayPre';
 
 export default {
   name: 'QJsonTreeElementPre',
@@ -12,11 +12,11 @@ export default {
     const c = setupComponent(props, emit);
 
     if (c.hasProperties()) {
-      return () => h(QJsonTreeNodePre, c.hPropParams('property'));
+      return () => h(QJsonTreeNode, c.hPropParams('property'));
     } else if (c.isArray()) {
-      return () => h(QJsonTreeArrayPre, c.hSortableParams());
+      return () => h(QJsonTreeArray, c.hSortableParams());
     } else {
-      return () => h(QJsonTreeFieldPre, c.hScalarParams('scalar'));
+      return () => h(QJsonTreeField, c.hScalarParams('scalar'));
     }
   },
 };

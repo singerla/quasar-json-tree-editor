@@ -1,10 +1,11 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults } from '../index';
+import {setupComponent, setupDefaults, vd} from '../index';
 import QJsonTreeNodePre from '../containers/QJsonTreeNodePre';
-import QJsonTreeFieldPre from '../fields/QJsonTreeFieldPre';
+import QJsonTreeFieldPre from '../fields/QJsonTreeField';
 import QJsonTreeContainerPre from '../fields/QJsonTreeContainerPre';
 import QJsonTreeEditorArraySortablePre from '../lists/QJsonTreeEditorArraySortablePre';
 import QJsonTreeEditorArraySortableItemPre from '../lists/QJsonTreeEditorArraySortableItemPre';
+import { QBtn } from 'quasar';
 
 export default {
   name: 'QJsonTreeArrayPre',
@@ -53,9 +54,19 @@ export default {
       arrayComponent = arrayComponents.getDefault;
     }
 
-    return () =>
-      h(QJsonTreeContainerPre, c.hDefaultParams('q-ml-md'), () =>
+    return () => [
+      h(QJsonTreeContainerPre, c.hSortableParams('q-ml-md'), () =>
         arrayComponent()
-      );
+      ),
+      h(QBtn, {
+        class: 'q-ma-sm',
+        rounded: true,
+        color: "primary",
+        noCaps: true,
+        size: 'md',
+        icon: 'add',
+        onClick: () => c.addItem(),
+      }),
+    ];
   },
 };

@@ -21,7 +21,7 @@ export default {
             {
               class: 'q-pa-none q-ma-none',
             },
-            () => h(QJsonTreeNodeHeader, c.hDefaultParams())
+            () => h(QJsonTreeNodeHeader, c.hSortableParams())
           ),
           h(
             QCardSection,

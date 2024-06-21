@@ -21,6 +21,9 @@ const jsonSchema = {
   title: 'Product',
   description: "A product from Acme's catalog",
   type: 'object',
+  params: {
+    container: 'Card'
+  },
   properties: {
     productId: {
       description: 'The unique identifier for a product',

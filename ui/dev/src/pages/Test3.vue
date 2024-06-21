@@ -35,8 +35,12 @@ const jsonSchema = reactive({
     },
     arrayOfArrays: {
       type: 'array',
+      params: {
+        container: 'Card'
+      },
       items: {
         type: 'array',
+
         items: {
           type: 'string',
         },
@@ -123,6 +127,10 @@ const sep1 = ref(70);
 </template>
 
 <style lang="sass">
+.q-json-tree-field
+  padding: 5px
+  background-color: #eeeeee
+
 .q-json-tree-field-slider
   padding: 10px
 

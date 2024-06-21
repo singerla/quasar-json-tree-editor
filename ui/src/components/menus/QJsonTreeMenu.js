@@ -14,6 +14,10 @@ export default {
       c.addItem();
     };
 
+    const doTruncate = () => {
+      c.truncateList();
+    };
+
     return () =>
       h(
         QBtn,
@@ -33,11 +37,16 @@ export default {
                 dense: true,
                 style: 'min-width: 100px',
               },
-              () =>
+              () => [
                 h(QJsonTreeMenuItem, {
                   label: 'Add',
                   onClick: doAdd,
-                })
+                }),
+                h(QJsonTreeMenuItem, {
+                  label: 'Truncate',
+                  onClick: doTruncate,
+                }),
+              ]
             )
           )
       );

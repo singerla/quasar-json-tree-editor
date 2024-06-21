@@ -1,4 +1,4 @@
-import {computed} from "vue";
+import { computed } from 'vue';
 
 export const vd = (val) => {
   console.log(val);
@@ -10,7 +10,7 @@ export const setupDefaults = {
 };
 
 export const setupComponent = (props, emit) => {
-  const component = {
+  const c = {
     getData: () => {
       return props.modelValue;
     },
@@ -36,7 +36,7 @@ export const setupComponent = (props, emit) => {
       if (props.schema.params && props.schema.params[key]) {
         return props.schema.params[key];
       }
-      return defaultValue
+      return defaultValue;
     },
     getClass: (addClass) => {
       return props.class + ' ' + addClass;
@@ -48,15 +48,15 @@ export const setupComponent = (props, emit) => {
       );
     },
     getUniqueKey: (item, index) => {
-      const key = [props.propKey]
-      if(typeof item === 'string' || typeof item === 'number') {
-        key.push(index)
+      const key = [props.propKey];
+      if (typeof item === 'string' || typeof item === 'number') {
+        key.push(index);
       } else {
-        const idProp = component.getSchemaParam('idPropName', 'id')
-        if(item[idProp] !== undefined) {
-          key.push(item[idProp])
+        const idProp = c.getSchemaParam('idPropName', 'id');
+        if (item[idProp] !== undefined) {
+          key.push(item[idProp]);
         } else {
-          key.push(index)
+          key.push(index);
         }
       }
       return key.join('_');
@@ -80,25 +80,43 @@ export const setupComponent = (props, emit) => {
       return Object.keys(props.schema.properties);
     },
     initPath: () => {
-      return { key: component.getKey(), type: component.getType() };
+      return { key: c.getKey(), type: c.getType() };
     },
     addItem: () => {
+      if (c.hasProperties()) {
+        return;
+      }
       const addData = getInitialValue(props.modelValue, props.schema);
       props.modelValue.push(addData);
       emit('updated', {
-        path: [component.initPath()],
+        path: [c.initPath()],
         added: true,
         newValue: addData,
+      });
+    },
+    truncateList: () => {
+      if (c.hasProperties()) {
+        Object.keys(c.getData()).forEach(unsetKey => {
+          props.modelValue[unsetKey] = undefined
+        })
+      } else {
+        emit('update:modelValue', []);
+      }
+
+      emit('updated', {
+        path: [c.initPath()],
+        truncated: true,
+        newValue: [],
       });
     },
     createProperty: () => {
       const addData = getInitialValue(props.modelValue, {
         items: props.schema,
       });
-      const key = component.getKey();
+      const key = c.getKey();
       props.modelValue[key] = addData[key];
       emit('updated', {
-        path: [component.initPath()],
+        path: [c.initPath()],
         added: true,
         newValue: addData,
       });
@@ -106,7 +124,7 @@ export const setupComponent = (props, emit) => {
     hParamsFactory: {
       onUpdated: (val) => {
         emit('updated', val);
-      }
+      },
     },
     hProps: (addClass) => {
       return {
@@ -115,12 +133,12 @@ export const setupComponent = (props, emit) => {
         propKey: props.propKey,
         type: props.type,
         class: addClass,
-      }
+      };
     },
     hDefaultParams: (addClass) => {
       return {
         modelValue: props.modelValue,
-        onUpdated: component.hParamsFactory.onUpdated,
+        onUpdated: c.hParamsFactory.onUpdated,
         schema: props.schema,
         propKey: props.propKey,
         type: props.type,
@@ -133,7 +151,7 @@ export const setupComponent = (props, emit) => {
         'onUpdate:modelValue': (val) => {
           emit('update:modelValue', val);
         },
-        onUpdated: component.hParamsFactory.onUpdated,
+        onUpdated: c.hParamsFactory.onUpdated,
         schema: props.schema,
         propKey: props.propKey,
         type: props.type,
@@ -208,7 +226,7 @@ export const setupComponent = (props, emit) => {
       };
     },
   };
-  return component;
+  return c;
 };
 
 const scalarTypes = ['integer', 'number', 'string', 'boolean'];

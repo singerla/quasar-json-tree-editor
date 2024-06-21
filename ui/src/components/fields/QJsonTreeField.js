@@ -2,10 +2,10 @@ import { h } from 'vue';
 import { setupComponent, setupDefaults, vd } from '../index';
 import { QInput } from 'quasar';
 import ColorPicker from './quasar/ColorPicker';
-import Slider from "./quasar/Slider";
+import Slider from './quasar/Slider';
 
 export default {
-  name: 'QJsonTreeFieldPre',
+  name: 'QJsonTreeField',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -29,10 +29,11 @@ export default {
     if (useQuasarComponent) {
       const key = useQuasarComponent.toLowerCase();
       if (quasarFieldMap[key]) {
-        return () => h(quasarFieldMap[key], {
-          ...c.hProps(),
-          'onUpdate:modelValue': doUpdate,
-        });
+        return () =>
+          h(quasarFieldMap[key], {
+            ...c.hProps(),
+            'onUpdate:modelValue': doUpdate,
+          });
       } else {
         console.error(
           'Could not find specified quasar component: ' + useQuasarComponent

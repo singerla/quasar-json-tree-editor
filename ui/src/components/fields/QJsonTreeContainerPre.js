@@ -20,7 +20,7 @@ export default {
     return () =>
       h(
         component,
-        c.hDefaultParams('q-json-tree-node'),
+        c.hSortableParams('q-json-tree-node'),
         () => slots.default()
       );
   },

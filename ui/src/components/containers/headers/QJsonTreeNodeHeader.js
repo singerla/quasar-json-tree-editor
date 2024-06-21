@@ -13,7 +13,7 @@ export default {
     return () =>
       h(QJsonTreeHeader, c.hDefaultParams('q-json-tree-node-header'), {
         icon: () => h(QIcon, { name: 'data_object' }),
-        menu: () => h(QJsonTreeMenu, c.hDefaultParams(), () => c.hDefaultParams()),
+        menu: () => h(QJsonTreeMenu, c.hSortableParams()),
       });
   },
 };
