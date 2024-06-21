@@ -10,9 +10,11 @@ export const setupDefaults = {
 };
 
 export const setupComponent = (props, emit) => {
-  // props.path.push(props.propKey);
   const c = {
-    getData: () => {
+    getData: (index) => {
+      if (index !== undefined) {
+        return props.modelValue[index];
+      }
       return props.modelValue;
     },
     getKey: () => {
@@ -88,15 +90,8 @@ export const setupComponent = (props, emit) => {
         return;
       }
       const addData = getInitialValue(props.modelValue, props.schema);
-
       props.modelValue.push(addData);
       emit('update:modelValue', props.modelValue);
-
-      // emit('updated', {
-      //   path: [c.initPath()],
-      //   added: true,
-      //   newValue: addData,
-      // });
     },
     truncateList: () => {
       if (c.hasProperties()) {
@@ -106,12 +101,6 @@ export const setupComponent = (props, emit) => {
       } else {
         emit('update:modelValue', []);
       }
-
-      emit('updated', {
-        path: [c.initPath()],
-        truncated: true,
-        newValue: [],
-      });
     },
     createProperty: () => {
       const addData = getInitialValue(props.modelValue, {
@@ -119,70 +108,25 @@ export const setupComponent = (props, emit) => {
       });
       const key = c.getKey();
       props.modelValue[key] = addData[key];
+    },
+    initUpdated: (newValue, index, oldValue) => {
       emit('updated', {
         path: [c.initPath()],
-        added: true,
-        newValue: addData,
+        key: c.getKey(),
+        oldValue: oldValue !== undefined ? oldValue : c.getData(),
+        newValue: newValue,
+        index,
       });
     },
-    hParamsFactory: {
-      onUpdated: (val) => {
-        emit('updated', val);
-      },
+    emitUpdated: (val) => {
+      if (val.path === undefined) {
+        val.path = [c.initPath()];
+      } else {
+        val.path.push(c.initPath());
+      }
+      emit('updated', val);
     },
     props: (addProps) => propsFactory(c, emit, props, addProps),
-    hParams: (index, type, add) => {
-      const params = {
-        key: index,
-        modelValue: props.modelValue[index],
-        onUpdated: (val) => {
-          if (!add || add.onUpdatedPush !== false) {
-            val.path.push({
-              key: props.propKey,
-              type: type,
-              index: index,
-            });
-          }
-          emit('updated', val);
-        },
-        schema: props.schema.items,
-        propKey: index,
-        index: index,
-        type: type,
-      };
-
-      if (add) {
-        if (add.updateModelValue) {
-          params['onUpdate:modelValue'] = (val) => {
-            props.modelValue[index] = val;
-          };
-        }
-
-        if (add.schemaFromProperties) {
-          params.schema = props.schema.properties[index];
-        }
-      }
-      return params;
-    },
-    hScalarParams: (type) => {
-      return {
-        modelValue: props.modelValue,
-        'onUpdate:modelValue': (val) => {
-          emit('update:modelValue', val);
-        },
-        onUpdated: (val) => {
-          val.path.push({
-            key: props.propKey,
-            type: type,
-            index: props.index,
-          });
-          emit('updated', val);
-        },
-        schema: props.schema,
-        propKey: props.propKey,
-        type: type,
-      };
-    },
   };
   return c;
 };

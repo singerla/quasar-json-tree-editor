@@ -16,12 +16,7 @@ export default {
     const emitNewList = (newList) => {
       const flattened = newList.map((item) => item.value);
       emit('update:modelValue', flattened);
-      emit('updated', {
-        path: [c.initPath()],
-        wasSorted: true,
-        oldValue: oldValue.value,
-        newValue: flattened,
-      });
+      c.initUpdated(flattened, c.getIndex(), oldValue.value);
     };
 
     const draggableData = computed({

@@ -33,7 +33,17 @@ export default {
     const arrayComponents = {
       getDefault: () =>
         c.getData().map((item, index) => {
-          return h(component, c.hParams(index, type, add));
+          return h(
+            component,
+            c.props({
+              hasIndexedModel: true,
+              index: index,
+              key: index,
+              schema: c.getSchema().items,
+              propKey: index,
+              type: type,
+            })
+          );
         }),
       getSortable: () =>
         h(SortableList, c.props(), () =>
@@ -41,7 +51,18 @@ export default {
             return h(
               SortableListItem,
               c.props({ key: c.getUniqueKey(item, index) }),
-              () => h(component, c.hParams(index, type, add))
+              () =>
+                h(
+                  component,
+                  c.props({
+                    hasIndexedModel: true,
+                    index: index,
+                    key: index,
+                    schema: c.getSchema().items,
+                    propKey: c.getKey() + '_' + index,
+                    type: type,
+                  })
+                )
             );
           })
         ),

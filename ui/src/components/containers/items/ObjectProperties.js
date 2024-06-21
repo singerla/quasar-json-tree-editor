@@ -22,10 +22,13 @@ export default {
 
         return h(
           QJsonTreeElementPre,
-          c.hParams(propKey, 'element from object prop', {
-            updateModelValue: true,
-            onUpdatedPush: false,
-            schemaFromProperties: true,
+          c.props({
+            hasIndexedModel: true,
+            index: propKey,
+            key: propKey,
+            schema: c.getSchema().properties[propKey],
+            propKey: c.getKey() + '_' + propKey,
+            type: propKey,
           })
         );
       });

@@ -4,6 +4,15 @@ export const propsFactory = (c, emit, props, addProps) => {
     updatesModel: true,
     emitsUpdated: true,
     initsUpdated: false,
+    hasIndexedModel: false,
+    updatesIndexedModel: false,
+  };
+
+  let retProps = {
+    schema: props.schema,
+    propKey: props.propKey,
+    type: props.type,
+    path: props.path,
   };
 
   addProps = addProps || {};
@@ -21,49 +30,42 @@ export const propsFactory = (c, emit, props, addProps) => {
     addProps.updatesModel = false;
   }
 
-  const emitUpdated = (newValue) => {
-    const oldValue = c.getData();
-    emit('updated', {
-      path: [c.initPath()],
-      index: c.getIndex(),
-      key: c.getKey(),
-      oldValue: oldValue,
-      newValue: newValue,
-    });
-  };
+  let index = c.getIndex();
+  if (addProps.hasIndexedModel === true) {
+    addProps.hasModel = false;
+    if (addProps.updatesModel === true) {
+      addProps.updatesModel = false;
+      addProps.updatesIndexedModel = true;
+    }
+    index = addProps.index;
+  }
 
   addProps = addProps || defaultProps;
 
-  let retProps = {
-    schema: props.schema,
-    propKey: props.propKey,
-    type: props.type,
-    path: props.path,
-  };
-
   const hasModel = {
     modelValue: props.modelValue,
+  };
+  const hasIndexedModel = {
+    modelValue: props.modelValue[index],
   };
   const updatesModel = {
     'onUpdate:modelValue': (val) => {
       emit('update:modelValue', val);
     },
   };
+  const updatesIndexedModel = {
+    'onUpdate:modelValue': (val) => {
+      props.modelValue[index] = val;
+    },
+  };
   const initsUpdated = {
     'onUpdate:modelValue': (newValue) => {
-      emitUpdated(newValue);
+      c.initUpdated(newValue, index);
       emit('update:modelValue', newValue);
     },
   };
   const emitsUpdated = {
-    onUpdated: (val) => {
-      if (val.path === undefined) {
-        val.path = [c.initPath()];
-      } else {
-        val.path.push(c.initPath());
-      }
-      emit('updated', val);
-    },
+    onUpdated: c.emitUpdated,
   };
 
   if (addProps.hasModel) {
@@ -77,6 +79,12 @@ export const propsFactory = (c, emit, props, addProps) => {
   }
   if (addProps.emitsUpdated) {
     retProps = Object.assign(retProps, emitsUpdated);
+  }
+  if (addProps.hasIndexedModel) {
+    retProps = Object.assign(retProps, hasIndexedModel);
+  }
+  if (addProps.updatesIndexedModel) {
+    retProps = Object.assign(retProps, updatesIndexedModel);
   }
 
   Object.keys(addProps).forEach((addProp) => {

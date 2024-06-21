@@ -13,9 +13,13 @@ export default {
       c.getData().map((item, index) => {
         return h(
           TreeElement,
-          c.hParams(index, 'element from array', {
-            updateModelValue: true,
-            onUpdatedPush: false,
+          c.props({
+            key: index,
+            hasIndexedModel: true,
+            schema: c.getSchema().items,
+            propKey: index,
+            index: index,
+            type: 'ArrayItems',
           })
         );
       });
