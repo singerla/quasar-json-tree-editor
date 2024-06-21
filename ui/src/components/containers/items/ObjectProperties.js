@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../../index';
-import QJsonTreeElementPre from '../../tree/TreeElement';
+import TreeElement from '../../tree/TreeElement';
 import ButtonAddObjectProperty from '../../buttons/ButtonAddObjectProperty';
 
 export default {
@@ -21,14 +21,14 @@ export default {
         }
 
         return h(
-          QJsonTreeElementPre,
+          TreeElement,
           c.props({
             hasIndexedModel: true,
             index: propKey,
-            key: propKey,
+            key: c.getKey() + '_' + propKey,
             schema: c.getSchema().properties[propKey],
-            propKey: c.getKey() + '_' + propKey,
-            type: propKey,
+            propKey: propKey,
+            type: 'ObjectProperties',
           })
         );
       });

@@ -3,6 +3,7 @@ export const propsFactory = (c, emit, props, addProps) => {
     hasModel: true,
     updatesModel: true,
     emitsUpdated: true,
+    emitsUpdatedAndPush: false,
     initsUpdated: false,
     hasIndexedModel: false,
     updatesIndexedModel: false,
@@ -67,6 +68,9 @@ export const propsFactory = (c, emit, props, addProps) => {
   const emitsUpdated = {
     onUpdated: c.emitUpdated,
   };
+  const emitsUpdatedAndPush = {
+    onUpdated: c.emitUpdatedAndPush,
+  };
 
   if (addProps.hasModel) {
     retProps = Object.assign(retProps, hasModel);
@@ -79,6 +83,9 @@ export const propsFactory = (c, emit, props, addProps) => {
   }
   if (addProps.emitsUpdated) {
     retProps = Object.assign(retProps, emitsUpdated);
+  }
+  if (addProps.emitsUpdatedAndPush) {
+    retProps = Object.assign(retProps, emitsUpdatedAndPush);
   }
   if (addProps.hasIndexedModel) {
     retProps = Object.assign(retProps, hasIndexedModel);

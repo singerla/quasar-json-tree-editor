@@ -119,11 +119,10 @@ export const setupComponent = (props, emit) => {
       });
     },
     emitUpdated: (val) => {
-      if (val.path === undefined) {
-        val.path = [c.initPath()];
-      } else {
-        val.path.push(c.initPath());
-      }
+      emit('updated', val);
+    },
+    emitUpdatedAndPush: (val) => {
+      val.path.push(c.initPath());
       emit('updated', val);
     },
     props: (addProps) => propsFactory(c, emit, props, addProps),

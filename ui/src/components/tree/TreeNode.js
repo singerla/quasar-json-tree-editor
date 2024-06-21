@@ -19,6 +19,6 @@ export default {
       component = ArrayElements;
     }
 
-    return () => h(ContainerType, c.props(), () => h(component, c.props()));
+    return () => h(ContainerType, c.props({}), () => h(component, c.props()));
   },
 };
