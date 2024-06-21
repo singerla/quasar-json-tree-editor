@@ -22,7 +22,7 @@ const jsonSchema = {
   description: "A product from Acme's catalog",
   type: 'object',
   params: {
-    container: 'Card'
+    container: 'Expansion',
   },
   properties: {
     productId: {

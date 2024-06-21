@@ -2,7 +2,7 @@ import { h } from 'vue';
 import { QItem, QItemSection } from 'quasar';
 
 export default {
-  name: 'QJsonTreeMenuItem',
+  name: 'ContainerMenuItem',
   props: ['label'],
   emits: ['click'],
   setup(props, { emit }) {

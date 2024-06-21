@@ -1,10 +1,10 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults } from '../index';
-import QJsonTreeElementPre from './QJsonTreeElementPre';
-import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty';
+import { setupComponent, setupDefaults } from '../../index';
+import QJsonTreeElementPre from '../../tree/TreeElement';
+import ButtonAddObjectProperty from '../../buttons/ButtonAddObjectProperty';
 
 export default {
-  name: 'QJsonTreeNodeObjectPre',
+  name: 'ObjectProperties',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -12,7 +12,12 @@ export default {
     return () =>
       c.getProperties().map((propKey) => {
         if (!c.dataHasProperty(propKey)) {
-          return h(ButtonAddObjectProperty, { ...c.hSortableParams(), propKey });
+          return h(
+            ButtonAddObjectProperty,
+            c.props({
+              propKey: propKey,
+            })
+          );
         }
 
         return h(

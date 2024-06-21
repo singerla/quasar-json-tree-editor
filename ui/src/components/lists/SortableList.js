@@ -1,10 +1,10 @@
-import {setupComponent, setupDefaults, vd} from '../index';
+import { setupComponent, setupDefaults, vd } from '../index';
 import { computed, h, ref } from 'vue';
 import { QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
 
 export default {
-  name: 'QJsonTreeEditorArraySortablePre',
+  name: 'SortableList',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit, slots }) {
@@ -43,7 +43,6 @@ export default {
       animation: 150,
       group,
       onStart() {
-        vd(draggableData.value)
         oldValue.value = c.getData();
       },
       onAdd() {

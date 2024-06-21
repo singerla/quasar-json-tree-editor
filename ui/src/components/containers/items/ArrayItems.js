@@ -1,14 +1,14 @@
 import { h } from 'vue';
-import {setupComponent, setupDefaults, vd} from '../index';
-import QJsonTreeNodePre from '../containers/QJsonTreeNodePre';
-import QJsonTreeFieldPre from '../fields/QJsonTreeField';
-import QJsonTreeContainerPre from '../fields/QJsonTreeContainerPre';
-import QJsonTreeEditorArraySortablePre from '../lists/QJsonTreeEditorArraySortablePre';
-import QJsonTreeEditorArraySortableItemPre from '../lists/QJsonTreeEditorArraySortableItemPre';
+import { setupComponent, setupDefaults, vd } from '../../index';
+import TreeNode from '../../tree/TreeNode';
+import TreeField from '../../tree/TreeField';
+import ContainerType from '../ContainerType';
+import SortableList from '../../lists/SortableList';
+import SortableListItem from '../../lists/SortableListItem';
 import { QBtn } from 'quasar';
 
 export default {
-  name: 'QJsonTreeArrayPre',
+  name: 'ArrayItems',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -16,7 +16,7 @@ export default {
 
     let add,
       type,
-      component = QJsonTreeNodePre;
+      component = TreeNode;
 
     if (c.childIsArray()) {
       type = 'array of arrays';
@@ -24,7 +24,7 @@ export default {
       type = 'array of objects';
     } else {
       type = 'array of scalars';
-      component = QJsonTreeFieldPre;
+      component = TreeField;
       add = {
         updateModelValue: true,
       };
@@ -36,11 +36,11 @@ export default {
           return h(component, c.hParams(index, type, add));
         }),
       getSortable: () =>
-        h(QJsonTreeEditorArraySortablePre, c.hSortableParams(), () =>
+        h(SortableList, c.props(), () =>
           c.getData().map((item, index) => {
             return h(
-              QJsonTreeEditorArraySortableItemPre,
-              { ...c.hDefaultParams(), key: c.getUniqueKey(item, index) },
+              SortableListItem,
+              c.props({ key: c.getUniqueKey(item, index) }),
               () => h(component, c.hParams(index, type, add))
             );
           })
@@ -55,13 +55,11 @@ export default {
     }
 
     return () => [
-      h(QJsonTreeContainerPre, c.hSortableParams('q-ml-md'), () =>
-        arrayComponent()
-      ),
+      h(ContainerType, c.props({ class: 'q-ml-md' }), () => arrayComponent()),
       h(QBtn, {
         class: 'q-ma-sm',
         rounded: true,
-        color: "primary",
+        color: 'primary',
         noCaps: true,
         size: 'md',
         icon: 'add',

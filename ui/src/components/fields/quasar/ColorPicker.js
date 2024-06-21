@@ -11,6 +11,7 @@ export default {
 
     const doUpdate = (val) => {
       if (val !== c.getData()) {
+        emit('initsUpdated', val);
         emit('update:modelValue', val);
       }
     };

@@ -1,15 +1,16 @@
-import { computed } from 'vue';
+import { propsFactory } from './props';
 
 export const vd = (val) => {
   console.log(val);
 };
 
 export const setupDefaults = {
-  props: ['modelValue', 'propKey', 'schema', 'index', 'type', 'class'],
-  emits: ['update:modelValue', 'updated'],
+  props: ['modelValue', 'propKey', 'schema', 'index', 'type', 'class', 'path'],
+  emits: ['update:modelValue', 'updated', 'initsUpdated'],
 };
 
 export const setupComponent = (props, emit) => {
+  // props.path.push(props.propKey);
   const c = {
     getData: () => {
       return props.modelValue;
@@ -80,25 +81,28 @@ export const setupComponent = (props, emit) => {
       return Object.keys(props.schema.properties);
     },
     initPath: () => {
-      return { key: c.getKey(), type: c.getType() };
+      return { key: c.getKey(), type: c.getType(), index: c.getIndex() };
     },
     addItem: () => {
       if (c.hasProperties()) {
         return;
       }
       const addData = getInitialValue(props.modelValue, props.schema);
+
       props.modelValue.push(addData);
-      emit('updated', {
-        path: [c.initPath()],
-        added: true,
-        newValue: addData,
-      });
+      emit('update:modelValue', props.modelValue);
+
+      // emit('updated', {
+      //   path: [c.initPath()],
+      //   added: true,
+      //   newValue: addData,
+      // });
     },
     truncateList: () => {
       if (c.hasProperties()) {
-        Object.keys(c.getData()).forEach(unsetKey => {
-          props.modelValue[unsetKey] = undefined
-        })
+        Object.keys(c.getData()).forEach((unsetKey) => {
+          props.modelValue[unsetKey] = undefined;
+        });
       } else {
         emit('update:modelValue', []);
       }
@@ -126,53 +130,7 @@ export const setupComponent = (props, emit) => {
         emit('updated', val);
       },
     },
-    hProps: (addClass) => {
-      return {
-        modelValue: props.modelValue,
-        schema: props.schema,
-        propKey: props.propKey,
-        type: props.type,
-        class: addClass,
-      };
-    },
-    hDefaultParams: (addClass) => {
-      return {
-        modelValue: props.modelValue,
-        onUpdated: c.hParamsFactory.onUpdated,
-        schema: props.schema,
-        propKey: props.propKey,
-        type: props.type,
-        class: addClass,
-      };
-    },
-    hSortableParams: (addClass) => {
-      return {
-        modelValue: props.modelValue,
-        'onUpdate:modelValue': (val) => {
-          emit('update:modelValue', val);
-        },
-        onUpdated: c.hParamsFactory.onUpdated,
-        schema: props.schema,
-        propKey: props.propKey,
-        type: props.type,
-        class: addClass,
-      };
-    },
-    hPropParams: (type) => {
-      return {
-        modelValue: props.modelValue,
-        onUpdated: (val) => {
-          val.path.push({
-            key: props.propKey,
-            type: type,
-          });
-          emit('updated', val);
-        },
-        schema: props.schema,
-        propKey: props.propKey,
-        type: type,
-      };
-    },
+    props: (addProps) => propsFactory(c, emit, props, addProps),
     hParams: (index, type, add) => {
       const params = {
         key: index,
@@ -250,8 +208,7 @@ export const getInitialValue = (modelValue, schema) => {
     });
     return addData;
   } else {
-    const iniValue = getInitialValueByType(schema.items);
-    return iniValue;
+    return getInitialValueByType(schema.items);
   }
 };
 

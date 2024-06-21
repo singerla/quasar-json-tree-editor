@@ -1,6 +1,6 @@
-import { setupComponent, setupDefaults } from '../index';
+import { setupComponent, setupDefaults } from '../../index';
 import { h, ref } from 'vue';
-import QJsonTreeNodeHeader from './headers/QJsonTreeNodeHeader';
+import QJsonTreeNodeHeader from '../headers/ContainerHeader';
 import { QExpansionItem } from 'quasar';
 
 export default {
@@ -22,7 +22,7 @@ export default {
           headerStyle: 'background-color: #eee; margin: 0; padding: 0',
         },
         {
-          header: () => h(QJsonTreeNodeHeader, c.hDefaultParams()),
+          header: () => h(QJsonTreeNodeHeader, c.props()),
           default: () => slots.default(),
         }
       ),

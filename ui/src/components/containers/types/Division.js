@@ -1,4 +1,4 @@
-import { setupComponent, setupDefaults } from '../index';
+import { setupComponent, setupDefaults } from '../../index';
 import { h } from 'vue';
 
 export default {

@@ -1,10 +1,10 @@
-import { setupComponent, setupDefaults } from '../index';
+import { setupComponent, setupDefaults } from '../../index';
 import { h } from 'vue';
 import { QBtn, QList, QMenu } from 'quasar';
-import QJsonTreeMenuItem from './QJsonTreeMenuItem';
+import QJsonTreeMenuItem from './ContainerMenuItem';
 
 export default {
-  name: 'QJsonTreeMenu',
+  name: 'ContainerMenu',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {

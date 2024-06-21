@@ -1,9 +1,9 @@
-import {setupComponent, setupDefaults} from '../index';
-import {h} from 'vue';
-import {QIcon, QItem, QItemSection} from 'quasar';
+import { setupComponent, setupDefaults } from '../index';
+import { h } from 'vue';
+import { QIcon, QItem, QItemSection } from 'quasar';
 
 export default {
-  name: 'QJsonTreeEditorArraySortableItemPre',
+  name: 'SortableListItem',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit, slots }) {

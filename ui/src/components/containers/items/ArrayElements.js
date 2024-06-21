@@ -1,11 +1,9 @@
-import {computed, h, ref} from 'vue';
-import { setupComponent, setupDefaults, vd } from '../index';
-import QJsonTreeElementPre from './QJsonTreeElementPre';
-import { QList } from 'quasar';
-import {useDraggable} from "vue-draggable-plus";
+import { h } from 'vue';
+import { setupComponent, setupDefaults } from '../../index';
+import TreeElement from '../../tree/TreeElement';
 
 export default {
-  name: 'QJsonTreeNodeArrayPre',
+  name: 'ArrayItems',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -14,7 +12,7 @@ export default {
     return () =>
       c.getData().map((item, index) => {
         return h(
-          QJsonTreeElementPre,
+          TreeElement,
           c.hParams(index, 'element from array', {
             updateModelValue: true,
             onUpdatedPush: false,

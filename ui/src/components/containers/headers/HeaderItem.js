@@ -1,9 +1,9 @@
 import { h } from 'vue';
 import { QChip, QItem, QItemLabel, QItemSection } from 'quasar';
-import {setupComponent, setupDefaults} from "../../index";
+import { setupComponent, setupDefaults } from '../../index';
 
 export default {
-  name: 'QJsonTreeHeader',
+  name: 'HeaderItem',
   props: [...setupDefaults.props, 'showType', 'showKey'],
   emits: setupDefaults.emits,
   setup(props, { slots, emit }) {
@@ -17,23 +17,25 @@ export default {
         () => [
           h(QItemSection, { avatar: true }, () => slots.icon()),
           h(QItemSection, () => [
-            h(QItemLabel, { }, () => c.getKey()),
+            h(QItemLabel, {}, () => c.getKey()),
             h(QItemLabel, { caption: true }, () => c.getType()),
           ]),
-          h(QItemSection, { side: true }, () =>
-            [h(QChip, {
+          h(QItemSection, { side: true }, () => [
+            h(QChip, {
               label: props.schema.type,
               size: 'sm',
               class: 'q-pa-xs',
               color: 'grey-5',
             }),
             h(QChip, {
-              label: (props.schema.items) ? 'of ' + props.schema.items.type + 's' : 'default',
+              label: props.schema.items
+                ? 'of ' + props.schema.items.type + 's'
+                : 'default',
               size: 'sm',
               class: 'q-pa-xs',
               color: 'grey-6',
-            })]
-          ),
+            }),
+          ]),
           h(QItemSection, { avatar: true }, () => slots.menu()),
         ]
       );
