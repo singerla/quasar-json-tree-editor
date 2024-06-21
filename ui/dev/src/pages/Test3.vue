@@ -2,7 +2,7 @@
 import { reactive, ref } from 'vue';
 import { vd } from '../../../src/components';
 
-const jsonSchema = {
+const jsonSchema = reactive({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'https://example.com/product.schema.json',
   title: 'Product',
@@ -20,6 +20,10 @@ const jsonSchema = {
     },
     slider: {
       type: 'array',
+      params: {
+        container: 'Card',
+        sortable: true,
+      },
       items: {
         type: 'number',
         params: {
@@ -67,7 +71,7 @@ const jsonSchema = {
       },
     },
   },
-};
+});
 
 const data = reactive({
   arrayOfArrays: [['123'], ['abv', 'sdfdf']],
@@ -110,10 +114,17 @@ const sep1 = ref(70);
         <q-separator></q-separator>
       </template>
       <template v-slot:after>
+        <q-btn label="swoosh" @click="jsonSchema.properties.slider.items.params.max = 300"/>
+        <q-btn label="shromp" @click="jsonSchema.properties.slider.items.params.max = 50"/>
         <pre>{{ data }}</pre>
       </template>
     </q-splitter>
   </q-page>
 </template>
 
-<style lang="sass" scoped></style>
+<style lang="sass">
+.q-json-tree-field-slider
+  padding: 10px
+
+
+</style>

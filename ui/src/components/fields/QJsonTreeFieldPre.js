@@ -2,6 +2,7 @@ import { h } from 'vue';
 import { setupComponent, setupDefaults, vd } from '../index';
 import { QInput } from 'quasar';
 import ColorPicker from './quasar/ColorPicker';
+import Slider from "./quasar/Slider";
 
 export default {
   name: 'QJsonTreeFieldPre',
@@ -13,6 +14,7 @@ export default {
     const useQuasarComponent = c.getSchemaParam('component');
     const quasarFieldMap = {
       colorpicker: ColorPicker,
+      slider: Slider,
     };
 
     const doUpdate = (val) => {
