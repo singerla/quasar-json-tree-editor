@@ -1,4 +1,4 @@
-import { setupComponent, setupDefaults } from '../index';
+import {setupComponent, setupDefaults, vd} from '../index';
 import { computed, h, ref } from 'vue';
 import { QList } from 'quasar';
 import { useDraggable } from 'vue-draggable-plus';
@@ -32,7 +32,7 @@ export default {
         return c.getData().map((item, index) => {
           return {
             value: item,
-            id: item.id || index,
+            id: c.getKey() + '_' + (item.id || index),
           };
         });
       },
@@ -43,6 +43,7 @@ export default {
       animation: 150,
       group,
       onStart() {
+        vd(draggableData.value)
         oldValue.value = c.getData();
       },
       onAdd() {

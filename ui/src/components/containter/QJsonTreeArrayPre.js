@@ -1,6 +1,5 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults, vd } from '../index';
-import { QInput } from 'quasar';
+import { setupComponent, setupDefaults } from '../index';
 import QJsonTreeNodePre from '../containers/QJsonTreeNodePre';
 import QJsonTreeFieldPre from '../fields/QJsonTreeFieldPre';
 import QJsonTreeContainerPre from '../fields/QJsonTreeContainerPre';
@@ -40,7 +39,7 @@ export default {
           c.getData().map((item, index) => {
             return h(
               QJsonTreeEditorArraySortableItemPre,
-              c.hDefaultParams(),
+              { ...c.hDefaultParams(), key: c.getUniqueKey(item, index) },
               () => h(component, c.hParams(index, type, add))
             );
           })

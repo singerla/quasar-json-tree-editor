@@ -18,6 +18,9 @@ export const setupComponent = (props, emit) => {
     getType: () => {
       return props.type;
     },
+    getSchema: () => {
+      return props.schema;
+    },
     getIndex: () => {
       return props.index || 0;
     },
@@ -27,10 +30,11 @@ export const setupComponent = (props, emit) => {
         props.modelValue[propKey] !== undefined
       );
     },
-    getSchemaParam: (key) => {
+    getSchemaParam: (key, defaultValue) => {
       if (props.schema.params && props.schema.params[key]) {
         return props.schema.params[key];
       }
+      return defaultValue
     },
     getClass: (addClass) => {
       return props.class + ' ' + addClass;
@@ -38,8 +42,22 @@ export const setupComponent = (props, emit) => {
     getLabel: () => {
       return String(
         props.label ||
-        (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey)
+          (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey)
       );
+    },
+    getUniqueKey: (item, index) => {
+      const key = [props.propKey]
+      if(typeof item === 'string' || typeof item === 'number') {
+        key.push(index)
+      } else {
+        const idProp = component.getSchemaParam('idPropName', 'id')
+        if(item[idProp] !== undefined) {
+          key.push(item[idProp])
+        } else {
+          key.push(index)
+        }
+      }
+      return key.join('_');
     },
     isObject: () => {
       return props.schema.type === 'object';
@@ -73,22 +91,34 @@ export const setupComponent = (props, emit) => {
     },
     createProperty: () => {
       const addData = getInitialValue(props.modelValue, {
-        items: props.schema
+        items: props.schema,
       });
-      const key = component.getKey()
-      props.modelValue[key] = addData[key]
+      const key = component.getKey();
+      props.modelValue[key] = addData[key];
       emit('updated', {
         path: [component.initPath()],
         added: true,
         newValue: addData,
       });
     },
+    hParamsFactory: {
+      onUpdated: (val) => {
+        emit('updated', val);
+      }
+    },
+    hProps: (addClass) => {
+      return {
+        modelValue: props.modelValue,
+        schema: props.schema,
+        propKey: props.propKey,
+        type: props.type,
+        class: addClass,
+      }
+    },
     hDefaultParams: (addClass) => {
       return {
         modelValue: props.modelValue,
-        onUpdated: (val) => {
-          emit('updated', val);
-        },
+        onUpdated: component.hParamsFactory.onUpdated,
         schema: props.schema,
         propKey: props.propKey,
         type: props.type,
@@ -101,9 +131,7 @@ export const setupComponent = (props, emit) => {
         'onUpdate:modelValue': (val) => {
           emit('update:modelValue', val);
         },
-        onUpdated: (val) => {
-          emit('updated', val);
-        },
+        onUpdated: component.hParamsFactory.onUpdated,
         schema: props.schema,
         propKey: props.propKey,
         type: props.type,

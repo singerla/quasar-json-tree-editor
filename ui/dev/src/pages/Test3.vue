@@ -22,8 +22,8 @@ const jsonSchema = {
       type: 'array',
       items: {
         type: 'number',
-        component: 'Slider',
         params: {
+          component: 'Slider',
           min: 0,
           max: 100,
         },
@@ -57,7 +57,9 @@ const jsonSchema = {
             properties: {
               color: {
                 type: 'string',
-                component: 'ColorPicker',
+                params: {
+                  component: 'ColorPicker'
+                },
               },
             },
           },
