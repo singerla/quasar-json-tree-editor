@@ -15,15 +15,9 @@ export default {
     const c = setupComponent(props, emit);
 
     let add,
-      type,
       component = TreeNode;
 
-    if (c.childIsArray()) {
-      type = 'array of arrays';
-    } else if (c.childIsObject()) {
-      type = 'array of objects';
-    } else {
-      type = 'array of scalars';
+    if (!c.childIsArray() && !c.childIsObject()) {
       component = TreeField;
       add = {
         updateModelValue: true,
@@ -41,7 +35,6 @@ export default {
               key: index,
               schema: c.getSchema().items,
               propKey: index,
-              type: type,
             })
           );
         }),
@@ -60,7 +53,6 @@ export default {
                     key: index,
                     schema: c.getSchema().items,
                     propKey: c.getKey() + '_' + index,
-                    type: type,
                   })
                 )
             );
@@ -75,17 +67,6 @@ export default {
       arrayComponent = arrayComponents.getDefault;
     }
 
-    return () => [
-      h(ContainerType, c.props({ class: 'q-ml-md' }), () => arrayComponent()),
-      h(QBtn, {
-        class: 'q-ma-sm',
-        rounded: true,
-        color: 'primary',
-        noCaps: true,
-        size: 'md',
-        icon: 'add',
-        onClick: () => c.addItem(),
-      }),
-    ];
+    return () => arrayComponent();
   },
 };

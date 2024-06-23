@@ -41,7 +41,8 @@ export const propsFactory = (c, emit, props, addProps) => {
     index = addProps.index;
   }
 
-  const propsParams = c.propsParams(index, retProps);
+  const propsParams = c.propsParams(index);
+
   Object.keys(addProps).forEach((addProp) => {
     if (addProps[addProp]) {
       retProps = Object.assign(retProps, propsParams[addProp]);

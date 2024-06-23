@@ -5,6 +5,7 @@ import ArrayElements from './items/ArrayElements';
 import ContainerType from '../containers/ContainerType';
 import Message from '../fields/Message';
 import TreeField from './TreeField';
+import ArrayItems from '../lists/ArrayItems';
 
 export default {
   name: 'TreeNodeContainer',
@@ -17,7 +18,7 @@ export default {
     if (c.isObject()) {
       component = ObjectProperties;
     } else if (c.isArray()) {
-      component = ArrayElements;
+      component = ArrayItems;
     }
 
     return () => h(ContainerType, c.props({}), () => h(component, c.props()));

@@ -97,15 +97,15 @@ export const setupComponent = (props, emit) => {
       }
       const addData = getInitialValue(props.modelValue, props.schema);
       props.modelValue.push(addData);
-      emit('update:modelValue', props.modelValue);
+      c.defaultUpdate()(props.modelValue);
     },
     truncateList: () => {
       if (c.hasProperties()) {
         Object.keys(c.getData()).forEach((unsetKey) => {
-          props.modelValue[unsetKey] = undefined;
+          c.indexedUpdate(unsetKey)(undefined);
         });
       } else {
-        emit('update:modelValue', []);
+        c.defaultUpdate()([]);
       }
     },
     createProperty: () => {
@@ -113,11 +113,10 @@ export const setupComponent = (props, emit) => {
         items: props.schema,
       });
       const key = c.getKey();
-      props.modelValue[key] = addData[key];
+      c.indexedUpdate(key)(addData[key]);
     },
     getPath: () => props.path,
-    props: (addProps) => propsFactory(c, emit, props, addProps),
-    propsParams: (index, retProps) => {
+    propsParams: (index) => {
       return {
         hasModel: {
           modelValue: props.modelValue,
@@ -149,6 +148,10 @@ export const setupComponent = (props, emit) => {
         },
       };
     },
+    props: (addProps) => propsFactory(c, emit, props, addProps),
+    indexedUpdate: (index) =>
+      c.propsParams(index).updatesIndexedModel['onUpdate:modelValue'],
+    defaultUpdate: () => c.propsParams().updatesModel['onUpdate:modelValue'],
   };
   return c;
 };
