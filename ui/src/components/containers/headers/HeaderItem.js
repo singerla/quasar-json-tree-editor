@@ -20,22 +20,24 @@ export default {
             h(QItemLabel, {}, () => c.getKey()),
             h(QItemLabel, { caption: true }, () => c.getType()),
           ]),
-          h(QItemSection, { side: true }, () => [
-            h(QChip, {
-              label: props.schema.type,
-              size: 'sm',
-              class: 'q-pa-xs',
-              color: 'grey-5',
-            }),
-            h(QChip, {
-              label: props.schema.items
-                ? 'of ' + props.schema.items.type + 's'
-                : 'default',
-              size: 'sm',
-              class: 'q-pa-xs',
-              color: 'grey-6',
-            }),
-          ]),
+          props.schema.items
+            ? h(QItemSection, { side: true }, () => [
+                h(QChip, {
+                  label: props.schema.type,
+                  size: 'sm',
+                  class: 'q-pa-xs',
+                  color: 'grey-5',
+                }),
+                h(QChip, {
+                  label: props.schema.items
+                    ? 'of ' + props.schema.items.type + 's'
+                    : 'default',
+                  size: 'sm',
+                  class: 'q-pa-xs',
+                  color: 'grey-6',
+                }),
+              ])
+            : h('div'),
           h(QItemSection, { avatar: true }, () => slots.menu()),
         ]
       );

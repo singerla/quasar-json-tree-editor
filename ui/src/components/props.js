@@ -1,10 +1,10 @@
+import { vd } from './index';
+
 export const propsFactory = (c, emit, props, addProps) => {
   const defaultProps = {
     hasModel: true,
     updatesModel: true,
     emitsUpdated: true,
-    emitsUpdatedAndPush: false,
-    initsUpdated: false,
     hasIndexedModel: false,
     updatesIndexedModel: false,
   };
@@ -16,6 +16,11 @@ export const propsFactory = (c, emit, props, addProps) => {
     path: props.path,
   };
 
+  retProps.path = [...retProps.path];
+  if (retProps.path[retProps.path.length - 1] !== props.propKey) {
+    retProps.path.push(props.propKey);
+  }
+
   addProps = addProps || {};
   Object.keys(defaultProps).forEach((defaultProp) => {
     if (
@@ -25,11 +30,6 @@ export const propsFactory = (c, emit, props, addProps) => {
       addProps[defaultProp] = true;
     }
   });
-
-  if (addProps.initsUpdated === true) {
-    addProps.emitsUpdated = false;
-    addProps.updatesModel = false;
-  }
 
   let index = c.getIndex();
   if (addProps.hasIndexedModel === true) {
@@ -41,60 +41,12 @@ export const propsFactory = (c, emit, props, addProps) => {
     index = addProps.index;
   }
 
-  addProps = addProps || defaultProps;
-
-  const hasModel = {
-    modelValue: props.modelValue,
-  };
-  const hasIndexedModel = {
-    modelValue: props.modelValue[index],
-  };
-  const updatesModel = {
-    'onUpdate:modelValue': (val) => {
-      emit('update:modelValue', val);
-    },
-  };
-  const updatesIndexedModel = {
-    'onUpdate:modelValue': (val) => {
-      props.modelValue[index] = val;
-    },
-  };
-  const initsUpdated = {
-    'onUpdate:modelValue': (newValue) => {
-      c.initUpdated(newValue, index);
-      emit('update:modelValue', newValue);
-    },
-  };
-  const emitsUpdated = {
-    onUpdated: c.emitUpdated,
-  };
-  const emitsUpdatedAndPush = {
-    onUpdated: c.emitUpdatedAndPush,
-  };
-
-  if (addProps.hasModel) {
-    retProps = Object.assign(retProps, hasModel);
-  }
-  if (addProps.updatesModel) {
-    retProps = Object.assign(retProps, updatesModel);
-  }
-  if (addProps.initsUpdated) {
-    retProps = Object.assign(retProps, initsUpdated);
-  }
-  if (addProps.emitsUpdated) {
-    retProps = Object.assign(retProps, emitsUpdated);
-  }
-  if (addProps.emitsUpdatedAndPush) {
-    retProps = Object.assign(retProps, emitsUpdatedAndPush);
-  }
-  if (addProps.hasIndexedModel) {
-    retProps = Object.assign(retProps, hasIndexedModel);
-  }
-  if (addProps.updatesIndexedModel) {
-    retProps = Object.assign(retProps, updatesIndexedModel);
-  }
-
+  const propsParams = c.propsParams(index, retProps);
   Object.keys(addProps).forEach((addProp) => {
+    if (addProps[addProp]) {
+      retProps = Object.assign(retProps, propsParams[addProp]);
+    }
+
     if (defaultProps[addProp] === undefined) {
       retProps[addProp] = addProps[addProp];
     }

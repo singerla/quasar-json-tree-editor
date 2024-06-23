@@ -1,9 +1,9 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../../index';
-import TreeElement from '../../tree/TreeElement';
+import TreeElement from '../TreeElement';
 
 export default {
-  name: 'ArrayItems',
+  name: 'ArrayElements',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {
@@ -17,9 +17,8 @@ export default {
             key: index,
             hasIndexedModel: true,
             schema: c.getSchema().items,
-            propKey: index,
+            propKey: c.getKey() + '_' + index,
             index: index,
-            type: 'ArrayItems',
           })
         );
       });

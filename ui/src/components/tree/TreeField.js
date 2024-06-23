@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults, vd } from '../index';
-import { QInput } from 'quasar';
+import { QCheckbox, QInput } from 'quasar';
 import ColorPicker from '../fields/quasar/ColorPicker';
 import Slider from '../fields/quasar/Slider';
 
@@ -12,21 +12,18 @@ export default {
     const c = setupComponent(props, emit);
 
     const useQuasarComponent = c.getSchemaParam('component');
-    const quasarFieldMap = {
+
+    const componentMap = {
       colorpicker: ColorPicker,
       slider: Slider,
+      boolean: QCheckbox,
+      default: QInput,
     };
 
     if (useQuasarComponent) {
       const key = useQuasarComponent.toLowerCase();
-      if (quasarFieldMap[key]) {
-        return () =>
-          h(
-            quasarFieldMap[key],
-            c.props({
-              initsUpdated: true,
-            })
-          );
+      if (componentMap[key]) {
+        return () => h(componentMap[key], c.props({}));
       } else {
         console.error(
           'Could not find specified quasar component: ' + useQuasarComponent
@@ -34,13 +31,24 @@ export default {
       }
     }
 
+    const addParams = {
+      label: c.getLabel(),
+    };
+    let targetType = 'default';
+    if (c.isBoolean()) {
+      targetType = 'boolean';
+    } else if (c.isNumeric()) {
+      addParams.type = 'number';
+    }
+
+    const targetComponent = componentMap[targetType];
+
     return () => [
       h(
-        QInput,
+        targetComponent,
         c.props({
-          label: c.getLabel(),
           class: 'q-json-tree-field',
-          initsUpdated: true,
+          ...addParams,
         })
       ),
     ];

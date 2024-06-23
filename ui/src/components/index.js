@@ -6,7 +6,7 @@ export const vd = (val) => {
 
 export const setupDefaults = {
   props: ['modelValue', 'propKey', 'schema', 'index', 'type', 'class', 'path'],
-  emits: ['update:modelValue', 'updated', 'initsUpdated'],
+  emits: ['update:modelValue', 'updated'],
 };
 
 export const setupComponent = (props, emit) => {
@@ -35,11 +35,14 @@ export const setupComponent = (props, emit) => {
         props.modelValue[propKey] !== undefined
       );
     },
-    getSchemaParam: (key, defaultValue) => {
+    getSchemaParam: (key, defVal) => {
       if (props.schema.params && props.schema.params[key]) {
         return props.schema.params[key];
       }
-      return defaultValue;
+      return defVal;
+    },
+    getSchemaClass: (addClass) => {
+      return c.getSchemaParam('class', '') + ' ' + addClass;
     },
     getClass: (addClass) => {
       return props.class + ' ' + addClass;
@@ -65,10 +68,16 @@ export const setupComponent = (props, emit) => {
       return key.join('_');
     },
     isObject: () => {
-      return props.schema.type === 'object';
+      return isObject(props.schema);
     },
     isArray: () => {
-      return props.schema.type === 'array';
+      return isArray(props.schema);
+    },
+    isNumeric: () => {
+      return isNumeric(props.schema);
+    },
+    isBoolean: () => {
+      return isBoolean(props.schema);
     },
     childIsArray: () => {
       return props.schema.items.type === 'array';
@@ -81,9 +90,6 @@ export const setupComponent = (props, emit) => {
     },
     getProperties: () => {
       return Object.keys(props.schema.properties);
-    },
-    initPath: () => {
-      return { key: c.getKey(), type: c.getType(), index: c.getIndex() };
     },
     addItem: () => {
       if (c.hasProperties()) {
@@ -109,23 +115,40 @@ export const setupComponent = (props, emit) => {
       const key = c.getKey();
       props.modelValue[key] = addData[key];
     },
-    initUpdated: (newValue, index, oldValue) => {
-      emit('updated', {
-        path: [c.initPath()],
-        key: c.getKey(),
-        oldValue: oldValue !== undefined ? oldValue : c.getData(),
-        newValue: newValue,
-        index,
-      });
-    },
-    emitUpdated: (val) => {
-      emit('updated', val);
-    },
-    emitUpdatedAndPush: (val) => {
-      val.path.push(c.initPath());
-      emit('updated', val);
-    },
+    getPath: () => props.path,
     props: (addProps) => propsFactory(c, emit, props, addProps),
+    propsParams: (index, retProps) => {
+      return {
+        hasModel: {
+          modelValue: props.modelValue,
+        },
+        hasIndexedModel: {
+          modelValue: props.modelValue[index],
+        },
+        updatesModel: {
+          'onUpdate:modelValue': (val) => {
+            emit('update:modelValue', val);
+          },
+        },
+        updatesIndexedModel: {
+          'onUpdate:modelValue': (val) => {
+            emit('updated', {
+              newValue: val,
+              oldValue: props.modelValue[index],
+              atKey: c.getKey(),
+              atIndex: index,
+              path: c.getPath(),
+            });
+            props.modelValue[index] = val;
+          },
+        },
+        emitsUpdated: {
+          onUpdated: (val) => {
+            emit('updated', val);
+          },
+        },
+      };
+    },
   };
   return c;
 };
@@ -169,11 +192,4 @@ const getInitialValueByType = (schema) => {
   } else {
     return null;
   }
-};
-
-export const valueBySchema = (value, localSchema) => {
-  if (isNumeric(localSchema).value) {
-    value = Number(value);
-  }
-  return value;
 };

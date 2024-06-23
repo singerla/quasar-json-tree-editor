@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../../index';
-import TreeElement from '../../tree/TreeElement';
+import TreeElement from '../TreeElement';
 import ButtonAddObjectProperty from '../../buttons/ButtonAddObjectProperty';
 
 export default {
@@ -9,6 +9,7 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
+
     return () =>
       c.getProperties().map((propKey) => {
         if (!c.dataHasProperty(propKey)) {

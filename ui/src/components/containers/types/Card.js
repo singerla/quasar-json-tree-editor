@@ -13,7 +13,7 @@ export default {
       h(
         QCard,
         {
-          class: 'q-json-tree-node-card',
+          class: c.getClass('q-json-tree-node-card'),
         },
         () => [
           h(

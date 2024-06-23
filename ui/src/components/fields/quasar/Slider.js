@@ -18,7 +18,6 @@ export default {
         max: c.getSchemaParam('max', 100),
         modelValue: c.getData(),
         'onUpdate:modelValue': (val) => {
-          emit('initsUpdated', val);
           emit('update:modelValue', val);
         },
       }),

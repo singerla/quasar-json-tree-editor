@@ -1,12 +1,13 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
-import ObjectProperties from '../containers/items/ObjectProperties';
-import ArrayElements from '../containers/items/ArrayElements';
+import ObjectProperties from './items/ObjectProperties';
+import ArrayElements from './items/ArrayElements';
 import ContainerType from '../containers/ContainerType';
 import Message from '../fields/Message';
+import TreeField from './TreeField';
 
 export default {
-  name: 'QJsonTreeNodePre',
+  name: 'TreeNodeContainer',
   props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { emit }) {

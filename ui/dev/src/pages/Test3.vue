@@ -36,11 +36,15 @@ const jsonSchema = reactive({
     arrayOfArrays: {
       type: 'array',
       params: {
-        container: 'Card'
+        container: 'Card',
+        class: 'q-ma-sm',
       },
       items: {
         type: 'array',
-
+        params: {
+          container: 'Card',
+          class: 'q-ma-sm',
+        },
         items: {
           type: 'string',
         },
@@ -66,7 +70,7 @@ const jsonSchema = reactive({
               color: {
                 type: 'string',
                 params: {
-                  component: 'ColorPicker'
+                  component: 'ColorPicker',
                 },
               },
             },
@@ -118,8 +122,14 @@ const sep1 = ref(70);
         <q-separator></q-separator>
       </template>
       <template v-slot:after>
-        <q-btn label="swoosh" @click="jsonSchema.properties.slider.items.params.max = 300"/>
-        <q-btn label="shromp" @click="jsonSchema.properties.slider.items.params.max = 50"/>
+        <q-btn
+          label="swoosh"
+          @click="jsonSchema.properties.slider.items.params.max = 300"
+        />
+        <q-btn
+          label="shromp"
+          @click="jsonSchema.properties.slider.items.params.max = 50"
+        />
         <pre>{{ data }}</pre>
       </template>
     </q-splitter>
@@ -133,6 +143,4 @@ const sep1 = ref(70);
 
 .q-json-tree-field-slider
   padding: 10px
-
-
 </style>

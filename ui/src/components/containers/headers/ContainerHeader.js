@@ -20,13 +20,7 @@ export default {
         }),
         {
           icon: () => h(QIcon, { name: 'data_object' }),
-          menu: () =>
-            h(
-              ContainerMenu,
-              c.props({
-                initsUpdated: true,
-              })
-            ),
+          menu: () => h(ContainerMenu, c.props({})),
         }
       );
   },

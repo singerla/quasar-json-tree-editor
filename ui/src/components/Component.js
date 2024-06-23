@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import TreeNode from './tree/TreeNode';
+import TreeNode from './tree/TreeNodeContainer';
 
 export default {
   name: 'QJsonTreeEditor',
