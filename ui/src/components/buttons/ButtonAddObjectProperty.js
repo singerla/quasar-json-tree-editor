@@ -1,5 +1,5 @@
-import {setupComponent, setupDefaults} from '../index';
-import { h } from 'vue';
+import { setupComponent, setupDefaults } from '../index';
+import { h, inject, provide } from 'vue';
 import { QBtn } from 'quasar';
 
 export default {
@@ -8,6 +8,16 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
+
+    const customBtn = inject('addObjectPropertyButton', null);
+    if (customBtn) {
+      return () =>
+        h(customBtn, {
+          label: c.getKey(),
+          onClick: () => c.createProperty(),
+        });
+    }
+
     return () => [
       h(QBtn, {
         class: 'q-pa-sm q-ma-sm',

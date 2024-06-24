@@ -4,7 +4,7 @@ import { vd } from '../../../src/components';
 
 const data = reactive({
   productId: 1,
-  productName: 'An ice sculpture',
+  // productName: 'An ice sculpture',
 });
 
 const jsonSchema = {
@@ -44,6 +44,14 @@ const sep1 = ref(70);
           @updated="updated"
           class="q-ma-sm"
         >
+          <template v-slot:addObjectPropertyButton="scope" v-bind="data">
+            <q-btn
+              size="lg"
+              color="orange"
+              :label="'add custom ' + scope.label"
+              @click="scope.onClick"
+            />
+          </template>
         </QJsonTreeEditor>
       </template>
       <template v-slot:after>

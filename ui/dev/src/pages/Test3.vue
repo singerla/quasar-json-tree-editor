@@ -115,11 +115,8 @@ const sep1 = ref(70);
     <q-splitter class="" v-model="sep1" vertical>
       <template v-slot:before>
         <h4>Quasar components Example</h4>
-        <QJsonTreeEditor
-          v-model="data"
-          :schema="jsonSchema"
-          @updated="updated"
-        />
+        <QJsonTreeEditor v-model="data" :schema="jsonSchema" @updated="updated">
+        </QJsonTreeEditor>
         <q-separator></q-separator>
       </template>
       <template v-slot:after>
