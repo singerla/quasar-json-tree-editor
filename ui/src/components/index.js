@@ -102,7 +102,7 @@ export const setupComponent = (props, emit) => {
     truncateList: () => {
       if (c.hasProperties()) {
         Object.keys(c.getData()).forEach((unsetKey) => {
-          c.indexedUpdate(unsetKey)(undefined);
+          c.indexedUpdate({ index: unsetKey, emitsUpdated: true })(undefined);
         });
       } else {
         c.defaultUpdate()([]);
@@ -113,10 +113,17 @@ export const setupComponent = (props, emit) => {
         items: props.schema,
       });
       const key = c.getKey();
-      c.indexedUpdate(key)(addData[key]);
+      c.indexedUpdate({ index: key, emitsUpdated: true })(addData[key]);
     },
     getPath: () => props.path,
-    propsParams: (index) => {
+    emitOnce: (info) => {
+      emit('updated', info);
+    },
+    propsParams: (addProps) => {
+      addProps = addProps || {
+        index: 0,
+      };
+      const index = addProps.index;
       return {
         hasModel: {
           modelValue: props.modelValue,
@@ -131,7 +138,7 @@ export const setupComponent = (props, emit) => {
         },
         updatesIndexedModel: {
           'onUpdate:modelValue': (val) => {
-            emit('updated', {
+            c.emitOnce({
               newValue: val,
               oldValue: props.modelValue[index],
               atKey: c.getKey(),
@@ -139,6 +146,7 @@ export const setupComponent = (props, emit) => {
               path: c.getPath(),
             });
             props.modelValue[index] = val;
+            emit('update:modelValue', props.modelValue);
           },
         },
         emitsUpdated: {
@@ -149,8 +157,8 @@ export const setupComponent = (props, emit) => {
       };
     },
     props: (addProps) => propsFactory(c, emit, props, addProps),
-    indexedUpdate: (index) =>
-      c.propsParams(index).updatesIndexedModel['onUpdate:modelValue'],
+    indexedUpdate: (addProps) =>
+      c.propsParams(addProps).updatesIndexedModel['onUpdate:modelValue'],
     defaultUpdate: () => c.propsParams().updatesModel['onUpdate:modelValue'],
   };
   return c;

@@ -1,5 +1,3 @@
-import { vd } from './index';
-
 export const propsFactory = (c, emit, props, addProps) => {
   const defaultProps = {
     hasModel: true,
@@ -31,17 +29,17 @@ export const propsFactory = (c, emit, props, addProps) => {
     }
   });
 
-  let index = c.getIndex();
   if (addProps.hasIndexedModel === true) {
     addProps.hasModel = false;
     if (addProps.updatesModel === true) {
       addProps.updatesModel = false;
       addProps.updatesIndexedModel = true;
     }
-    index = addProps.index;
+  } else {
+    addProps.index = c.getIndex();
   }
 
-  const propsParams = c.propsParams(index);
+  const propsParams = c.propsParams(addProps);
 
   Object.keys(addProps).forEach((addProp) => {
     if (addProps[addProp]) {

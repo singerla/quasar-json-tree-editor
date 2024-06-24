@@ -4,7 +4,7 @@ import { QSlider } from 'quasar';
 
 export default {
   name: 'Slider',
-  props: setupDefaults.props,
+  props: [...setupDefaults.props, 'label'],
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const c = setupComponent(props, emit);

@@ -71,6 +71,7 @@ const jsonSchema = reactive({
                 type: 'string',
                 params: {
                   component: 'ColorPicker',
+                  class: 'q-pa-sm q-ma-sm',
                 },
               },
             },
@@ -103,7 +104,7 @@ const data = reactive({
 const updated = (tmp) => {
   vd('updated root');
   vd(tmp);
-  vd(data);
+  // vd(data);
 };
 
 const sep1 = ref(70);

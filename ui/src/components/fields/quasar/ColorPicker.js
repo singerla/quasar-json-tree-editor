@@ -4,7 +4,7 @@ import { QColor, QIcon, QInput, QPopupProxy } from 'quasar';
 
 export default {
   name: 'ColorPicker',
-  props: setupDefaults.props,
+  props: [...setupDefaults.props, 'label'],
   emits: setupDefaults.emits,
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
