@@ -117,7 +117,9 @@ export const setupComponent = (props, emit) => {
     },
     getPath: () => props.path,
     emitOnce: (info) => {
-      emit('updated', info);
+      if(info.newValue !== info.oldValue) {
+        emit('updated', info);
+      }
     },
     propsParams: (addProps) => {
       addProps = addProps || {

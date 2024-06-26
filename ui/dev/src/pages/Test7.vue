@@ -38,13 +38,14 @@ const sep1 = ref(70);
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
         <h4>Basic Example 7</h4>
+        <h5>custom button</h5>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"
           @updated="updated"
           class="q-ma-sm"
         >
-          <template v-slot:addObjectPropertyButton="scope" v-bind="data">
+          <template v-slot:addObjectPropertyButton="scope">
             <q-btn
               size="lg"
               color="orange"

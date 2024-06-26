@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { h, ref } from 'vue';
 import { vd } from '../../../src/components';
 
 const data = ref({
@@ -91,14 +91,29 @@ const sep1 = ref(70);
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
         <h4>Basic Example</h4>
+        <h5>Custom Node Container Header</h5>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"
           @updated="updated"
           class="q-ma-sm"
         >
+          <template v-slot:containerHeader="scope">
+            <q-item-section class="q-pa-sm">
+              <q-item-label>{{ scope.schema.description }}</q-item-label>
+              <q-item-label caption v-if="scope.modelValue.productName">{{
+                scope.modelValue.productName
+              }}</q-item-label>
+              <q-btn
+                v-if="scope.schema.items"
+                label="Add"
+                @click="scope.c.addItem()"
+              />
+            </q-item-section>
+          </template>
         </QJsonTreeEditor>
       </template>
+
       <template v-slot:after>
         <pre>{{ data }}</pre>
       </template>
@@ -117,10 +132,11 @@ const sep1 = ref(70);
 
 .q-json-tree-node-card
   padding: 12px
-  margin: 6px
+  padding: 6px
 
 .q-json-tree-field
   background-color: #eee
+  margin: 6px
   margin: 6px
 
 .q-json-tree-object

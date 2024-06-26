@@ -1,7 +1,7 @@
 import { setupComponent, setupDefaults } from '../../index';
-import { h } from 'vue';
+import {h, inject} from 'vue';
 import { QCard, QCardSection } from 'quasar';
-import QJsonTreeNodeHeader from '../headers/ContainerHeader';
+import ContainerHeader from '../headers/ContainerHeader';
 
 export default {
   name: 'Card',
@@ -9,6 +9,7 @@ export default {
   emits: setupDefaults.emits,
   setup(props, { emit, slots }) {
     const c = setupComponent(props, emit);
+
     return () =>
       h(
         QCard,
@@ -21,7 +22,7 @@ export default {
             {
               class: 'q-pa-none q-ma-none',
             },
-            () => h(QJsonTreeNodeHeader, c.props({}))
+            () => h(ContainerHeader, c.props({}))
           ),
           h(
             QCardSection,

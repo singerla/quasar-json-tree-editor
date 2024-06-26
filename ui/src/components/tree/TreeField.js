@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
-import { QCheckbox, QInput } from 'quasar';
+import {QCheckbox, QInput, QToggle} from 'quasar';
 import ColorPicker from '../fields/quasar/ColorPicker';
 import Slider from '../fields/quasar/Slider';
 
@@ -16,7 +16,7 @@ export default {
     const componentMap = {
       colorpicker: ColorPicker,
       slider: Slider,
-      boolean: QCheckbox,
+      boolean: QToggle,
       default: QInput,
     };
 

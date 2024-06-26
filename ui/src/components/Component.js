@@ -10,6 +10,9 @@ export default {
     if (slots.addObjectPropertyButton) {
       provide('addObjectPropertyButton', slots.addObjectPropertyButton);
     }
+    if (slots.containerHeader) {
+      provide('containerHeader', slots.containerHeader);
+    }
 
     return () => [
       h(TreeNode, {
