@@ -61,7 +61,7 @@ const jsonSchema = {
 const data = reactive({
   prop1: [1, 2, 3],
   prop2: [4, 5, 6],
-  prop3: [7, 8],
+  prop3: [],
 });
 
 const updated = (tmp) => {
@@ -77,7 +77,7 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
-        <h4>Container Types Example</h4>
+        <h4>Sortable Arrays Example</h4>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"
