@@ -13,6 +13,7 @@ export default {
 
     const containerHeader = inject('containerHeader', null);
     if (containerHeader) {
+
       return () =>
         h(
           containerHeader,
@@ -33,10 +34,7 @@ export default {
           class: 'q-json-tree-node-header',
           updatesModel: false,
         }),
-        {
-          icon: () => h(QIcon, { name: 'data_object' }),
-          menu: () => h(ContainerMenu, c.props({})),
-        }
+
       );
   },
 };
