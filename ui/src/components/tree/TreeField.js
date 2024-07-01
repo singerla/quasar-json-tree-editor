@@ -3,6 +3,7 @@ import { setupComponent, setupDefaults } from '../index';
 import {QCheckbox, QInput, QToggle} from 'quasar';
 import ColorPicker from '../fields/quasar/ColorPicker';
 import Slider from '../fields/quasar/Slider';
+import Select from "../fields/quasar/Select";
 
 export default {
   name: 'QJsonTreeField',
@@ -16,6 +17,7 @@ export default {
     const componentMap = {
       colorpicker: ColorPicker,
       slider: Slider,
+      select: Select,
       boolean: QToggle,
       default: QInput,
     };

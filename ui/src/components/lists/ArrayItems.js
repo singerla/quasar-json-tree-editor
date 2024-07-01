@@ -6,6 +6,7 @@ import ContainerType from '../containers/ContainerType';
 import SortableList from './SortableList';
 import SortableListItem from './SortableListItem';
 import { QBtn } from 'quasar';
+import ButtonAddArrayItem from '../buttons/ButtonAddArrayItem';
 
 export default {
   name: 'ArrayItems',
@@ -34,7 +35,7 @@ export default {
               index: index,
               key: index,
               schema: c.getSchema().items,
-              propKey: index,
+              propKey: c.getKey() + '_' + index,
             })
           );
         }),
@@ -67,6 +68,7 @@ export default {
       arrayComponent = arrayComponents.getDefault;
     }
 
-    return () => arrayComponent();
+    return () =>
+      !c.dataHasLength() ? h(ButtonAddArrayItem, c.props()) : arrayComponent();
   },
 };

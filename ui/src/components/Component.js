@@ -1,5 +1,6 @@
 import { h, provide } from 'vue';
 import TreeNode from './tree/TreeNodeContainer';
+import { vd } from './index';
 
 export default {
   name: 'QJsonTreeEditor',
@@ -10,6 +11,9 @@ export default {
     if (slots.addObjectPropertyButton) {
       provide('addObjectPropertyButton', slots.addObjectPropertyButton);
     }
+    if (slots.addItemToArrayButton) {
+      provide('addItemToArrayButton', slots.addItemToArrayButton);
+    }
     if (slots.containerHeader) {
       provide('containerHeader', slots.containerHeader);
     }
@@ -19,6 +23,7 @@ export default {
         schema: props.schema,
         modelValue: props.modelValue,
         'onUpdate:modelValue': (value) => {
+          vd(value)
           emit('update:modelValue', value);
         },
         propKey: 'root',

@@ -18,6 +18,10 @@ export default {
       c.truncateList();
     };
 
+    const doDelete = () => {
+      c.deleteItem();
+    };
+
     return () =>
       h(
         QBtn,
@@ -45,6 +49,10 @@ export default {
                 h(QJsonTreeMenuItem, {
                   label: 'Truncate',
                   onClick: doTruncate,
+                }),
+                h(QJsonTreeMenuItem, {
+                  label: 'Delete',
+                  onClick: doDelete,
                 }),
               ]
             )

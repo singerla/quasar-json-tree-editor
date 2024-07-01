@@ -35,6 +35,9 @@ export const setupComponent = (props, emit) => {
         props.modelValue[propKey] !== undefined
       );
     },
+    dataHasLength: () => {
+      return props.modelValue.length > 0;
+    },
     getSchemaParam: (key, defVal) => {
       if (props.schema.params && props.schema.params[key]) {
         return props.schema.params[key];
@@ -48,10 +51,9 @@ export const setupComponent = (props, emit) => {
       return props.class + ' ' + addClass;
     },
     getLabel: () => {
-      return String(
-        props.label ||
-          (props.index !== undefined ? ' #' + (props.index + 1) : props.propKey)
-      );
+      if (props.label) return props.label;
+
+      return String(props.propKey);
     },
     getUniqueKey: (item, index) => {
       const key = [props.propKey];
@@ -91,11 +93,12 @@ export const setupComponent = (props, emit) => {
     getProperties: () => {
       return Object.keys(props.schema.properties);
     },
+    getPath: () => props.path,
     addItem: () => {
       if (c.hasProperties()) {
         return;
       }
-      const addData = getInitialValue(props.modelValue, props.schema);
+      const addData = getInitialValue(props.schema);
       props.modelValue.push(addData);
       c.defaultUpdate()(props.modelValue);
     },
@@ -109,15 +112,17 @@ export const setupComponent = (props, emit) => {
       }
     },
     createProperty: () => {
-      const addData = getInitialValue(props.modelValue, {
+      const addData = getInitialValue({
         items: props.schema,
       });
       const key = c.getKey();
       c.indexedUpdate({ index: key, emitsUpdated: true })(addData[key]);
     },
-    getPath: () => props.path,
+    deleteItem: () => {
+      c.defaultUpdate()(undefined);
+    },
     emitOnce: (info) => {
-      if(info.newValue !== info.oldValue) {
+      if (info.newValue !== info.oldValue) {
         emit('updated', info);
       }
     },
@@ -147,8 +152,14 @@ export const setupComponent = (props, emit) => {
               atIndex: index,
               path: c.getPath(),
             });
-            props.modelValue[index] = val;
-            emit('update:modelValue', props.modelValue);
+
+            if (val === undefined) {
+              const data = props.modelValue.filter((val, id) => id !== index);
+              emit('update:modelValue', data);
+            } else {
+              props.modelValue[index] = val;
+              emit('update:modelValue', props.modelValue);
+            }
           },
         },
         emitsUpdated: {
@@ -177,7 +188,7 @@ export const isObject = (schema) => schema.type === 'object';
 export const isArray = (schema) => schema.type === 'array';
 export const isBoolean = (schema) => schema.type === 'boolean';
 
-export const getInitialValue = (modelValue, schema) => {
+export const getInitialValue = (schema) => {
   if (isObject(schema.items)) {
     const addData = {};
     const addKeys = Object.keys(schema.items.properties);
