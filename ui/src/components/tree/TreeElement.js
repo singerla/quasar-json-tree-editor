@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
-import TreeField from './TreeField';
+import TreeField from '../fields/TreeField';
 import TreeNode from './TreeNodeContainer';
 
 export default {

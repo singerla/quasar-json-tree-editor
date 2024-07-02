@@ -1,7 +1,7 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults, vd } from '../index';
 import TreeNode from '../tree/TreeNodeContainer';
-import TreeField from '../tree/TreeField';
+import TreeField from '../fields/TreeField';
 import ContainerType from '../containers/ContainerType';
 import SortableList from './SortableList';
 import SortableListItem from './SortableListItem';

@@ -1,53 +1,63 @@
 import { h } from 'vue';
-import { QChip, QIcon, QItem, QItemLabel, QItemSection } from 'quasar';
+import { QChip, QIcon, QItem, QItemLabel, QItemSection, QSpace } from 'quasar';
 import { setupComponent, setupDefaults } from '../../index';
 import ContainerMenu from '../menus/ContainerMenu';
 
 export default {
   name: 'HeaderItem',
-  props: [...setupDefaults.props, 'showType', 'showKey'],
+  props: setupDefaults.props,
   emits: setupDefaults.emits,
   setup(props, { slots, emit }) {
     const c = setupComponent(props, emit);
-    const parts = {
-      icon: () => h(QIcon, { name: 'data_object' }),
+
+    const params = c.getSchemaParam('header', {
+      sections: ['icon', 'info', 'label', 'space', 'menu'],
+      icon: { name: 'data_object', size: 'sm' },
+    });
+    const description = c.getSchema().description || c.getKey();
+
+    const infoLabel = () => {
+      const ret = [props.schema.type];
+      if (props.schema.items) {
+        ret.push('of ' + props.schema.items.type + 's');
+      }
+      return ret.join(' ');
+    };
+
+    const availableSections = {
+      space: () => h(QSpace),
+      icon: () => h(QIcon, params.icon),
       menu: () => h(ContainerMenu, c.props({})),
-      label: () => [
-        h(QItemLabel, {}, () => c.getKey()),
-        h(QItemLabel, { caption: true }, () => c.getType()),
-      ],
-      schemaInfo: () => [
+      label: () => h(QItemLabel, {}, () => description),
+      info: () =>
         h(QChip, {
-          label: props.schema.type,
+          label: infoLabel(),
           size: 'sm',
           class: 'q-pa-xs',
           color: 'grey-5',
         }),
-        h(QChip, {
-          label: props.schema.items
-            ? 'of ' + props.schema.items.type + 's'
-            : 'default',
-          size: 'sm',
-          class: 'q-pa-xs',
-          color: 'grey-6',
-        }),
-      ],
     };
 
-    const showHeaderSections = ['icon'];
+    const sections = params.sections || [];
 
     return () =>
       h(
         QItem,
         {
-          class: 'q-json-tree-header full-width q-pa-none q-ma-none',
+          ...c.props(),
+          class: 'q-json-tree-header full-width',
         },
-        () => [
-          h(QItemSection, { avatar: true }, () => slots.icon()),
-          h(QItemSection, parts.label()),
-          h(QItemSection, { side: true }, parts.schemaInfo()),
-          h(QItemSection, { avatar: true }, () => slots.menu()),
-        ]
+        () =>
+          sections.map((section) => {
+            return h(
+              QItemSection,
+              {
+                ...c.props(),
+                side: ['icon', 'menu', 'info'].includes(section),
+              },
+              () => availableSections[section]()
+            );
+          })
       );
   },
 };

@@ -1,9 +1,9 @@
 import { h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
-import {QCheckbox, QInput, QToggle} from 'quasar';
-import ColorPicker from '../fields/quasar/ColorPicker';
-import Slider from '../fields/quasar/Slider';
-import Select from "../fields/quasar/Select";
+import { QInput, QToggle } from 'quasar';
+import ColorPicker from './quasar/ColorPicker';
+import Slider from './quasar/Slider';
+import Select from './quasar/Select';
 
 export default {
   name: 'QJsonTreeField',
@@ -19,11 +19,12 @@ export default {
       slider: Slider,
       select: Select,
       boolean: QToggle,
+      number: QInput,
       default: QInput,
     };
 
     const addProps = {
-      label: c.getLabel(),
+      label: c.getSchemaParam('label', c.getLabel()),
     };
 
     if (useQuasarComponent) {
@@ -42,6 +43,7 @@ export default {
       targetType = 'boolean';
     } else if (c.isNumeric()) {
       addProps.type = 'number';
+      targetType = 'number';
     }
 
     const targetComponent = componentMap[targetType];
@@ -50,7 +52,8 @@ export default {
       h(
         targetComponent,
         c.props({
-          class: 'q-json-tree-field',
+          class: 'q-json-tree-field q-json-tree-field-' + targetType,
+          hint: c.getSchema().description,
           ...addProps,
         })
       ),

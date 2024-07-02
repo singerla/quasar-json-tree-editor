@@ -15,17 +15,33 @@ const users = ref([
 
 const jsonUsers = {
   type: 'array',
-  description: 'This is root.',
+  description: 'This is the customized root container header.',
   params: {
     container: 'expansion',
+    sortable: true,
+    header: {
+      sections: ['menu', 'space', 'label', 'info', 'icon'],
+      icon: { name: 'data_object' },
+    },
   },
   items: {
     type: 'object',
+    params: {
+      header: {
+        sections: ['menu', 'space', 'icon'],
+        icon: { name: 'data_object' },
+      },
+    },
     properties: {
       id: {
+        title: 'ID',
         type: 'number',
+        params: {
+          label: 'Test',
+        },
       },
       name: {
+        title: 'Name',
         description: 'Owner of the product (string)',
         type: 'string',
       },
@@ -95,7 +111,11 @@ const sep1 = ref(70);
 .q-json-tree-field
   background-color: #eee
   border: 0
-  padding: 12px
+  padding: 6px
+  margin: 20px
+
+.q-json-tree-field-number
+  border: 1px dotted grey
 
 .q-json-tree-field-select
   background-color: #ddd

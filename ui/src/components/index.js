@@ -20,9 +20,6 @@ export const setupComponent = (props, emit) => {
     getKey: () => {
       return props.propKey;
     },
-    getType: () => {
-      return props.type;
-    },
     getSchema: () => {
       return props.schema;
     },
@@ -51,8 +48,7 @@ export const setupComponent = (props, emit) => {
       return props.class + ' ' + addClass;
     },
     getLabel: () => {
-      if (props.label) return props.label;
-
+      if (props.title) return props.title;
       return String(props.propKey);
     },
     getUniqueKey: (item, index) => {

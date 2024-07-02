@@ -23,7 +23,6 @@ export default {
         schema: props.schema,
         modelValue: props.modelValue,
         'onUpdate:modelValue': (value) => {
-          vd(value)
           emit('update:modelValue', value);
         },
         propKey: 'root',

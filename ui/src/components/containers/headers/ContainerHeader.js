@@ -1,4 +1,4 @@
-import { setupComponent, setupDefaults } from '../../index';
+import {setupComponent, setupDefaults, vd} from '../../index';
 import { h, inject } from 'vue';
 import { QIcon } from 'quasar';
 import ContainerMenu from '../menus/ContainerMenu';
@@ -13,7 +13,6 @@ export default {
 
     const containerHeader = inject('containerHeader', null);
     if (containerHeader) {
-
       return () =>
         h(
           containerHeader,
@@ -31,10 +30,12 @@ export default {
       h(
         HeaderItem,
         c.props({
+          'onUpdate:modelValue': (value) => {
+            emit('update:modelValue', value);
+          },
           class: 'q-json-tree-node-header',
           updatesModel: false,
         }),
-
       );
   },
 };
