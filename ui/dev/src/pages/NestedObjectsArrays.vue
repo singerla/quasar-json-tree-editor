@@ -82,7 +82,7 @@ const jsonSchema = {
         objectsArray: {
           type: 'array',
           params: {
-            sortable: true
+            sortable: true,
           },
           items: {
             type: 'object',
@@ -122,7 +122,7 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
-        <h4>Basic Example</h4>
+        <h4>Nested Example</h4>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"

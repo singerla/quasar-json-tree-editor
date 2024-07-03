@@ -1,11 +1,9 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults, vd } from '../index';
-import TreeNode from '../tree/TreeNodeContainer';
+import { setupComponent, setupDefaults } from '../index';
+import TreeNode from './TreeNodeContainer';
 import TreeField from '../fields/TreeField';
-import ContainerType from '../containers/ContainerType';
-import SortableList from './SortableList';
-import SortableListItem from './SortableListItem';
-import { QBtn } from 'quasar';
+import SortableList from '../lists/SortableList';
+import SortableListItem from '../lists/SortableListItem';
 import ButtonAddArrayItem from '../buttons/ButtonAddArrayItem';
 
 export default {

@@ -1,9 +1,9 @@
 import {h} from 'vue';
 import {setupComponent, setupDefaults} from '../index';
-import ObjectProperties from './items/ObjectProperties';
+import ObjectProperties from './ObjectProperties';
 import ContainerType from '../containers/ContainerType';
 import Message from '../fields/Message';
-import ArrayItems from '../lists/ArrayItems';
+import ArrayItems from './ArrayItems';
 
 export default {
   name: 'TreeNodeContainer',

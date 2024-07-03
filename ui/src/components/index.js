@@ -90,6 +90,7 @@ export const setupComponent = (props, emit) => {
       return Object.keys(props.schema.properties);
     },
     getPath: () => props.path,
+    getPathString: () => props.path.join(' > '),
     addItem: () => {
       if (c.hasProperties()) {
         return;
@@ -101,7 +102,9 @@ export const setupComponent = (props, emit) => {
     truncateList: () => {
       if (c.hasProperties()) {
         Object.keys(c.getData()).forEach((unsetKey) => {
-          c.indexedUpdate({ index: unsetKey, emitsUpdated: true })(undefined);
+          c.indexedUpdate({ index: unsetKey, emitsUpdated: true })({
+            __action: 'delete',
+          });
         });
       } else {
         c.defaultUpdate()([]);
@@ -115,7 +118,21 @@ export const setupComponent = (props, emit) => {
       c.indexedUpdate({ index: key, emitsUpdated: true })(addData[key]);
     },
     deleteItem: () => {
-      c.defaultUpdate()(undefined);
+      c.defaultUpdate()({
+        __action: 'delete',
+      });
+    },
+    copyItem: (atIndex) => {
+      c.defaultUpdate()({
+        __action: 'copy',
+        atIndex,
+      });
+    },
+    formatValueByType: (val) => {
+      if (c.isNumeric()) {
+        return Number(val);
+      }
+      return val;
     },
     emitOnce: (info) => {
       if (info.newValue !== info.oldValue) {
@@ -136,7 +153,7 @@ export const setupComponent = (props, emit) => {
         },
         updatesModel: {
           'onUpdate:modelValue': (val) => {
-            emit('update:modelValue', val);
+            emit('update:modelValue', c.formatValueByType(val));
           },
         },
         updatesIndexedModel: {
@@ -149,9 +166,14 @@ export const setupComponent = (props, emit) => {
               path: c.getPath(),
             });
 
-            if (val === undefined) {
-              const data = props.modelValue.filter((val, id) => id !== index);
-              emit('update:modelValue', data);
+            if (val.__action) {
+              if (Array.isArray(props.modelValue)) {
+                const data = c.performArrayAction(val.__action, index, val);
+                emit('update:modelValue', data);
+              } else if (typeof props.modelValue === 'object') {
+                c.performObjectAction(val.__action, index);
+                emit('update:modelValue', props.modelValue);
+              }
             } else {
               props.modelValue[index] = val;
               emit('update:modelValue', props.modelValue);
@@ -164,6 +186,31 @@ export const setupComponent = (props, emit) => {
           },
         },
       };
+    },
+    performObjectAction: (action, index, val) => {
+      if (action === 'delete') {
+        props.modelValue[index] = undefined;
+        return;
+      }
+      console.error("Can't perform this action on objects");
+      console.error(val);
+    },
+    performArrayAction: (action, index, val) => {
+      let data = [...props.modelValue];
+
+      if (action === 'copy') {
+        if (val.atIndex !== undefined) {
+          data.splice(val.atIndex, 0, props.modelValue[index]);
+        } else {
+          data.push(props.modelValue[index]);
+        }
+        return data;
+      } else if (action === 'delete') {
+        return data.filter((val, id) => id !== index);
+      }
+      console.error("Can't perform this action on arrays");
+      console.error(val);
+      return data;
     },
     props: (addProps) => propsFactory(c, emit, props, addProps),
     indexedUpdate: (addProps) =>

@@ -77,7 +77,10 @@ const sep1 = ref(70);
   <q-page padding class="">
     <q-splitter v-model="sep1" vertical>
       <template v-slot:before>
-        <h4>Container Types Example</h4>
+        <h4>Sortable scalars with groups</h4>
+        <h5>
+          See https://github.com/singerla/quasar-json-tree-editor/issues/3
+        </h5>
         <QJsonTreeEditor
           v-model="data"
           :schema="jsonSchema"

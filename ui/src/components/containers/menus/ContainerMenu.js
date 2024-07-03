@@ -1,6 +1,16 @@
-import { setupComponent, setupDefaults } from '../../index';
+import { setupComponent, setupDefaults, vd } from '../../index';
 import { h } from 'vue';
-import { QBtn, QList, QMenu } from 'quasar';
+import {
+  QBtn,
+  QChip,
+  QItem,
+  QItemLabel,
+  QItemSection,
+  QList,
+  QMenu,
+  QSeparator,
+  QSpace,
+} from 'quasar';
 import QJsonTreeMenuItem from './ContainerMenuItem';
 
 export default {
@@ -10,17 +20,59 @@ export default {
   setup(props, { emit }) {
     const c = setupComponent(props, emit);
 
-    const doAdd = () => {
-      c.addItem();
-    };
+    const params = c.getSchemaParam('menu', {
+      sections: [
+        'info',
+        'add',
+        'truncate',
+        'delete',
+        'copyInsert',
+        'copyAppend',
+        'space',
+      ],
+    });
 
-    const doTruncate = () => {
-      c.truncateList();
+    const availableSections = {
+      space: () => h(QSeparator),
+      info: () =>
+        h(QItem, { class: 'bg-grey-2' }, () =>
+          h(QItemSection, { class: 'q-pt-sm q-pb-sm' }, () => [
+            h(QItemLabel, { title: true }, () => 'Menu'),
+            h(QItemLabel, { caption: true }, () => c.getPathString()),
+          ])
+        ),
+      add: () =>
+        h(QJsonTreeMenuItem, {
+          label: 'Add',
+          icon: 'add',
+          onClick: c.addItem,
+        }),
+      truncate: () =>
+        h(QJsonTreeMenuItem, {
+          label: 'Truncate',
+          icon: 'delete_sweep',
+          onClick: c.truncateList,
+        }),
+      delete: () =>
+        h(QJsonTreeMenuItem, {
+          label: 'Delete',
+          icon: 'delete',
+          onClick: c.deleteItem,
+        }),
+      copyInsert: () =>
+        h(QJsonTreeMenuItem, {
+          label: 'Copy & insert',
+          icon: 'content_copy',
+          onClick: () => c.copyItem(c.getIndex()),
+        }),
+      copyAppend: () =>
+        h(QJsonTreeMenuItem, {
+          label: 'Copy & append',
+          icon: 'content_copy',
+          onClick: () => c.copyItem(),
+        }),
     };
-
-    const doDelete = () => {
-      c.deleteItem();
-    };
+    const sections = params.sections || [];
 
     return () =>
       h(
@@ -39,22 +91,10 @@ export default {
               QList,
               {
                 dense: true,
+                class: 'q-json-tree-menu',
                 style: 'min-width: 100px',
               },
-              () => [
-                h(QJsonTreeMenuItem, {
-                  label: 'Add',
-                  onClick: doAdd,
-                }),
-                h(QJsonTreeMenuItem, {
-                  label: 'Truncate',
-                  onClick: doTruncate,
-                }),
-                h(QJsonTreeMenuItem, {
-                  label: 'Delete',
-                  onClick: doDelete,
-                }),
-              ]
+              () => sections.map((section) => availableSections[section]())
             )
           )
       );

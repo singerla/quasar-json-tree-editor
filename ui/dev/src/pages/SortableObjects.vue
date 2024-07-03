@@ -22,10 +22,18 @@ const jsonSchema = {
         },
       },
       type: 'array',
+      title: 'Product',
+      // description: "A product from Acme's catalog",
       items: {
         type: 'object',
+        params: {
+          header: {
+            sections: ['index', 'space', 'menu'],
+          },
+        },
         properties: {
           id: {
+            label: 'Product ID',
             description: 'The unique identifier for a product',
             type: 'integer',
           },
@@ -34,7 +42,7 @@ const jsonSchema = {
             type: 'string',
           },
         },
-      }
+      },
     },
     prop2: {
       params: {
@@ -58,7 +66,7 @@ const jsonSchema = {
             type: 'string',
           },
         },
-      }
+      },
     },
   },
 };
@@ -153,6 +161,7 @@ const sep1 = ref(70);
 .q-json-tree-field
   padding: 6px
   margin: 6px
+  margin-bottom: 24px
   background-color: #eee
   border: 0
 </style>

@@ -1,7 +1,7 @@
 import { h } from 'vue';
-import { setupComponent, setupDefaults } from '../../index';
-import TreeElement from '../TreeElement';
-import ButtonAddObjectProperty from '../../buttons/ButtonAddObjectProperty';
+import { setupComponent, setupDefaults } from '../index';
+import TreeElement from './TreeElement';
+import ButtonAddObjectProperty from '../buttons/ButtonAddObjectProperty';
 
 export default {
   name: 'ObjectProperties',

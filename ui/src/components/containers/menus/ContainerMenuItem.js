@@ -1,9 +1,9 @@
 import { h } from 'vue';
-import { QItem, QItemSection } from 'quasar';
+import {QIcon, QItem, QItemLabel, QItemSection} from 'quasar';
 
 export default {
   name: 'ContainerMenuItem',
-  props: ['label'],
+  props: ['label', 'icon'],
   emits: ['click'],
   setup(props, { emit }) {
     return () =>
@@ -17,14 +17,29 @@ export default {
             emit('click');
           },
         },
-        () =>
+        () => [
           h(
             QItemSection,
             {
               avatar: true,
             },
-            () => props.label
-          )
+            () =>
+              h(QIcon, {
+                name: props.icon,
+              })
+          ),
+          h(
+            QItemSection,
+            {
+            },
+            () => h(
+              QItemLabel,
+              {
+              },
+              () => props.label
+            )
+          ),
+        ]
       );
   },
 };
