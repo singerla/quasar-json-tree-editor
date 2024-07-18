@@ -19,7 +19,7 @@ export default {
           modelValue: state.value,
           'onUpdate:modelValue': (val) => (state.value = val),
           class: 'q-json-tree-node-expansion q-pa-none q-ma-none',
-          headerStyle: 'background-color: #eee; margin: 0; padding: 0',
+          headerStyle: c.getSchemaParam('headerStyle', 'margin: 0; padding: 0'),
         },
         {
           header: () => h(QJsonTreeNodeHeader, c.props()),
