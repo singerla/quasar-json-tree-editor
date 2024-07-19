@@ -13,6 +13,7 @@ export default {
     const params = c.getSchemaParam('header', {
       sections: ['icon', 'info', 'label', 'space', 'menu'],
       icon: { name: 'data_object', size: 'sm' },
+      index: { size: 'sm', class: 'q-pa-md', color: 'grey-5' },
     });
 
     const schema = c.getSchema();
@@ -48,10 +49,8 @@ export default {
         }),
       index: () =>
         h(QChip, {
-          label: '#' + c.getIndex(),
-          size: 'sm',
-          class: 'q-pa-md',
-          color: 'grey-5',
+          label: '#' + (c.getIndex() + 1),
+          ...params.index
         }),
     };
 

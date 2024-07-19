@@ -21,6 +21,9 @@ export default {
     const c = setupComponent(props, emit);
 
     const params = c.getSchemaParam('menu', {
+      header: {
+        class: 'bg-accent'
+      },
       sections: [
         'info',
         'add',
@@ -35,7 +38,7 @@ export default {
     const availableSections = {
       space: () => h(QSeparator),
       info: () =>
-        h(QItem, { class: 'bg-grey-2' }, () =>
+        h(QItem, params.header, () =>
           h(QItemSection, { class: 'q-pt-sm q-pb-sm' }, () => [
             h(QItemLabel, { title: true }, () => 'Menu'),
             h(QItemLabel, { caption: true }, () => c.getPathString()),

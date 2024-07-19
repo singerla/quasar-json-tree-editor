@@ -1,4 +1,4 @@
-import { h } from 'vue';
+import { computed, h } from 'vue';
 import { setupComponent, setupDefaults } from '../index';
 import TreeNode from './TreeNodeContainer';
 import TreeField from '../fields/TreeField';
@@ -59,14 +59,13 @@ export default {
         ),
     };
 
-    let arrayComponent;
-    if (c.getSchemaParam('sortable')) {
-      arrayComponent = arrayComponents.getSortable;
-    } else {
-      arrayComponent = arrayComponents.getDefault;
-    }
+    const isSortable = computed(() => c.getSchemaParam('sortable'));
 
     return () =>
-      !c.dataHasLength() ? h(ButtonAddArrayItem, c.props()) : arrayComponent();
+      !c.dataHasLength()
+        ? h(ButtonAddArrayItem, c.props())
+        : isSortable.value
+          ? arrayComponents.getSortable()
+          : arrayComponents.getDefault();
   },
 };

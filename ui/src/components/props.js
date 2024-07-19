@@ -51,5 +51,10 @@ export const propsFactory = (c, emit, props, addProps) => {
     }
   });
 
+  if(c.getSchemaParam('class')) {
+    retProps.class = retProps.class || ''
+    retProps.class += ' ' + c.getSchemaParam('class')
+  }
+
   return retProps;
 };

@@ -20,7 +20,7 @@ export default {
 
     return () =>
       h(QBtn, {
-        class: 'q-pa-sm q-ma-sm',
+        class: 'q-pa-sm q-ma-sm q-json-tree-add-button',
         color: 'primary',
         rounded: true,
         dense: true,
@@ -29,6 +29,5 @@ export default {
         label: c.getKey(),
         onClick: () => c.addItem(),
       })
-
   },
 };

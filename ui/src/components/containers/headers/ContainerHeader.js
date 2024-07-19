@@ -1,7 +1,5 @@
-import {setupComponent, setupDefaults, vd} from '../../index';
+import { setupComponent, setupDefaults } from '../../index';
 import { h, inject } from 'vue';
-import { QIcon } from 'quasar';
-import ContainerMenu from '../menus/ContainerMenu';
 import HeaderItem from './HeaderItem';
 
 export default {
@@ -16,13 +14,11 @@ export default {
       return () =>
         h(
           containerHeader,
-          c.props(
-            {
-              c: c,
-              class: 'q-json-tree-node-header',
-              updatesModel: false,
-            },
-          )
+          c.props({
+            c: c,
+            class: 'q-json-tree-node-header',
+            updatesModel: false,
+          })
         );
     }
 
@@ -35,7 +31,7 @@ export default {
           },
           class: 'q-json-tree-node-header',
           updatesModel: false,
-        }),
+        })
       );
   },
 };
