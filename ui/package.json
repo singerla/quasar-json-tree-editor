@@ -1,6 +1,6 @@
 {
   "name": "quasar-ui-json-tree-editor",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "author": "singerla <tsinger@gmx.de>",
   "description": "Visualize, edit and validate a json object as a tree view based on quasar components",
   "keywords": [
